@@ -13,7 +13,7 @@ export default function Home() {
         </div>
       </div>
     </main>
-);
+  );
 }
 
 function NavbarItem(props: {title: string}) {
