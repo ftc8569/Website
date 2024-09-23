@@ -1,3 +1,5 @@
+'use client';
+
 export default function Home() {
   return (
     <main>
@@ -16,8 +18,8 @@ export default function Home() {
   );
 }
 
-function NavbarItem(props: {title: string}) {
+function NavbarItem(props: { title: string }) {
   return (
-    <p className="text-xl px-2 py-2 inline float-right">{props.title}</p>
+      <p className="text-xl px-2 py-2 inline float-right">{props.title}</p>
   )
 }
