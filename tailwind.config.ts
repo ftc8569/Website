@@ -7,12 +7,16 @@ const config: Config = {
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
+    fontFamily: {
+      'montserrat': ['Montserrat', 'sans-serif'],
+    },
     extend: {
       colors: {
         background: "var(--background)",
         foreground: "var(--foreground)",
         roboHotPink: "#dd1c8a",
-        roboGray: "#232323"
+        roboGray: "#232323",
+        roboPink: "#e383b6"
       },
     },
   },

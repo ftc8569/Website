@@ -14,7 +14,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`bg-roboGray`}
+        className={`bg-roboGray font-montserrat`}
       >
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png"/>
         {children}
