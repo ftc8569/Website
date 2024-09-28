@@ -1,8 +1,9 @@
 import Image from "next/image";
+import {MutableRefObject} from "react";
 
-export default function Team() {
+export default function Team({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null> }) {
   return (
-    <div className="flex flex-col w-full">
+    <div className="flex flex-col w-full" ref={divRef}>
       <div className="flex items-center justify-center">
         <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Meet Our Team</h1>
       </div>
