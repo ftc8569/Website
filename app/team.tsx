@@ -6,7 +6,7 @@ export default function Team({ divRef }: { divRef: MutableRefObject<HTMLDivEleme
   const [team, setTeam] = useState<TeamData | null>(null);
 
   useEffect(() => {
-    fetch("/team/team.yml")
+    if(!team) fetch("/team/team.yml")
       .then(res => res.text())
       .then(yaml => {
         const teamData: TeamData = parse(yaml)

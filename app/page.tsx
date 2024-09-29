@@ -7,6 +7,7 @@ import Team from "@/app/team";
 import ProgrammingSection from "@/app/programming";
 import MechanicalSection from "@/app/mechanical";
 import OutreachSection from "@/app/outreach";
+import ContactUs from "@/app/contact";
 
 export default function Home() {
   const homeRef = useRef<HTMLDivElement | null>(null);
@@ -28,7 +29,7 @@ export default function Home() {
       <ProgrammingSection divRef={programmingRef} />
       <MechanicalSection divRef={mechanicalRef} />
       <OutreachSection divRef={outreachRef} />
-      <div className="h-[1000rem]"></div>
+      <ContactUs />
     </main>
   );
 }
