@@ -1,25 +1,45 @@
-import {MutableRefObject, useEffect, useState} from "react";
+import {MutableRefObject, useEffect} from "react";
 import Image from "next/image";
 
 export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null >}) {
-  const [image, setImage] = useState<string>("0001");
-
   useEffect(() => {
     const handleScroll = () => {
       if(!divRef.current) return;
       let num = Math.floor(((window.scrollY)*320)/(divRef.current.getBoundingClientRect().height-270))+1
       if(num < 1) num = 1
       if(num > 320) num = 320
-      let number = num.toString()
-      if(number.length == 1) number = `000${number}`
-      else if(number.length == 2) number = `00${number}`
-      else if(number.length == 3) number = `0${number}`
-      setImage(number);
+      for(let i = 1; i < 321; i++) {
+        const element = document.getElementById("robot-" + i)
+        if(!element) return;
+        if(i == num) element.style.display = "block"
+        else element.style.display = "none"
+      }
     }
+
+    handleScroll()
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [divRef])
+
+  const images = []
+  for(let i = 1; i <= 320; i++){
+    let number = i.toString()
+    if(number.length == 1) number = `000${number}`
+    else if(number.length == 2) number = `00${number}`
+    else if(number.length == 3) number = `0${number}`
+    images.push((<Image
+      src={`/robot/${number}.png`}
+      alt={"Robot Render LOL"}
+      width={1920}
+      height={1080}
+      className="sticky top-20 z-[-1]"
+      style={{display: "none"}}
+      id={`robot-${i}`}
+      key={number}
+      priority
+    />))
+  }
 
   return (
     <div className="flex flex-row" ref={divRef}>
@@ -76,14 +96,9 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
         </div>
       </div>
       <div className="flex-1">
-        <Image
-          src={`/robot/${image}.png`}
-          alt={"Robot Render LOL"}
-          width={1920}
-          height={1080}
-          className="sticky top-20 z-[-1]"
-        />
+        {images}
       </div>
     </div>
   )
 }
+
