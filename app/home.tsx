@@ -1,6 +1,25 @@
-import {MutableRefObject} from "react";
+import {MutableRefObject, useEffect, useState} from "react";
+import Image from "next/image";
 
 export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null >}) {
+  const [image, setImage] = useState<string>("0001");
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if(!divRef.current) return;
+      let num = Math.floor(((window.scrollY)*320)/(divRef.current.getBoundingClientRect().height-270))+1
+      if(num < 1) num = 1
+      if(num > 320) num = 320
+      let number = num.toString()
+      if(number.length == 1) number = `000${number}`
+      else if(number.length == 2) number = `00${number}`
+      else if(number.length == 3) number = `0${number}`
+      setImage(number);
+    }
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [divRef])
 
   return (
     <div className="flex flex-row" ref={divRef}>
@@ -19,12 +38,12 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
           to excel in STEM fields while building strong relationships
           within our community. Join us in shaping the future, one
           robot at a time.</p>
-        <div className="bg-[#FFFFF0] p-2 rounded-2xl mt-4">
+        <div className="bg-[#151515] p-2 rounded-2xl mt-4">
           <div className="flex items-center justify-center">
             <h1 className="inline text-3xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">North Carolina School of
               Science and Mathematics</h1>
           </div>
-          <p className="text-xl pl-2 text-roboGray">The North Carolina School of
+          <p className="text-xl pl-2">The North Carolina School of
             Science and Mathematics (NCSSM) is a renowned public high
             school focused on STEM education. Team 8569, the RoboKnights,
             is an FTC (FIRST Tech Challenge) team housed at NCSSM, where
@@ -37,11 +56,11 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
             valuable technical and leadership skills in preparation for
             future STEM careers.</p>
         </div>
-        <div className="bg-[#FFFFF0] p-2 rounded-2xl mt-4">
+        <div className="bg-[#151515] p-2 rounded-2xl mt-4">
           <div className="flex items-center justify-center">
             <h1 className="text-3xl p-3 bg-roboPink text-black rounded-2xl inline mt-2 mb-4">FIRST Tech Challenge</h1>
           </div>
-          <p className="text-xl pl-2 text-roboGray">FIRST Tech Challenge (FTC)
+          <p className="text-xl pl-2">FIRST Tech Challenge (FTC)
             provides high school students with hands-on experience in designing,
             building, and programming robots, offering a unique opportunity
             to apply STEM concepts in real-world scenarios. Through FTC,
@@ -57,7 +76,13 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
         </div>
       </div>
       <div className="flex-1">
-
+        <Image
+          src={`/robot/${image}.png`}
+          alt={"Robot Render LOL"}
+          width={1920}
+          height={1080}
+          className="sticky top-20 z-[-1]"
+        />
       </div>
     </div>
   )
