@@ -1,7 +1,9 @@
-import {MutableRefObject, useEffect} from "react";
+import {JSX, MutableRefObject, useEffect, useState} from "react";
 import Image from "next/image";
 
 export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null >}) {
+  const [images, setImages] = useState<JSX.Element[]>([]);
+
   useEffect(() => {
     const handleScroll = () => {
       if(!divRef.current) return;
@@ -16,30 +18,33 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
       }
     }
 
-    handleScroll()
-
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, [divRef])
 
-  const images = []
-  for(let i = 1; i <= 320; i++){
-    let number = i.toString()
-    if(number.length == 1) number = `000${number}`
-    else if(number.length == 2) number = `00${number}`
-    else if(number.length == 3) number = `0${number}`
-    images.push((<Image
-      src={`/robot/${number}.png`}
-      alt={"Robot Render LOL"}
-      width={1920}
-      height={1080}
-      className="sticky top-20 z-[-1]"
-      style={{display: "none"}}
-      id={`robot-${i}`}
-      key={number}
-      priority
-    />))
-  }
+  useEffect(() => {
+    const imgs: JSX.Element[] = []
+    setTimeout(() => {
+      for(let i = 1; i <= 320; i++){
+        let number = i.toString()
+        if(number.length == 1) number = `000${number}`
+        else if(number.length == 2) number = `00${number}`
+        else if(number.length == 3) number = `0${number}`
+        imgs.push((<Image
+          src={`/robot/${number}.png`}
+          alt={"Robot Render LOL"}
+          width={1920}
+          height={1080}
+          className="sticky top-20 z-[-1]"
+          style={i == 1 ? {display: "block"} : {display: "none"}}
+          id={`robot-${i}`}
+          key={number}
+          priority
+        />))
+        setImages(imgs)
+      }
+    }, 100)
+  }, [images]);
 
   return (
     <div className="flex flex-row" ref={divRef}>

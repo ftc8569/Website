@@ -46,6 +46,7 @@ export default function Navbar(
           alt="Sticker Logo"
           width={50}
           height={50}
+          priority
         />
         <h1 className="text-4xl font-semibold pl-4">RoboKnights</h1>
       </div>
