@@ -8,6 +8,7 @@ import ProgrammingSection from "@/app/programming";
 import MechanicalSection from "@/app/mechanical";
 import OutreachSection from "@/app/outreach";
 import ContactUs from "@/app/contact";
+import Footer from "@/app/footer";
 
 export default function Home() {
   const homeRef = useRef<HTMLDivElement | null>(null);
@@ -15,6 +16,7 @@ export default function Home() {
   const programmingRef = useRef<HTMLDivElement | null>(null);
   const mechanicalRef = useRef<HTMLDivElement | null>(null);
   const outreachRef = useRef<HTMLDivElement | null>(null);
+  const contactRef = useRef<HTMLDivElement | null>(null);
 
   return (
     <main>
@@ -23,13 +25,15 @@ export default function Home() {
         teamRef={teamRef}
         programmingRef={programmingRef}
         mechanicalRef={mechanicalRef}
-        outreachRef={outreachRef} />
+        outreachRef={outreachRef}
+        contactRef={contactRef} />
       <HomeContent divRef={homeRef}/>
       <Team divRef={teamRef}/>
       <ProgrammingSection divRef={programmingRef} />
       <MechanicalSection divRef={mechanicalRef} />
       <OutreachSection divRef={outreachRef} />
-      <ContactUs />
+      <ContactUs divRef={contactRef} />
+      <Footer />
     </main>
   );
 }

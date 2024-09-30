@@ -3,8 +3,8 @@ import Image from "next/image";
 import styles from "@/app/navbar.module.css";
 
 export default function Navbar(
-  { homeRef, teamRef, programmingRef, mechanicalRef, outreachRef}:
-    { homeRef: MutableRefObject<HTMLDivElement | null>, teamRef: MutableRefObject<HTMLDivElement | null>, programmingRef: MutableRefObject<HTMLDivElement | null>, mechanicalRef: MutableRefObject<HTMLDivElement | null>, outreachRef: MutableRefObject<HTMLDivElement | null> }) {
+  { homeRef, teamRef, programmingRef, mechanicalRef, outreachRef, contactRef}:
+    { homeRef: MutableRefObject<HTMLDivElement | null>, teamRef: MutableRefObject<HTMLDivElement | null>, programmingRef: MutableRefObject<HTMLDivElement | null>, mechanicalRef: MutableRefObject<HTMLDivElement | null>, outreachRef: MutableRefObject<HTMLDivElement | null>, contactRef: MutableRefObject<HTMLDivElement | null> }) {
   const thisRef = useRef<HTMLDivElement | null>(null);
   const [navOffset, setNavOffset] = useState(0);
   const [current, setCurrent] = useState(0);
@@ -55,7 +55,7 @@ export default function Navbar(
         <NavbarItem title={"Programming"} current={current == 2} topPixel={(programmingRef.current ? programmingRef.current.offsetTop : 0) - navOffset}/>
         <NavbarItem title={"Mechanical"} current={current == 3} topPixel={(mechanicalRef.current ? mechanicalRef.current.offsetTop : 0) - navOffset}/>
         <NavbarItem title={"Outreach"} current={current == 4} topPixel={(outreachRef.current ? outreachRef.current.offsetTop : 0) - navOffset}/>
-        <NavbarItem title={"Contact Us"} current={current == 5} topPixel={0}/>
+        <NavbarItem title={"Contact Us"} current={current == 5} topPixel={(contactRef.current ? contactRef.current.offsetTop : 0) - navOffset}/>
       </div>
     </div>
   )

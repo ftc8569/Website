@@ -1,7 +1,10 @@
-import {useCallback, useState} from "react";
+'use client';
+
+import {MutableRefObject, useCallback, useRef, useState} from "react";
 import {useReCaptcha} from "next-recaptcha-v3";
 
-export default function ContactUs() {
+export default function ContactUs({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null> }) {
+  const formRef = useRef<HTMLFormElement | null>(null);
   const [validEmail, setValidEmail] = useState(true);
   const [validEntry, setValidEntry] = useState(true);
 
@@ -13,13 +16,17 @@ export default function ContactUs() {
     if(!entry) { setValidEntry(false); retry = true; }
     const email = data.get("email")
     if(!email) { setValidEmail(false); retry = true; }
-    if(retry) return;
+    if(retry || !executeRecaptcha) return;
+
+    if(formRef.current) formRef.current.reset()
 
     const token = await executeRecaptcha("form_submit");
 
-    // TODO: reset form after submission or alert of errors
     await fetch("/api/contact-us", {
       method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
       body: JSON.stringify({
         email: email,
         entry: entry,
@@ -29,10 +36,10 @@ export default function ContactUs() {
       })
     })
 
-  }, [executeRecaptcha, validEmail, validEntry]);
+  }, [executeRecaptcha]);
 
   return (
-    <div className="py-10 bg-[#151515]">
+    <div className="py-10 bg-[#151515]" ref={divRef}>
       <div className="mx-44">
         <div className="flex items-center justify-center pb-5">
           <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Contact Us</h1>
@@ -44,7 +51,7 @@ export default function ContactUs() {
             placeholder="I was wondering how you guys did..."
             name="entry"
           />
-          <form id="contact-form" className="w-1/3 px-5" action={send}>
+          <form id="contact-form" className="w-1/3 px-5" action={send} ref={formRef}>
             <div className="w-full flex flex-col justify-between h-full">
               <input name="email" type="email" placeholder="Enter your email"
                      className={"bg-[#363636] text-xl w-full mb-2 p-1 rounded-sm border-2 " + (validEmail ? "border-roboPink" : "border-red-500")}/>

@@ -13,15 +13,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <ReCaptchaProvider>
-        <body
-          className={`bg-roboGray font-montserrat`}
-        >
-          <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png"/>
-          {children}
-        </body>
-      </ReCaptchaProvider>
-    </html>
+    <ReCaptchaProvider>
+      <html lang="en">
+          <body
+            className={`bg-roboGray font-montserrat`}
+          >
+            <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png"/>
+            {children}
+          </body>
+      </html>
+    </ReCaptchaProvider>
   );
 }
