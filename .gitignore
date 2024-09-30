@@ -37,3 +37,6 @@ next-env.d.ts
 
 # secrets lol
 .env
+
+# stupid github
+robot.blend
