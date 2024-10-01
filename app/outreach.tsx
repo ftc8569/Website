@@ -5,7 +5,7 @@ export default function OutreachSection({ divRef }: { divRef: MutableRefObject<H
   return (
     <div ref={divRef} className="px-36 py-10">
       <div className="flex items-center justify-center">
-        <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Outreach Wasting Time</h1>
+        <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Outreach Team</h1>
       </div>
       <div className="flex flex-row pt-5">
         <Image

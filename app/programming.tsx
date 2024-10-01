@@ -5,7 +5,7 @@ export default function ProgrammingSection({ divRef }: { divRef: MutableRefObjec
   return (
     <div ref={divRef} className="px-36 py-10">
       <div className="flex items-center justify-center">
-        <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Programming Shenanigans</h1>
+        <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Programming Team</h1>
       </div>
       <div className="flex flex-row pt-5">
         <Image
@@ -31,19 +31,13 @@ export default function ProgrammingSection({ divRef }: { divRef: MutableRefObjec
       </div>
       <div className="flex flex-row pt-5">
         <p className="pr-10 text-xl">
-          Trevor Bedson is renowned for his exceptional
-          skill in creating super accurate computer vision
-          programs that push the boundaries of technology.
-          His innovative algorithms consistently deliver
-          precise image recognition and analysis, revolutionizing
-          fields like AI, robotics, and automation. Bedson’s work
-          has significantly improved the accuracy of object
-          detection, facial recognition, and real-time video
-          processing. His contributions have set a new standard
-          in computer vision, enabling industries to implement
-          smarter, more reliable systems. Trevor Bedson’s expertise
-          and creativity continue to shape the future of AI-powered
-          applications.</p>
+          The programming team has been working to create computer vision
+          scripts that utilize OpenCV and Limelight 3A. The camera can
+          distinguish between the different color samples(blocks) and
+          identify their edges. Furthermore, it can estimate the sample's
+          position down to a margin of error of only about half a centimeter.
+          All this processing is done in real time, achieving 60 frames per
+          second, allowing for automated, accurate intake. </p>
         <Image
           src={"/activity/programming-2.png"}
           alt={"Programmer locked in"}
