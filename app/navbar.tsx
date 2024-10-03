@@ -39,8 +39,8 @@ export default function Navbar(
   }, [current, homeRef, teamRef, programmingRef, mechanicalRef, outreachRef]);
 
   return (
-    <div className="sticky top-0 flex flex-row w-full bg-roboHotPink justify-between items-center px-4 py-1" ref={thisRef}>
-      <div className="flex flex-row">
+    <div className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full bg-roboHotPink justify-between items-center px-4 py-1" ref={thisRef}>
+      <div className="hidden lg:flex flex-row">
         <Image
           src="/stickerlogo.png"
           alt="Sticker Logo"
@@ -50,9 +50,9 @@ export default function Navbar(
         />
         <h1 className="text-4xl font-semibold pl-4">RoboKnights</h1>
       </div>
-      <div className="flex flex-row flex-wrap space-x-4">
+      <div className="flex flex-row flex-wrap space-x-2 lg:space-x-8">
         <NavbarItem title={"Home"} current={current == 0} topPixel={0}/>
-        <NavbarItem title={"Our Team"} current={current == 1} topPixel={(teamRef.current ? teamRef.current?.offsetTop : 0) - navOffset}/>
+        <NavbarItem title={"Team"} current={current == 1} topPixel={(teamRef.current ? teamRef.current?.offsetTop : 0) - navOffset}/>
         <NavbarItem title={"Programming"} current={current == 2} topPixel={(programmingRef.current ? programmingRef.current.offsetTop : 0) - navOffset}/>
         <NavbarItem title={"Mechanical"} current={current == 3} topPixel={(mechanicalRef.current ? mechanicalRef.current.offsetTop : 0) - navOffset}/>
         <NavbarItem title={"Outreach"} current={current == 4} topPixel={(outreachRef.current ? outreachRef.current.offsetTop : 0) - navOffset}/>
@@ -66,7 +66,7 @@ function NavbarItem({title, current, topPixel}: { title: string, current: boolea
   return (
     <button onClick={() => scroll({top: topPixel + 1, behavior: "smooth"})}>
       <p
-        className={"text-xl mx-2 my-2 inline float-right " + styles.currentNav + " " + (current ? styles.currentNavAdded : styles.currentNavRemoved)}>
+        className={"text-xs lg:text-xl my-2 inline float-right " + styles.currentNav + " " + (current ? styles.currentNavAdded : styles.currentNavRemoved)}>
         {title}</p>
     </button>
   )
