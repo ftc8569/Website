@@ -2,21 +2,21 @@
 
 ---
 
-This is the code for the RoboKnights website. This README will explain a little about 
+This is the code for the RoboKnights website. This README will explain a little about
 the architecture and where things are located. The hope is that if you are reading
 this, you know how to install all your packages and what not. If that is not true, someone
-should update this to include information on that. 
+should update this to include information on that.
 
 This uses NextJS, Typescript, Tailwindcss, and React. There are various other frameowrks
-baked in too but those are the important ones to know. 
+baked in too but those are the important ones to know.
 
 ### Important Folders and Files
 
 - **public/robot** - Contains the rendered frames for the robot. This is rendered in
-blender and stored as pngs there. The blender file should be on the google drive because
-it is too large for github.
+  blender and stored as pngs there. The blender file should be on the google drive because
+  it is too large for github.
 - **.env** - This file is needed to make the recaptcha work. To use it, rename .env.example
-to just .env and fill in the correct values.
+  to just .env and fill in the correct values.
 
 _The Nextjs README below has been kept for information on running the app_
 
