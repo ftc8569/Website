@@ -24,6 +24,7 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
 
   useEffect(() => {
     const imgs: JSX.Element[] = []
+    if(window.visualViewport && window.visualViewport.width < 1024) return;
     setTimeout(() => {
       for(let i = 1; i <= 320; i++){
         let number = i.toString()
@@ -43,7 +44,7 @@ export default function HomeContent({ divRef }: { divRef: MutableRefObject<HTMLD
         />))
         setImages(imgs)
       }
-    }, 100)
+    }, 2000)
   }, [images]);
 
   return (
