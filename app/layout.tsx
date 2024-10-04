@@ -16,7 +16,7 @@ export default function RootLayout({
   return (
     <ReCaptchaProvider>
       <html lang="en">
-        <body className={`bg-roboGray font-montserrat`}>
+        <body>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
           {children}
         </body>
