@@ -1,3 +1,5 @@
+'use client';
+
 import Image from "next/image";
 import {MutableRefObject, useEffect, useState} from "react";
 
@@ -5,14 +7,11 @@ export default function Footer({ navbarRef }: { navbarRef: MutableRefObject<HTML
   const [downOffset, setDownOffset] = useState(0);
 
   useEffect(() => {
-    if(navbarRef.current) setDownOffset(navbarRef.current.getBoundingClientRect().height);
+    if(navbarRef.current && window.visualViewport && window.visualViewport.width < 1024) setDownOffset(navbarRef.current.getBoundingClientRect().height);
   }, [navbarRef, downOffset]);
 
-  let offset = 0;
-  if(window.visualViewport && window.visualViewport.width < 1024) offset = downOffset
-
   return (
-    <div className="bg-[#151515] w-full" style={{paddingBottom: `${offset}px`}}>
+    <div className="bg-[#151515] w-full" style={{paddingBottom: `${downOffset}px`}}>
       <div className="flex flex-row justify-center">
         <div className="bg-roboGray w-full mx-2 lg:mx-10 p-[2px] rounded-xl"></div>
       </div>

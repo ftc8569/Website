@@ -1,4 +1,4 @@
-import {MutableRefObject, useEffect, useRef, useState} from "react";
+import {MutableRefObject, useEffect, useState} from "react";
 import Image from "next/image";
 import styles from "@/app/navbar.module.css";
 
@@ -35,7 +35,7 @@ export default function Navbar(
 
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
-  }, [current, homeRef, teamRef, programmingRef, mechanicalRef, outreachRef]);
+  }, [current, navbarRef, homeRef, teamRef, programmingRef, mechanicalRef, outreachRef]);
 
   return (
     <div className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full bg-roboHotPink justify-between items-center px-4 py-1" ref={navbarRef}>
