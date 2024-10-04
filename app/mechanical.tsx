@@ -3,11 +3,11 @@ import Image from "next/image";
 
 export default function MechanicalSection({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null> }) {
   return (
-    <div ref={divRef} className="px-36 py-10">
+    <div ref={divRef} className="px-5 lg:px-36 py-10">
       <div className="flex items-center justify-center">
-        <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Mechanical Team</h1>
+        <h1 className="inline text-3xl lg:text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Mechanical Team</h1>
       </div>
-      <div className="flex flex-row pt-5">
+      <div className="flex flex-col lg:flex-row pt-5 gap-5 lg:gap-10">
         <Image
           src={"/activity/mechanical-1.png"}
           alt={"Programmer locked in"}
@@ -15,7 +15,7 @@ export default function MechanicalSection({ divRef }: { divRef: MutableRefObject
           height={3024 / 8}
           className="rounded-2xl"
         />
-        <p className="pl-10 text-xl">
+        <p className="text-sm lg:text-xl">
           Robots are cool because they combine advanced
           technology with real-world applications, performing
           tasks with incredible precision and efficiency.
@@ -31,8 +31,15 @@ export default function MechanicalSection({ divRef }: { divRef: MutableRefObject
           fiction with reality in a way that sparks imagination
           and curiosity.</p>
       </div>
-      <div className="flex flex-row pt-5">
-        <p className="pr-10 text-xl">
+      <div className="flex flex-col lg:flex-row-reverse pt-5 gap-5 lg:gap-10">
+        <Image
+          src={"/activity/mechanical-2.png"}
+          alt={"Programmer waiting for mech guy"}
+          width={4032 / 8}
+          height={3024 / 8}
+          className="rounded-2xl"
+        />
+        <p className="text-sm lg:text-xl">
           Carbon fiber is an incredibly strong yet lightweight
           material that has revolutionized industries ranging
           from aerospace to sports equipment. Its high
@@ -46,13 +53,6 @@ export default function MechanicalSection({ divRef }: { divRef: MutableRefObject
           designs. Whether in aircraft, automobiles, or high-performance
           bikes, carbon fiber continues to transform modern
           technology with its remarkable properties.</p>
-        <Image
-          src={"/activity/mechanical-2.png"}
-          alt={"Programmer waiting for mech guy"}
-          width={4032 / 8}
-          height={3024 / 8}
-          className="rounded-2xl"
-        />
       </div>
     </div>
   )

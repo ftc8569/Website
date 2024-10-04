@@ -3,11 +3,11 @@ import Image from "next/image";
 
 export default function ProgrammingSection({ divRef }: { divRef: MutableRefObject<HTMLDivElement | null> }) {
   return (
-    <div ref={divRef} className="px-36 py-10">
+    <div ref={divRef} className="px-5 lg:px-36 py-10">
       <div className="flex items-center justify-center">
-        <h1 className="inline text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Programming Team</h1>
+        <h1 className="inline text-3xl lg:text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">Programming Team</h1>
       </div>
-      <div className="flex flex-row pt-5">
+      <div className="flex flex-col lg:flex-row pt-5 gap-5 lg:gap-10">
         <Image
           src={"/activity/programming-1.png"}
           alt={"Programmer waiting for mech guy"}
@@ -15,7 +15,7 @@ export default function ProgrammingSection({ divRef }: { divRef: MutableRefObjec
           height={1754/6}
           className="rounded-2xl"
         />
-        <p className="pl-10 text-xl">
+        <p className="text-sm lg:text-xl">
           Java is an amazing programming language known for its
           platform independence, allowing developers to "write
           once, run anywhere." Its robust memory management,
@@ -29,15 +29,7 @@ export default function ProgrammingSection({ divRef }: { divRef: MutableRefObjec
           performance, and scalability, Java remains a top choice
           for developers across industries.</p>
       </div>
-      <div className="flex flex-row pt-5">
-        <p className="pr-10 text-xl">
-          The programming team has been working to create computer vision
-          scripts that utilize OpenCV and Limelight 3A. The camera can
-          distinguish between the different color samples(blocks) and
-          identify their edges. Furthermore, it can estimate the sample's
-          position down to a margin of error of only about half a centimeter.
-          All this processing is done in real time, achieving 60 frames per
-          second, allowing for automated, accurate intake. </p>
+      <div className="flex flex-col lg:flex-row-reverse pt-5 gap-5 lg:gap-10">
         <Image
           src={"/activity/programming-2.png"}
           alt={"Programmer locked in"}
@@ -45,6 +37,14 @@ export default function ProgrammingSection({ divRef }: { divRef: MutableRefObjec
           height={1020/2}
           className="rounded-2xl"
         />
+        <p className="text-sm lg:text-xl">
+          The programming team has been working to create computer vision
+          scripts that utilize OpenCV and Limelight 3A. The camera can
+          distinguish between the different color samples(blocks) and
+          identify their edges. Furthermore, it can estimate the sample's
+          position down to a margin of error of only about half a centimeter.
+          All this processing is done in real time, achieving 60 frames per
+          second, allowing for automated, accurate intake. </p>
       </div>
     </div>
   )

@@ -3,16 +3,15 @@ import Image from "next/image";
 import styles from "@/app/navbar.module.css";
 
 export default function Navbar(
-  { homeRef, teamRef, programmingRef, mechanicalRef, outreachRef, contactRef}:
-    { homeRef: MutableRefObject<HTMLDivElement | null>, teamRef: MutableRefObject<HTMLDivElement | null>, programmingRef: MutableRefObject<HTMLDivElement | null>, mechanicalRef: MutableRefObject<HTMLDivElement | null>, outreachRef: MutableRefObject<HTMLDivElement | null>, contactRef: MutableRefObject<HTMLDivElement | null> }) {
-  const thisRef = useRef<HTMLDivElement | null>(null);
+  { navbarRef, homeRef, teamRef, programmingRef, mechanicalRef, outreachRef, contactRef}:
+    { navbarRef: MutableRefObject<HTMLDivElement | null>, homeRef: MutableRefObject<HTMLDivElement | null>, teamRef: MutableRefObject<HTMLDivElement | null>, programmingRef: MutableRefObject<HTMLDivElement | null>, mechanicalRef: MutableRefObject<HTMLDivElement | null>, outreachRef: MutableRefObject<HTMLDivElement | null>, contactRef: MutableRefObject<HTMLDivElement | null> }) {
   const [navOffset, setNavOffset] = useState(0);
   const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     let offset = 0
-    if(thisRef.current) {
-      const rect = thisRef.current.getBoundingClientRect();
+    if(navbarRef.current) {
+      const rect = navbarRef.current.getBoundingClientRect();
       offset = rect.height + 10;
     }
     setNavOffset(offset);
@@ -39,7 +38,7 @@ export default function Navbar(
   }, [current, homeRef, teamRef, programmingRef, mechanicalRef, outreachRef]);
 
   return (
-    <div className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full bg-roboHotPink justify-between items-center px-4 py-1" ref={thisRef}>
+    <div className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full bg-roboHotPink justify-between items-center px-4 py-1" ref={navbarRef}>
       <div className="hidden lg:flex flex-row">
         <Image
           src="/stickerlogo.png"

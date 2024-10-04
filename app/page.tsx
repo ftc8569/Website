@@ -11,6 +11,7 @@ import ContactUs from "@/app/contact";
 import Footer from "@/app/footer";
 
 export default function Home() {
+  const navbarRef = useRef<HTMLDivElement | null>(null);
   const homeRef = useRef<HTMLDivElement | null>(null);
   const teamRef = useRef<HTMLDivElement | null>(null);
   const programmingRef = useRef<HTMLDivElement | null>(null);
@@ -21,6 +22,7 @@ export default function Home() {
   return (
     <main>
       <Navbar
+        navbarRef={navbarRef}
         homeRef={homeRef}
         teamRef={teamRef}
         programmingRef={programmingRef}
@@ -33,7 +35,7 @@ export default function Home() {
       <MechanicalSection divRef={mechanicalRef} />
       <OutreachSection divRef={outreachRef} />
       <ContactUs divRef={contactRef} />
-      <Footer />
+      <Footer navbarRef={navbarRef} />
     </main>
   );
 }
