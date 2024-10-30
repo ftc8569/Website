@@ -44,7 +44,7 @@ export default function HomeContent({
             src={`/robot/${number}.png`}
             alt={"Robot Render LOL"}
             width={1920}
-            height={1080}
+            height={1920}
             className="sticky top-20 z-[-1]"
             style={i == 1 ? { display: "block" } : { display: "none" }}
             id={`robot-${i}`}
