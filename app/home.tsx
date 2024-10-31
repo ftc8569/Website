@@ -33,7 +33,7 @@ export default function HomeContent({
   useEffect(() => {
     const imgs: JSX.Element[] = []
     if (window.visualViewport && window.visualViewport.width < 1024) return
-    setTimeout(() => {
+    setTimeout(async () => {
       for (let i = 1; i <= 320; i++) {
         let number = i.toString()
         if (number.length == 1) number = `000${number}`

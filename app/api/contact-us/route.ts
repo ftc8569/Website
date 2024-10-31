@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer"
 import { readFileSync } from "fs"
+import { MailOptions } from "nodemailer/lib/smtp-transport"
 
 export async function POST(req: Request) {
   const data: ContactUsData = await req.json()
@@ -11,7 +12,7 @@ export async function POST(req: Request) {
     .then((res) => res.json())
     .then((res) => res.success)
 
-  if(!valid) return new Response(null, { status: 400 })
+  if(!valid) return new Response(null, { status: 403 })
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
@@ -22,12 +23,12 @@ export async function POST(req: Request) {
     },
   })
 
-  const message = {
+  const message: MailOptions = {
     from: data.email,
-    to: "bedson26t@ncssm.edu",
+    to: process.env.CONTACT_EMAIL,
     envelope: {
       from: 'Contact Us <bedson26t@ncssm.edu>',
-      to: 'bedson26t@ncssm.edu',
+      to: process.env.CONTACT_EMAIL,
       cc: data.email
     },
     subject: 'Contact Us: ' + data.subject,
@@ -37,10 +38,12 @@ export async function POST(req: Request) {
   transporter.sendMail(message, (err) => {
     if (err) {
       console.log(err)
+      transporter.close()
       return new Response(null, { status: 500 })
     }
   })
 
+  transporter.close()
   return new Response(null, { status: 200 })
 }
 
