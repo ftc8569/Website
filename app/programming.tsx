@@ -1,10 +1,10 @@
-import { MutableRefObject } from "react"
+import { RefObject } from "react"
 import Image from "next/image"
 
 export default function ProgrammingSection({
   divRef
 }: {
-  divRef: MutableRefObject<HTMLDivElement | null>
+  divRef: RefObject<HTMLDivElement | null>
 }) {
   return (
     <div ref={divRef} className="px-5 lg:px-36 py-10">

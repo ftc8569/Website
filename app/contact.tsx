@@ -1,10 +1,10 @@
-import { MutableRefObject, useCallback, useRef, useState } from "react"
+import { RefObject, useCallback, useRef, useState } from "react"
 import { useReCaptcha } from "next-recaptcha-v3"
 
 export default function ContactUs({
   divRef
 }: {
-  divRef: MutableRefObject<HTMLDivElement | null>
+  divRef: RefObject<HTMLDivElement | null>
 }) {
   const formRef = useRef<HTMLFormElement | null>(null)
   const [validEmail, setValidEmail] = useState(true)

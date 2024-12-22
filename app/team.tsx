@@ -1,11 +1,11 @@
 import Image from "next/image"
-import { MutableRefObject, useEffect, useState } from "react"
+import { RefObject, useEffect, useState } from "react"
 import { parse } from "yaml"
 
 export default function Team({
   divRef
 }: {
-  divRef: MutableRefObject<HTMLDivElement | null>
+  divRef: RefObject<HTMLDivElement | null>
 }) {
   const [team, setTeam] = useState<TeamData | null>(null)
 
@@ -89,6 +89,8 @@ function MemberIcon({
         width={3024}
         height={4032}
         className="rounded-2xl object-scale-down"
+        placeholder={"blur"}
+        blurDataURL={"/team/blur.png"}
       />
       <p className="text-center text-lg font-semibold">{name}</p>
       <p className="text-center text-sm text-gray-300">{role}</p>

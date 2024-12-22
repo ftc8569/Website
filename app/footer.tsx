@@ -1,10 +1,10 @@
 import Image from "next/image"
-import { MutableRefObject, useEffect, useState } from "react"
+import { RefObject, useEffect, useState } from "react"
 
 export default function Footer({
   navbarRef
 }: {
-  navbarRef: MutableRefObject<HTMLDivElement | null>
+  navbarRef: RefObject<HTMLDivElement | null>
 }) {
   const [downOffset, setDownOffset] = useState(0)
 

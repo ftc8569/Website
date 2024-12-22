@@ -1,4 +1,4 @@
-import { MutableRefObject, useEffect, useState } from "react"
+import React, { RefObject, useEffect, useState } from "react"
 import Image from "next/image"
 import styles from "@/app/navbar.module.css"
 
@@ -11,15 +11,14 @@ export default function Navbar({
   outreachRef,
   contactRef
 }: {
-  navbarRef: MutableRefObject<HTMLDivElement | null>
-  homeRef: MutableRefObject<HTMLDivElement | null>
-  teamRef: MutableRefObject<HTMLDivElement | null>
-  programmingRef: MutableRefObject<HTMLDivElement | null>
-  mechanicalRef: MutableRefObject<HTMLDivElement | null>
-  outreachRef: MutableRefObject<HTMLDivElement | null>
-  contactRef: MutableRefObject<HTMLDivElement | null>
+  navbarRef: RefObject<HTMLDivElement | null>
+  homeRef: RefObject<HTMLDivElement | null>
+  teamRef: RefObject<HTMLDivElement | null>
+  programmingRef: RefObject<HTMLDivElement | null>
+  mechanicalRef: RefObject<HTMLDivElement | null>
+  outreachRef: RefObject<HTMLDivElement | null>
+  contactRef: RefObject<HTMLDivElement | null>
 }) {
-  const [navOffset, setNavOffset] = useState(0)
   const [current, setCurrent] = useState(0)
   const [background, setBackground] = useState(false) // false = transparent, true = blurry
 
@@ -29,7 +28,6 @@ export default function Navbar({
       const rect = navbarRef.current.getBoundingClientRect()
       offset = rect.height + 10
     }
-    setNavOffset(offset)
     const handleScroll = () => {
       const position = window.scrollY
 
@@ -123,44 +121,34 @@ export default function Navbar({
         <h1 className="text-4xl font-semibold pl-4">RoboKnights</h1>
       </div>
       <div className="flex flex-row flex-wrap space-x-2 lg:space-x-8">
-        <NavbarItem title={"Home"} current={current == 0} topPixel={0} />
+        <NavbarItem title={"Home"} current={current == 0} ref={
+          new class implements React.RefObject<HTMLDivElement | null> {
+          current: HTMLDivElement | null = null
+        }} />
         <NavbarItem
           title={"Team"}
           current={current == 1}
-          topPixel={
-            (teamRef.current ? teamRef.current?.offsetTop : 0) - navOffset
-          }
+          ref={teamRef}
         />
         <NavbarItem
           title={"Programming"}
           current={current == 2}
-          topPixel={
-            (programmingRef.current ? programmingRef.current.offsetTop : 0) -
-            navOffset
-          }
+          ref={programmingRef}
         />
         <NavbarItem
           title={"Mechanical"}
           current={current == 3}
-          topPixel={
-            (mechanicalRef.current ? mechanicalRef.current.offsetTop : 0) -
-            navOffset
-          }
+          ref={mechanicalRef}
         />
         <NavbarItem
           title={"Outreach"}
           current={current == 4}
-          topPixel={
-            (outreachRef.current ? outreachRef.current.offsetTop : 0) -
-            navOffset
-          }
+          ref={outreachRef}
         />
         <NavbarItem
           title={"Contact Us"}
           current={current == 5}
-          topPixel={
-            (contactRef.current ? contactRef.current.offsetTop : 0) - navOffset
-          }
+          ref={contactRef}
         />
       </div>
     </div>
@@ -170,14 +158,19 @@ export default function Navbar({
 function NavbarItem({
   title,
   current,
-  topPixel
+  ref
 }: {
   title: string
   current: boolean
-  topPixel: number
+  ref: RefObject<HTMLDivElement | null>
 }) {
   return (
-    <button onClick={() => scroll({ top: topPixel + 1, behavior: "smooth" })}>
+    <button onClick={
+      () => scroll({
+        top: (ref.current != null ? ref.current.offsetTop : 0) + 1,
+        behavior: "smooth"
+      })
+    }>
       <p
         className={
           "text-xs lg:text-xl my-2 inline float-right " +

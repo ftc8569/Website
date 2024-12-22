@@ -1,4 +1,4 @@
-import { JSX, MutableRefObject, RefObject, useEffect, useRef, useState } from "react"
+import { JSX, RefObject, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 
 export default function HomeContent({
@@ -58,6 +58,8 @@ export default function HomeContent({
             id={`robot-${i}`}
             key={number}
             priority
+            placeholder={"blur"}
+            blurDataURL={`/robot/1.png`}
           />
         )
         setImages(imgs)
@@ -66,7 +68,6 @@ export default function HomeContent({
   }, [images])
 
   useEffect(() => {
-
     if(!canvasRef.current || !backgroundRef.current || !navbarRef.current) return
     const canvas = canvasRef.current
 
@@ -76,10 +77,7 @@ export default function HomeContent({
     const context = canvas.getContext("2d")
     if(!context) return;
 
-    let mouse = {
-      x: 0,
-      y: 0
-    }
+    let mouse = { x: 0, y: 0 }
 
     window.addEventListener("mousemove", (event) => {
       const rect = canvas.getBoundingClientRect();
@@ -197,7 +195,6 @@ export default function HomeContent({
     }
 
     animate()
-
   }, [canvasRef, backgroundRef])
 
   const handleContactUsClick = () => {
@@ -303,7 +300,7 @@ export default function HomeContent({
               challenging robotics competitions. The program encourages creativity
               and innovation as students work together to solve complex
               engineering tasks. FTC also offers students access to scholarships,
-              internships, and mentorships, opening doors to future education and
+              internships, and mentorship, opening doors to future education and
               career opportunities in STEM fields. Overall, FTC equips students
               with valuable technical and leadership skills, preparing them for
               success in both college and future careers.
