@@ -21,6 +21,7 @@ export default function Navbar({
 }) {
   const [navOffset, setNavOffset] = useState(0)
   const [current, setCurrent] = useState(0)
+  const [background, setBackground] = useState(false) // false = transparent, true = blurry
 
   useEffect(() => {
     let offset = 0
@@ -31,6 +32,10 @@ export default function Navbar({
     setNavOffset(offset)
     const handleScroll = () => {
       const position = window.scrollY
+
+      if(position > 0) setBackground(true)
+      else setBackground(false)
+
       /*
       This is the most cooked code I have ever written
       TODO: Fix whatever this is when in a state of clear thinking
@@ -102,8 +107,10 @@ export default function Navbar({
 
   return (
     <div
-      className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full bg-roboHotPink justify-between items-center px-4 py-1"
+      className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full justify-between
+      items-center px-4 py-1 z-[2] transition-all duration-[750ms]"
       ref={navbarRef}
+      style={{background: background ? "rgba(39,39,39,0.98)" : "rgba(0,0,0,0)"}}
     >
       <div className="hidden lg:flex flex-row">
         <Image

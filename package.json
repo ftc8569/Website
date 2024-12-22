@@ -1,6 +1,6 @@
 {
   "name": "roboknights",
-  "version": "1.2.0",
+  "version": "2.0.0-beta",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -10,24 +10,24 @@
     "pretty": "npx prettier . --write"
   },
   "dependencies": {
-    "next": "15.0.2",
+    "next": "15.1.2",
     "next-recaptcha-v3": "^1.4.1",
     "nodemailer": "^6.9.16",
-    "react": "^18",
-    "react-dom": "^18",
+    "react": "^19",
+    "react-dom": "^19",
     "sharp": "^0.33.5",
     "yaml": "^2.5.1"
   },
   "devDependencies": {
     "@types/node": "^22",
     "@types/nodemailer": "^6.4.16",
-    "@types/react": "^18",
-    "@types/react-dom": "^18",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.0.2",
+    "eslint-config-next": "15.1.2",
     "eslint-config-prettier": "^9.1.0",
     "postcss": "^8",
-    "prettier": "3.3.3",
+    "prettier": "^3.4.2",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"
   }

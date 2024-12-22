@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 :root {
+  --background: #111111;
   --roboGray: #232323;
   --textColor: #ffffff;
   --roboHotPink: #dd1c8a;
@@ -11,7 +12,7 @@
 
 body {
   color: var(--textColor);
-  background: var(--roboGray);
+  background: var(--background);
   font-family: Montserrat, sans-serif;
 }
 
