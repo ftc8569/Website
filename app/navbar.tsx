@@ -4,88 +4,90 @@ import styles from "@/app/navbar.module.css"
 
 export default function Navbar({
   navbarRef,
-  homeRef,
-  teamRef,
-  programmingRef,
-  mechanicalRef,
-  outreachRef,
-  contactRef
+  homePageRefs
 }: {
-  navbarRef: RefObject<HTMLDivElement | null>
-  homeRef: RefObject<HTMLDivElement | null>
-  teamRef: RefObject<HTMLDivElement | null>
-  programmingRef: RefObject<HTMLDivElement | null>
-  mechanicalRef: RefObject<HTMLDivElement | null>
-  outreachRef: RefObject<HTMLDivElement | null>
-  contactRef: RefObject<HTMLDivElement | null>
+  navbarRef: RefObject<HTMLDivElement | null>,
+  homePageRefs: {
+    homeRef: RefObject<HTMLDivElement | null>
+    teamRef: RefObject<HTMLDivElement | null>
+    programmingRef: RefObject<HTMLDivElement | null>
+    mechanicalRef: RefObject<HTMLDivElement | null>
+    outreachRef: RefObject<HTMLDivElement | null>
+    contactRef: RefObject<HTMLDivElement | null>
+  } | null
 }) {
   const [current, setCurrent] = useState(0)
   const [background, setBackground] = useState(false) // false = transparent, true = blurry
 
   useEffect(() => {
+    if (!homePageRefs) setCurrent(6)
     let offset = 0
     if (navbarRef.current) {
       const rect = navbarRef.current.getBoundingClientRect()
       offset = rect.height + 10
     }
+
     const handleScroll = () => {
       const position = window.scrollY
 
       if(position > 0) setBackground(true)
       else setBackground(false)
 
+      if (!homePageRefs) return
+      const { homeRef, teamRef, programmingRef, mechanicalRef, outreachRef, contactRef } = homePageRefs
+
       /*
       This is the most cooked code I have ever written
       TODO: Fix whatever this is when in a state of clear thinking
-       */
+     */
       if (
         homeRef.current &&
         position <=
-          homeRef.current.getBoundingClientRect().bottom + position - offset
+        homeRef.current.getBoundingClientRect().bottom + position - offset
       )
         setCurrent(0)
       else if (
         homeRef.current &&
         position >
-          homeRef.current.getBoundingClientRect().bottom + position - offset &&
+        homeRef.current.getBoundingClientRect().bottom + position - offset &&
         teamRef.current &&
         position <=
-          teamRef.current.getBoundingClientRect().bottom + position - offset
+        teamRef.current.getBoundingClientRect().bottom + position - offset
       )
         setCurrent(1)
       else if (
         teamRef.current &&
         position >
-          teamRef.current.getBoundingClientRect().bottom + position - offset &&
+        teamRef.current.getBoundingClientRect().bottom + position - offset &&
         programmingRef.current &&
         position <=
-          programmingRef.current.getBoundingClientRect().bottom +
-            position -
-            offset
+        programmingRef.current.getBoundingClientRect().bottom +
+        position -
+        offset
       )
         setCurrent(2)
       else if (
         programmingRef.current &&
         position >
-          programmingRef.current.getBoundingClientRect().bottom +
-            position -
-            offset &&
+        programmingRef.current.getBoundingClientRect().bottom +
+        position -
+        offset &&
         mechanicalRef.current &&
         position <=
-          mechanicalRef.current.getBoundingClientRect().bottom +
-            position -
-            offset
+        mechanicalRef.current.getBoundingClientRect().bottom +
+        position -
+        offset
       )
         setCurrent(3)
       else if (
         mechanicalRef.current &&
         position >
-          mechanicalRef.current.getBoundingClientRect().bottom +
-            position -
-            offset &&
+        mechanicalRef.current.getBoundingClientRect().bottom +
+        position -
+        offset &&
         outreachRef.current &&
         position <=
-          outreachRef.current.getBoundingClientRect().bottom + position - offset
+        outreachRef.current.getBoundingClientRect().bottom + position - offset
       )
         setCurrent(4)
       else setCurrent(5)
@@ -96,11 +98,7 @@ export default function Navbar({
   }, [
     current,
     navbarRef,
-    homeRef,
-    teamRef,
-    programmingRef,
-    mechanicalRef,
-    outreachRef
+    homePageRefs
   ])
 
   return (
@@ -126,29 +124,34 @@ export default function Navbar({
           current: HTMLDivElement | null = null
         }} />
         <NavbarItem
+          title={"Blog"}
+          current={current == 6}
+          ref={null}
+        />
+        <NavbarItem
           title={"Team"}
           current={current == 1}
-          ref={teamRef}
+          ref={homePageRefs ? homePageRefs.teamRef : null}
         />
         <NavbarItem
           title={"Programming"}
           current={current == 2}
-          ref={programmingRef}
+          ref={homePageRefs ? homePageRefs.programmingRef : null}
         />
         <NavbarItem
           title={"Mechanical"}
           current={current == 3}
-          ref={mechanicalRef}
+          ref={homePageRefs ? homePageRefs.mechanicalRef : null}
         />
         <NavbarItem
           title={"Outreach"}
           current={current == 4}
-          ref={outreachRef}
+          ref={homePageRefs ? homePageRefs.outreachRef : null}
         />
         <NavbarItem
           title={"Contact Us"}
           current={current == 5}
-          ref={contactRef}
+          ref={homePageRefs ? homePageRefs.contactRef : null}
         />
       </div>
     </div>
@@ -162,15 +165,27 @@ function NavbarItem({
 }: {
   title: string
   current: boolean
-  ref: RefObject<HTMLDivElement | null>
+  ref: RefObject<HTMLDivElement | null> | null
 }) {
-  return (
-    <button onClick={
-      () => scroll({
+
+  const handleClick = () => {
+
+    if(!ref) {
+      if(title == "Blog" && !current) {
+        window.location.href = "/blog"
+      } else if(title == "Home") window.location.href = "/"
+      else window.location.href = "/#" + title.toLowerCase().replace(" ", "-")
+    } else if(title == "Home" && window.location.pathname == "/blog") window.location.href = "/"
+    else {
+      scroll({
         top: (ref.current != null ? ref.current.offsetTop : 0) + 1,
         behavior: "smooth"
       })
-    }>
+    }
+  }
+
+  return (
+    <button onClick={handleClick}>
       <p
         className={
           "text-xs lg:text-xl my-2 inline float-right " +

@@ -7,7 +7,7 @@ export default function ProgrammingSection({
   divRef: RefObject<HTMLDivElement | null>
 }) {
   return (
-    <div ref={divRef} className="px-5 lg:px-36 py-10">
+    <div id={"programming"} ref={divRef} className="px-5 lg:px-36 py-10">
       <div className="flex items-center justify-center">
         <h1 className="inline text-3xl lg:text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">
           Programming Team

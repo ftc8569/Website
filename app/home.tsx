@@ -59,7 +59,7 @@ export default function HomeContent({
             key={number}
             priority
             placeholder={"blur"}
-            blurDataURL={`/robot/1.png`}
+            blurDataURL={`/robot/0001.png`}
           />
         )
         setImages(imgs)
@@ -203,12 +203,14 @@ export default function HomeContent({
   }
 
   const handleBlogClick = () => {
-
+    // goes to /blog
+    window.location.href = "/blog"
   }
 
   return (
     <>
       <div
+        id={"home"}
         className="w-full"
         ref={backgroundRef}
         style={{ height: `calc(100vh - ${offset}px)` }}

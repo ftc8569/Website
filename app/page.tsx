@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Navbar from "@/app/navbar"
 import HomeContent from "@/app/home"
 import Team from "@/app/team"
@@ -23,12 +23,14 @@ export default function Home() {
     <main>
       <Navbar
         navbarRef={navbarRef}
-        homeRef={homeRef}
-        teamRef={teamRef}
-        programmingRef={programmingRef}
-        mechanicalRef={mechanicalRef}
-        outreachRef={outreachRef}
-        contactRef={contactRef}
+        homePageRefs={{
+          homeRef,
+          teamRef,
+          programmingRef,
+          mechanicalRef,
+          outreachRef,
+          contactRef
+        }}
       />
       <HomeContent divRef={homeRef} navbarRef={navbarRef} />
       <Team divRef={teamRef} />

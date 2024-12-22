@@ -20,7 +20,7 @@ export default function Team({
   }, [team])
 
   return (
-    <div className="flex flex-col w-full lg:px-36" ref={divRef}>
+    <div id={"team"} className="flex flex-col w-full lg:px-36" ref={divRef}>
       <div className="flex items-center justify-center">
         <h1 className="inline text-3xl lg:text-4xl p-3 bg-roboPink text-black text-center rounded-2xl mt-2 mb-4">
           Meet Our Team
