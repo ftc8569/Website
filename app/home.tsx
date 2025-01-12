@@ -216,7 +216,7 @@ export default function HomeContent({
         style={{ height: `calc(100vh - ${offset}px)` }}
       >
         <canvas className="" ref={canvasRef} />
-        <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3">
+        <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3 noselect">
           <div className="w-[30rem] bg-stone-900 opacity-95 rounded-lg">
             <div className="flex flex-col p-3">
               <h1 className="text-2xl lg:text-6xl font-thin">8569</h1>

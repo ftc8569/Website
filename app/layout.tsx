@@ -3,6 +3,7 @@ import "./globals.css"
 import { ReCaptchaProvider } from "next-recaptcha-v3"
 import type { Viewport } from 'next'
 import { ReactNode } from "react"
+import { SessionProvider } from "next-auth/react"
 
 export const viewport: Viewport = {
   colorScheme: 'only light'
