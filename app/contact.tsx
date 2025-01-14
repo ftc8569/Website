@@ -49,7 +49,11 @@ export default function ContactUs({
   )
 
   return (
-    <div id={"contact-us"} className="py-10 bg-[#151515] px-2 lg:px-56" ref={divRef}>
+    <div
+      id={"contact-us"}
+      className="py-10 bg-[#151515] px-2 lg:px-56"
+      ref={divRef}
+    >
       <div className="flex items-center justify-center pb-5">
         <h1 className="inline text-3xl lg:text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">
           Contact Us

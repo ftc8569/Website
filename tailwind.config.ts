@@ -14,10 +14,10 @@ const config: Config = {
         roboPink: "var(--roboPink)"
       },
       spacing: {
-        '1/12': 100/12 + '%',
+        "1/12": 100 / 12 + "%"
       },
       translate: {
-        '1/12': 100/12 + '%',
+        "1/12": 100 / 12 + "%"
       }
     }
   },

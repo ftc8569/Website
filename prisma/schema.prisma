@@ -18,9 +18,14 @@ model BlogPost {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   title     String   @db.VarChar(255)
-  content   String?
-  published Boolean  @default(false)
-  author    User     @relation(fields: [userId], references: [id])
+
+  content String?
+
+  manualOverride Boolean @default(false)
+  manualId       Int?    @unique
+
+  published Boolean @default(false)
+  author    User    @relation(fields: [userId], references: [id])
   userId    Int
 }
 

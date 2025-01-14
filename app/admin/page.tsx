@@ -1,28 +1,16 @@
-"use client";
+"use server"
 
-import { SessionProvider, signIn, useSession } from "next-auth/react"
-import AdminApp from "@/app/admin/adminApp"
+import { getServerSession } from "next-auth"
+import { authOptions } from "../api/auth/[...nextauth]/route"
+import Admin from "./adminApp"
+import { redirect } from "next/navigation"
 
-export default function Wrapper() {
+export default async function Wrapper() {
+  const session = await getServerSession(authOptions)
 
-  return (
-    <SessionProvider>
-      <Admin />
-    </SessionProvider>
-  )
-}
-
-export function Admin() {
-
-  const { data: session } = useSession();
-
-  return (
-    <div>
-      {
-        session?.user != null ?
-          <AdminApp user={session?.user} /> :
-          <button onClick={() => signIn()}>Sign in</button>
-      }
-    </div>
-  )
+  if (session) {
+    return <Admin />
+  } else {
+    redirect("/api/auth/signin?callbackUrl=/admin")
+  }
 }

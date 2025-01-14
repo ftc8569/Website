@@ -12,27 +12,30 @@ export async function POST(req: Request) {
     .then((res) => res.json())
     .then((res) => res.success)
 
-  if(!valid) return new Response(null, { status: 403 })
+  if (!valid) return new Response(null, { status: 403 })
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth: {
       user: process.env.CONTACT_EMAIL,
-      pass: process.env.CONTACT_PASSWORD,
-    },
+      pass: process.env.CONTACT_PASSWORD
+    }
   })
 
   const message: MailOptions = {
     from: data.email,
     to: process.env.CONTACT_EMAIL,
     envelope: {
-      from: 'Contact Us <bedson26t@ncssm.edu>',
+      from: "Contact Us <bedson26t@ncssm.edu>",
       to: process.env.CONTACT_EMAIL,
       cc: data.email
     },
-    subject: 'Contact Us: ' + data.subject,
-    html: readFileSync("./email.html", "utf-8").replace("${message}", data.entry)
+    subject: "Contact Us: " + data.subject,
+    html: readFileSync("./email.html", "utf-8").replace(
+      "${message}",
+      data.entry
+    )
   }
 
   transporter.sendMail(message, (err) => {

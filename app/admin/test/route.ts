@@ -1,8 +1,10 @@
-import { PrismaClient } from "@prisma/client";
-import * as argon2 from "argon2";
+import { PrismaClient } from "@prisma/client"
+import * as argon2 from "argon2"
 
 export async function GET(req: Request) {
   /*const prisma = new PrismaClient()
+
+  console.log(process.env.MYPASS)
 
   const password = await argon2.hash(process.env.MYPASS as string)
 

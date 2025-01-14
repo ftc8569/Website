@@ -22,6 +22,15 @@ _The Nextjs README below has been kept for information on running the app_
 
 ---
 
+## Important information to run the app
+
+The app needs a database to run, this must be configured to persist during deplopyment but for development
+it can be run locally. The command below will start a database to run locally for testing.
+
+`docker run --name roboknights-db -p 5432:5432 -e POSTGRES_PASSWORD=temporarypass -e POSTGRES_DB=blog -e POSTGRES_USER=web -d postgres`
+
+---
+
 ## Getting Started
 
 First, run the development server:

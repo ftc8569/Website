@@ -6,7 +6,7 @@ export default function Navbar({
   navbarRef,
   homePageRefs
 }: {
-  navbarRef: RefObject<HTMLDivElement | null>,
+  navbarRef: RefObject<HTMLDivElement | null>
   homePageRefs: {
     homeRef: RefObject<HTMLDivElement | null>
     teamRef: RefObject<HTMLDivElement | null>
@@ -30,11 +30,18 @@ export default function Navbar({
     const handleScroll = () => {
       const position = window.scrollY
 
-      if(position > 0) setBackground(true)
+      if (position > 0) setBackground(true)
       else setBackground(false)
 
       if (!homePageRefs) return
-      const { homeRef, teamRef, programmingRef, mechanicalRef, outreachRef, contactRef } = homePageRefs
+      const {
+        homeRef,
+        teamRef,
+        programmingRef,
+        mechanicalRef,
+        outreachRef,
+        contactRef
+      } = homePageRefs
 
       /*
       This is the most cooked code I have ever written
@@ -43,51 +50,51 @@ export default function Navbar({
       if (
         homeRef.current &&
         position <=
-        homeRef.current.getBoundingClientRect().bottom + position - offset
+          homeRef.current.getBoundingClientRect().bottom + position - offset
       )
         setCurrent(0)
       else if (
         homeRef.current &&
         position >
-        homeRef.current.getBoundingClientRect().bottom + position - offset &&
+          homeRef.current.getBoundingClientRect().bottom + position - offset &&
         teamRef.current &&
         position <=
-        teamRef.current.getBoundingClientRect().bottom + position - offset
+          teamRef.current.getBoundingClientRect().bottom + position - offset
       )
         setCurrent(1)
       else if (
         teamRef.current &&
         position >
-        teamRef.current.getBoundingClientRect().bottom + position - offset &&
+          teamRef.current.getBoundingClientRect().bottom + position - offset &&
         programmingRef.current &&
         position <=
-        programmingRef.current.getBoundingClientRect().bottom +
-        position -
-        offset
+          programmingRef.current.getBoundingClientRect().bottom +
+            position -
+            offset
       )
         setCurrent(2)
       else if (
         programmingRef.current &&
         position >
-        programmingRef.current.getBoundingClientRect().bottom +
-        position -
-        offset &&
+          programmingRef.current.getBoundingClientRect().bottom +
+            position -
+            offset &&
         mechanicalRef.current &&
         position <=
-        mechanicalRef.current.getBoundingClientRect().bottom +
-        position -
-        offset
+          mechanicalRef.current.getBoundingClientRect().bottom +
+            position -
+            offset
       )
         setCurrent(3)
       else if (
         mechanicalRef.current &&
         position >
-        mechanicalRef.current.getBoundingClientRect().bottom +
-        position -
-        offset &&
+          mechanicalRef.current.getBoundingClientRect().bottom +
+            position -
+            offset &&
         outreachRef.current &&
         position <=
-        outreachRef.current.getBoundingClientRect().bottom + position - offset
+          outreachRef.current.getBoundingClientRect().bottom + position - offset
       )
         setCurrent(4)
       else setCurrent(5)
@@ -95,18 +102,16 @@ export default function Navbar({
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [
-    current,
-    navbarRef,
-    homePageRefs
-  ])
+  }, [current, navbarRef, homePageRefs])
 
   return (
     <div
       className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full justify-between
       items-center px-4 py-1 z-[2] transition-all duration-[750ms]"
       ref={navbarRef}
-      style={{background: background ? "rgba(39,39,39,0.98)" : "rgba(0,0,0,0)"}}
+      style={{
+        background: background ? "rgba(39,39,39,0.98)" : "rgba(0,0,0,0)"
+      }}
     >
       <div className="hidden lg:flex flex-row">
         <Image
@@ -119,15 +124,16 @@ export default function Navbar({
         <h1 className="text-4xl font-semibold pl-4">RoboKnights</h1>
       </div>
       <div className="flex flex-row flex-wrap space-x-2 lg:space-x-8">
-        <NavbarItem title={"Home"} current={current == 0} ref={
-          new class implements React.RefObject<HTMLDivElement | null> {
-          current: HTMLDivElement | null = null
-        }} />
         <NavbarItem
-          title={"Blog"}
-          current={current == 6}
-          ref={null}
+          title={"Home"}
+          current={current == 0}
+          ref={
+            new (class implements React.RefObject<HTMLDivElement | null> {
+              current: HTMLDivElement | null = null
+            })()
+          }
         />
+        <NavbarItem title={"Blog"} current={current == 6} ref={null} />
         <NavbarItem
           title={"Team"}
           current={current == 1}
@@ -167,15 +173,14 @@ function NavbarItem({
   current: boolean
   ref: RefObject<HTMLDivElement | null> | null
 }) {
-
   const handleClick = () => {
-
-    if(!ref) {
-      if(title == "Blog" && !current) {
+    if (!ref) {
+      if (title == "Blog" && !current) {
         window.location.href = "/blog"
-      } else if(title == "Home") window.location.href = "/"
+      } else if (title == "Home") window.location.href = "/"
       else window.location.href = "/#" + title.toLowerCase().replace(" ", "-")
-    } else if(title == "Home" && window.location.pathname == "/blog") window.location.href = "/"
+    } else if (title == "Home" && window.location.pathname == "/blog")
+      window.location.href = "/"
     else {
       scroll({
         top: (ref.current != null ? ref.current.offsetTop : 0) + 1,
