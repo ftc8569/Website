@@ -5,7 +5,7 @@ import { useRef } from "react"
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 import blogs, { BlogItem } from "@/app/blog/blogs"
 import Image from "next/image"
-import "@/app/blog/blog.module.css"
+import styles from "@/app/blog/blog.module.css"
 
 export default function Blog() {
   const navbarRef = useRef<HTMLDivElement | null>(null)
@@ -40,8 +40,8 @@ export default function Blog() {
 function BlogCard({ data }: { data: BlogItem }) {
   return (
     <button onClick={() => window.open("/blog/" + data.id)}>
-      <div className="bg-stone-900 rounded-2xl card" >
-        <Image src={data.image} alt={"Blog Image"} width={1000} height={600} />
+      <div className={`bg-stone-900 rounded-2xl ${styles.card}`} >
+        <Image src={data.image} alt={"Blog Image"} className={`rounded-t-2xl`} width={1000} height={600} />
         <div className="py-5 px-3 text-left">
           <h1 className="text-3xl font-semibold pb-2">{data.title}</h1>
           <h1>{data.description}</h1>

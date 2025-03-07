@@ -1,6 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
 
 :root {
   --background: #111111;
@@ -10,10 +8,19 @@
   --roboPink: #e383b6;
 }
 
+@theme {
+  --color-roboHotPink: #dd1c8a;
+  --color-roboPink: #e383b6;
+}
+
 body {
   color: var(--textColor);
   background: var(--background);
   font-family: Montserrat, sans-serif;
+}
+
+button {
+  cursor: pointer;
 }
 
 .grecaptcha-badge {

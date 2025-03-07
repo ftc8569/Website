@@ -233,7 +233,7 @@ export default function HomeContent({
         <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3 noselect">
           <div className="w-[30rem] bg-stone-900 opacity-95 rounded-lg">
             <div className="flex flex-col p-3">
-              <h1 className="text-2xl lg:text-6xl font-thin">8569</h1>
+              <h1 className="text-2xl lg:text-6xl font-thin pl-2">8569</h1>
               <h1 className="text-4xl lg:text-5xl p-2 lg:p-3 bg-roboPink text-black rounded-2xl w-min mt-1 mb-4">
                 RoboKnights
               </h1>
