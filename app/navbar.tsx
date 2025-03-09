@@ -46,6 +46,7 @@ export default function Navbar({
       /*
       This is the most cooked code I have ever written
       TODO: Fix whatever this is when in a state of clear thinking
+      03/09/2025 - Bruh
      */
       if (
         homeRef.current &&
@@ -179,7 +180,7 @@ function NavbarItem({
         window.location.href = "/blog"
       } else if (title == "Home") window.location.href = "/"
       else window.location.href = "/#" + title.toLowerCase().replace(" ", "-")
-    } else if (title == "Home" && window.location.pathname == "/blog")
+    } else if (title == "Home" && window.location.pathname.startsWith("/blog"))
       window.location.href = "/"
     else {
       scroll({

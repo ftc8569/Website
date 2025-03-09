@@ -1,4 +1,4 @@
-import { JSX, RefObject, useEffect, useRef, useState } from "react"
+import { JSX, RefObject, useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 
 export default function HomeContent({
@@ -10,9 +10,16 @@ export default function HomeContent({
 }) {
   const [images, setImages] = useState<JSX.Element[]>([])
   const [offset, setOffset] = useState(0)
+  const [viewportWidth, setViewportWidth] = useState<number | null>(null)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const backgroundRef = useRef<HTMLDivElement | null>(null)
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setViewportWidth(window.visualViewport ? window.visualViewport.width : null)
+    }
+  }, [])
 
   useEffect(() => {
     if (navbarRef.current != null)
@@ -23,10 +30,10 @@ export default function HomeContent({
       let num =
         Math.floor(
           ((window.scrollY -
-            backgroundRef.current.getBoundingClientRect().bottom -
-            300) *
+              backgroundRef.current.getBoundingClientRect().bottom -
+              300) *
             320) /
-            divRef.current.getBoundingClientRect().height
+          divRef.current.getBoundingClientRect().height
         ) + 1
       if (num < 1) num = 1
       if (num > 320) num = 320
@@ -44,7 +51,7 @@ export default function HomeContent({
 
   useEffect(() => {
     const imgs: JSX.Element[] = []
-    if (window.visualViewport && window.visualViewport.width < 1024) return
+    if (viewportWidth && viewportWidth < 1024) return
     setTimeout(async () => {
       for (let i = 1; i <= 320; i++) {
         let number = i.toString()
@@ -69,7 +76,7 @@ export default function HomeContent({
         setImages(imgs)
       }
     }, 2000)
-  }, [images])
+  }, [])
 
   useEffect(() => {
     if (!canvasRef.current || !backgroundRef.current || !navbarRef.current)
@@ -246,8 +253,8 @@ export default function HomeContent({
                 {[
                   { text: "Contact Us", func: handleContactUsClick },
                   { text: "Blog", func: handleBlogClick }
-                ].map(({ text, func }) => (
-                  <button onClick={func}>
+                ].map(({ text, func }, index) => (
+                  <button key={index} onClick={func}>
                     <div className="flex flex-row p-3 bg-roboHotPink rounded-xl gap-x-1 align-middle">
                       <h1 className="text-2xl">{text}</h1>
                       <Image
