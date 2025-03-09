@@ -109,7 +109,7 @@ export default function HomeContent({
       type: 'init',
       width: canvas.width,
       height: canvas.height,
-      numDots: 150
+      numDots: 200
     });
 
     worker.onmessage = (e) => {

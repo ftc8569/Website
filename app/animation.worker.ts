@@ -3,6 +3,8 @@ let width = 0;
 let height = 0;
 let mouse = { x: 0, y: 0 };
 const connectionRadius = 150;
+const mouseRadius = 150;
+const speedFactor = 1;
 
 export interface Dot {
   x: number;
@@ -52,8 +54,8 @@ function initializeDots(numDots: number) {
     dots.push({
       x: Math.random() * width,
       y: Math.random() * height,
-      dx: (Math.random() - 0.5) * 0.5,
-      dy: (Math.random() - 0.5) * 0.5,
+      dx: (Math.random() - 0.5) * speedFactor,
+      dy: (Math.random() - 0.5) * speedFactor,
       radius: Math.floor(Math.random() * 3) + 1
     });
   }
@@ -72,8 +74,8 @@ function handleClick(x: number, y: number) {
     dots.push({
       x: x + (Math.random() - 0.5),
       y: y + (Math.random() - 0.5),
-      dx: (Math.random() - 0.5) * 0.5,
-      dy: (Math.random() - 0.5) * 0.5,
+      dx: (Math.random() - 0.5) * speedFactor,
+      dy: (Math.random() - 0.5) * speedFactor,
       radius: Math.floor(Math.random() * 3) + 1
     });
   }
@@ -94,10 +96,9 @@ function updatePositions() {
     let dy = dot.y - mouse.y;
     let distanceToMouse = Math.sqrt(dx * dx + dy * dy);
 
-    let radius = 120;
-    if (distanceToMouse < radius) {
+    if (distanceToMouse < mouseRadius) {
       let repulse = Math.min(
-        Math.max(80 * (-1 * Math.pow(distanceToMouse / radius, 2) + 1), 0),
+        Math.max(80 * (-1 * Math.pow(distanceToMouse / mouseRadius, 2) + 1), 0),
         40
       );
       dot.x += (dx / distanceToMouse) * repulse;
