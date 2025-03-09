@@ -240,7 +240,30 @@ export default function HomeContent({
         <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3 noselect">
           <div className="w-[30rem] bg-stone-900 opacity-95 rounded-lg">
             <div className="flex flex-col p-3">
-              <h1 className="text-2xl lg:text-6xl font-thin pl-2">8569</h1>
+              <div className={`flex flex-row-reverse gap-x-2 w-full`}>
+                <Image
+                  src={`/icons/github.svg`}
+                  alt="GitHub"
+                  className={`hover:cursor-pointer`}
+                  onClick={() => window.open("https://github.com/ftc8569")}
+                  width={40}
+                  height={40} />
+                <Image
+                  src={`/icons/linkedin.svg`}
+                  alt="LinkedIn"
+                  className={`hover:cursor-pointer`}
+                  onClick={() => window.open("https://www.linkedin.com/company/ftc8569")}
+                  width={50}
+                  height={50} />
+                <Image
+                  src={`/icons/instagram.svg`}
+                  alt="Instagram"
+                  className={`hover:cursor-pointer`}
+                  onClick={() => window.open("https://www.instagram.com/roboknights8569/")}
+                  width={50}
+                  height={50} />
+                <h1 className="text-2xl lg:text-6xl mr-auto font-thin pl-2">8569</h1>
+              </div>
               <h1 className="text-4xl lg:text-5xl p-2 lg:p-3 bg-roboPink text-black rounded-2xl w-min mt-1 mb-4">
                 RoboKnights
               </h1>

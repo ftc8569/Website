@@ -39,27 +39,28 @@ export default function Footer({
           </h1>
         </div>
         <div className="flex-1 w-0 lg:w-full"></div>
-        <div className="flex-1 flex flex-row justify-end">
-          <a
-            href="https://www.instagram.com/roboknights8569/"
-            target="_blank"
-            className="pr-3"
-          >
-            <Image
-              src="/icons/instagram.svg"
-              alt="Instagram Icon"
-              width={800 / 16}
-              height={800 / 16}
-            />
-          </a>
-          <a href="https://github.com/ftc8569" target="_blank" className="pr-3">
-            <Image
-              src="/icons/github.svg"
-              alt="Github Icon"
-              width={800 / 16}
-              height={800 / 16}
-            />
-          </a>
+        <div className="flex-1 flex flex-row gap-x-2 justify-end">
+          <Image
+            src={`/icons/github.svg`}
+            alt="GitHub"
+            className={`hover:cursor-pointer`}
+            onClick={() => window.open("https://github.com/ftc8569")}
+            width={40}
+            height={40} />
+          <Image
+            src={`/icons/linkedin.svg`}
+            alt="LinkedIn"
+            className={`hover:cursor-pointer`}
+            onClick={() => window.open("https://www.linkedin.com/company/ftc8569")}
+            width={50}
+            height={50} />
+          <Image
+            src={`/icons/instagram.svg`}
+            alt="Instagram"
+            className={`hover:cursor-pointer`}
+            onClick={() => window.open("https://www.instagram.com/roboknights8569/")}
+            width={50}
+            height={50} />
         </div>
       </div>
     </div>
