@@ -1,5 +1,7 @@
-import { JSX, RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { RefObject, useEffect, useRef, useState } from "react"
 import Image from "next/image"
+import { Connection, Dot } from "@/app/animation.worker"
+import RobotAnimation from "@/app/robotAnimation"
 
 export default function HomeContent({
   divRef,
@@ -8,18 +10,11 @@ export default function HomeContent({
   divRef: RefObject<HTMLDivElement | null>
   navbarRef: RefObject<HTMLDivElement | null>
 }) {
-  const [images, setImages] = useState<JSX.Element[]>([])
   const [offset, setOffset] = useState(0)
-  const [viewportWidth, setViewportWidth] = useState<number | null>(null)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const backgroundRef = useRef<HTMLDivElement | null>(null)
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setViewportWidth(window.visualViewport ? window.visualViewport.width : null)
-    }
-  }, [])
+  const animationRef = useRef<number | null>(null);
 
   useEffect(() => {
     if (navbarRef.current != null)
@@ -50,183 +45,89 @@ export default function HomeContent({
   }, [divRef])
 
   useEffect(() => {
-    const imgs: JSX.Element[] = []
-    if (viewportWidth && viewportWidth < 1024) return
-    setTimeout(async () => {
-      for (let i = 1; i <= 320; i++) {
-        let number = i.toString()
-        if (number.length == 1) number = `000${number}`
-        else if (number.length == 2) number = `00${number}`
-        else if (number.length == 3) number = `0${number}`
-        imgs.push(
-          <Image
-            src={`/robot/${number}.png`}
-            alt={"Robot Render LOL"}
-            width={1920}
-            height={1920}
-            className="sticky top-20 z-[-1]"
-            style={i == 1 ? { display: "block" } : { display: "none" }}
-            id={`robot-${i}`}
-            key={number}
-            priority
-            placeholder={"blur"}
-            blurDataURL={`/robot/0001.png`}
-          />
-        )
-        setImages(imgs)
-      }
-    }, 2000)
-  }, [])
-
-  useEffect(() => {
-    if (!canvasRef.current || !backgroundRef.current || !navbarRef.current)
-      return
-    const canvas = canvasRef.current
+    if (!canvasRef.current || !backgroundRef.current || !navbarRef.current) return;
+    const canvas = canvasRef.current;
+    const ctx = canvas.getContext('2d');
+    if(!ctx) return
 
     canvas.width = backgroundRef.current.clientWidth
     canvas.height =
       backgroundRef.current.clientHeight -
       navbarRef.current.getBoundingClientRect().height
 
-    const context = canvas.getContext("2d")
-    if (!context) return
+    const worker = new Worker(new URL('./animation.worker.ts', import.meta.url));
 
-    let mouse = { x: 0, y: 0 }
+    worker.postMessage({
+      type: 'init',
+      width: canvas.width,
+      height: canvas.height,
+      numDots: 200
+    });
 
-    window.addEventListener("mousemove", (event) => {
-      const rect = canvas.getBoundingClientRect()
-      mouse.x = event.clientX - rect.left
-      mouse.y = event.clientY - rect.top
-    })
+    worker.onmessage = (e) => {
+      const { dots, connections } = e.data;
 
-    let dots: any[] = []
-    let numDots = 200
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    window.addEventListener("click", (event) => {
-      const rect = canvas.getBoundingClientRect()
-      const mouseX = event.clientX - rect.left
-      const mouseY = event.clientY - rect.top
+      dots.forEach((dot: Dot) => {
+        ctx.beginPath();
+        ctx.arc(dot.x, dot.y, dot.radius, 0, Math.PI * 2);
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fill();
+        ctx.closePath();
+      });
 
-      let num = 3 // Setting this to the variable numDots is fun
-      if (
-        mouseX >= 0 &&
-        mouseX <= canvas.width &&
-        mouseY >= 0 &&
-        mouseY <= canvas.height
-      ) {
-        for (let i = 0; i < num; i++) {
-          let rand = Math.floor(Math.random() * numDots)
-          dots.splice(rand, 1)
-        }
-        for (let i = 0; i < num; i++) {
-          dots.push({
-            x: mouseX + (Math.random() - 0.5),
-            y: mouseY + (Math.random() - 0.5),
-            dx: Math.random() - 0.5,
-            dy: Math.random() - 0.5,
-            radius: Math.floor(Math.random() * 4)
-          })
-        }
-      }
-    })
+      connections.forEach((conn: Connection) => {
+        ctx.beginPath();
+        ctx.strokeStyle = `rgba(250,45,161,${conn.opacity})`;
+        ctx.moveTo(conn.x1, conn.y1);
+        ctx.lineTo(conn.x2, conn.y2);
+        ctx.stroke();
+        ctx.closePath();
+      });
+    };
 
-    for (let i = 0; i < numDots; i++) {
-      dots.push({
-        x: Math.random() * canvas.width,
-        y: Math.random() * canvas.height,
-        dx: Math.random() - 0.5,
-        dy: Math.random() - 0.5,
-        radius: Math.floor(Math.random() * 4)
-      })
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      worker.postMessage({
+        type: 'mouseMove',
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
     }
 
-    function draw() {
-      if (!context) return
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
 
-      context.clearRect(0, 0, canvas.width, canvas.height)
-
-      for (let i = 0; i < dots.length; i++) {
-        let l1 = dots[i]
-
-        context.beginPath()
-        context.arc(l1.x, l1.y, l1.radius, 0, Math.PI * 2, false)
-        context.stroke()
-        context.fillStyle = "#FFFFFF"
-        context.fill()
-        context.closePath()
-
-        for (let j = 0; j < dots.length; j++) {
-          let l2 = dots[j]
-          let dx = l1.x - l2.x
-          let dy = l1.y - l2.y
-          let distSquared = dx * dx + dy * dy
-          if (distSquared < 150 * 150) {
-            let dist = Math.sqrt(distSquared)
-            let opacity = Math.min(0.4, 0.4 - dist / (1 / 0.4) / 150)
-            if (opacity > 0) {
-              context.strokeStyle = "rgba(250,45,161," + opacity + ")"
-              context.lineWidth = 1
-
-              context.beginPath()
-              context.moveTo(l1.x, l1.y)
-              context.lineTo(l2.x, l2.y)
-              context.stroke()
-              context.closePath()
-            }
-          }
-        }
-      }
-    }
-
-    function update() {
-      for (let i = 0; i < dots.length; i++) {
-        let s = dots[i]
-
-        if (s.x < 0 || s.x > canvas.width) s.dx = -s.dx
-        if (s.y < 0 || s.y > canvas.height) s.dy = -s.dy
-        s.x += s.dx
-        s.y += s.dy
-
-        let dx = s.x - mouse.x
-        let dy = s.y - mouse.y
-        let distanceToMouse = Math.sqrt(dx * dx + dy * dy)
-
-        let radius = 150
-        if (distanceToMouse < radius) {
-          let repulse = Math.min(
-            Math.max(100 * (-1 * Math.pow(distanceToMouse / radius, 2) + 1), 0),
-            50
-          )
-          s.x += (dx / distanceToMouse) * repulse
-          s.y += (dy / distanceToMouse) * repulse
-
-          if (s.x < 0) s.x = 0
-          else if (s.x > canvas.width) s.x = canvas.width
-          if (s.y < 0) s.y = 0
-          else if (s.y > canvas.height) s.y = canvas.height
-        }
-      }
-      draw()
-    }
+    canvas.addEventListener('click', (e) => {
+      const rect = canvas.getBoundingClientRect();
+      worker.postMessage({
+        type: 'click',
+        x: e.clientX - rect.left,
+        y: e.clientY - rect.top
+      });
+    });
 
     function animate() {
-      if (!context) return
-      requestAnimationFrame(animate)
-      update()
+      worker.postMessage({ type: 'animate' });
+      animationRef.current = requestAnimationFrame(animate);
     }
 
-    animate()
-  }, [canvasRef, backgroundRef])
+    animate();
 
-  const handleContactUsClick = () => {
-    // Scrolls to the bottom of the page
+    return () => {
+      if (animationRef.current) {
+        cancelAnimationFrame(animationRef.current);
+      }
+      worker.terminate();
+      window.removeEventListener('mousemove', handleMouseMove);
+    };
+  }, []);
+
+  const handleContactUsClick = () =>
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
-  }
 
-  const handleBlogClick = () => {
-    // goes to /blog
+  const handleBlogClick = () =>
     window.location.href = "/blog"
-  }
 
   return (
     <>
@@ -351,7 +252,7 @@ export default function HomeContent({
             </p>
           </div>
         </div>
-        <div className="hidden lg:block flex-1">{images}</div>
+        <RobotAnimation />
       </div>
     </>
   )
