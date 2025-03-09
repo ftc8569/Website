@@ -1,6 +1,7 @@
-import { JSX, RefObject, useCallback, useEffect, useRef, useState } from "react"
+import { RefObject, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { Connection, Dot } from "@/app/animation.worker"
+import RobotAnimation from "@/app/robotAnimation"
 
 export default function HomeContent({
   divRef,
@@ -9,19 +10,11 @@ export default function HomeContent({
   divRef: RefObject<HTMLDivElement | null>
   navbarRef: RefObject<HTMLDivElement | null>
 }) {
-  const [images, setImages] = useState<JSX.Element[]>([])
   const [offset, setOffset] = useState(0)
-  const [viewportWidth, setViewportWidth] = useState<number | null>(null)
 
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const backgroundRef = useRef<HTMLDivElement | null>(null)
   const animationRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    if (typeof window !== "undefined") {
-      setViewportWidth(window.visualViewport ? window.visualViewport.width : null)
-    }
-  }, [])
 
   useEffect(() => {
     if (navbarRef.current != null)
@@ -50,47 +43,6 @@ export default function HomeContent({
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
   }, [divRef])
-
-  useEffect(() => {
-    if (viewportWidth && viewportWidth < 1024) return
-
-    /*
-    Split this up into chunks to prevent the lag spike
-
-    TODO: Utilize compression to reduce the size of the images
-     */
-
-    const chunks = [[0, 100], [100, 200], [200, 320]]
-
-    for (let i = 0; i < chunks.length; i++) {
-      setTimeout(() => {
-        const imgs: JSX.Element[] = []
-        for (let i = 1; i <= 320; i++) {
-          let number = i.toString()
-          if (number.length == 1) number = `000${number}`
-          else if (number.length == 2) number = `00${number}`
-          else if (number.length == 3) number = `0${number}`
-          imgs.push(
-            <Image
-              src={`/robot/${number}.png`}
-              alt={"Robot Render LOL"}
-              width={1920}
-              height={1920}
-              className="sticky top-20 z-[-1]"
-              style={i == 1 ? { display: "block" } : { display: "none" }}
-              id={`robot-${i}`}
-              key={number}
-              priority
-              placeholder={"blur"}
-              blurDataURL={`/robot/0001.png`}
-            />
-          )
-          setImages([...imgs])
-        }
-      }, i * 1000)
-    }
-
-  }, [])
 
   useEffect(() => {
     if (!canvasRef.current || !backgroundRef.current || !navbarRef.current) return;
@@ -277,7 +229,7 @@ export default function HomeContent({
             </p>
           </div>
         </div>
-        <div className="hidden lg:block flex-1">{images}</div>
+        <RobotAnimation />
       </div>
     </>
   )
