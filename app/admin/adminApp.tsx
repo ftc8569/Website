@@ -3,13 +3,26 @@
 import { SessionProvider, useSession } from "next-auth/react"
 import Image from "next/image"
 import { useState, useRef } from "react"
-import showdown from "showdown"
 import "./markdown.css"
+import markdownit from 'markdown-it'
+import ImageDropAndCrop from "@/app/admin/ImageDropAndCrop"
+import { createCroppedImage } from "@/app/admin/cropUtils"
+import { Area } from "react-easy-crop"
 
 export function AdminApp() {
   const [showBlogEditor, setShowBlogEditor] = useState(true)
+  const [showDropAndCrop, setShowDropAndCrop] = useState(true)
 
   const { data: session } = useSession()
+
+  // Inside your App component
+  const [imageSrc, setImageSrc] = useState<string | null>(null);
+
+  const handleSave = async (croppedAreaPixels: Area, image: string) => {
+    const croppedImage = await createCroppedImage(image, croppedAreaPixels);
+    setShowDropAndCrop(false)
+    setImageSrc(image)
+  };
 
   return (
     <>
@@ -19,69 +32,56 @@ export function AdminApp() {
       >
         <h1 className="text-4xl font-semibold">RoboKnights Admin Panel</h1>
       </div>
-      <div className="p-20">
-        <button className="flex flex-row items-center p-5 bg-blue-500 rounded-2xl">
-          <h1 className="text-3xl pr-3 h-full">Create Blog Post</h1>
+      <div className="p-10">
+        <p className={`text-3xl font-semibold text-stone-100 pb-2`}>Cover Image:</p>
+        <div
+          className={`mb-4 ${imageSrc != null ? "p-2 rounded-md bg-stone-600 w-1/2" : "w-[40rem] bg-white"}`}
+          style={{ height: `${imageSrc != null ? "calc(2*(100vw / 10))" : "20rem"}` }}>
+          { imageSrc &&
+            <Image
+            src={imageSrc!}
+            alt={"Blog Image"}
+            width={1000}
+            height={500}
+          />
+          }
+        </div>
+
+        <button className="flex flex-row items-center p-3 bg-blue-500 rounded-2xl">
+          <h1 className="text-xl pr-3 h-full">Create Blog Post</h1>
           <Image
             src={"/icons/plus-circle.svg"}
             alt={"Create Blog Post"}
-            width={50}
-            height={50}
+            width={35}
+            height={35}
           />
         </button>
       </div>
       {showBlogEditor && <BlogEditor />}
+      {showDropAndCrop && <ImageDropAndCrop
+        aspectRatio={5/2} // Default aspect ratio (width/height)
+        onSave={handleSave}
+        // Optional: customize accepted file types
+        acceptedFileTypes={['image/jpeg', 'image/png']}
+        // Optional: set maximum file size (in bytes)
+        maxFileSize={10 * 1024 * 1024} // 10MB
+      />}
     </>
   )
 }
 
 function BlogEditor() {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const converter = new showdown.Converter()
-  const [text, setText] = useState("")
+  const md = markdownit()
   const [html, setHtml] = useState("")
-  const [textState, setTextState] = useState(true) // true for markdown, false for html
-  const [mdOrHtml, setMdOrHtml] = useState(true) // true for markdown, false for html
-
-  if (textState && !mdOrHtml) {
-    setText(converter.makeHtml(text))
-    if (textareaRef.current)
-      textareaRef.current.value = converter.makeHtml(text)
-    setTextState(false)
-  } else if (!textState && mdOrHtml) {
-    setText(converter.makeMarkdown(text))
-    if (textareaRef.current)
-      textareaRef.current.value = converter.makeMarkdown(text)
-    setTextState(true)
-  }
 
   const onChange = (event: any) => {
-    setText(event.target.value)
-    setHtml(converter.makeHtml(event.target.value))
+    setHtml(md.render(event.target.value))
   }
 
   return (
-    <>
-      <div className="flex flex-row pl-5 gap-x-2">
-        <button
-          className={
-            "px-2 rounded-md" + (mdOrHtml ? " bg-gray-600" : " bg-gray-700")
-          }
-          onClick={() => setMdOrHtml(true)}
-        >
-          <p>Markdown</p>
-        </button>
-        <button
-          className={
-            "px-2 rounded-md" + (mdOrHtml ? " bg-gray-700" : " bg-gray-600")
-          }
-          onClick={() => setMdOrHtml(false)}
-        >
-          <p>HTML</p>
-        </button>
-      </div>
-      <div className="flex flex-row w-full">
-        <div className="w-full p-5">
+    <div className="flex flex-row w-full">
+      <div className="w-full p-5">
           <textarea
             className="bg-stone-900 w-full h-[50rem]"
             id="blogpost"
@@ -89,15 +89,14 @@ function BlogEditor() {
             onChange={onChange}
             ref={textareaRef}
           />
-        </div>
-        <div className="w-full p-5">
-          <div
-            className="markdown"
-            dangerouslySetInnerHTML={{ __html: html }}
-          ></div>
-        </div>
       </div>
-    </>
+      <div className="w-full p-5">
+        <div
+          className="markdown"
+          dangerouslySetInnerHTML={{ __html: html }}
+        ></div>
+      </div>
+    </div>
   )
 }
 

@@ -175,7 +175,7 @@ function NavbarItem({
 }) {
   const handleClick = () => {
     if (!ref) {
-      if (title == "Blog" && !current) {
+      if (title == "Blog") {
         window.location.href = "/blog"
       } else if (title == "Home") window.location.href = "/"
       else window.location.href = "/#" + title.toLowerCase().replace(" ", "-")
@@ -193,10 +193,8 @@ function NavbarItem({
     <button onClick={handleClick}>
       <p
         className={
-          "text-xs lg:text-xl my-2 inline float-right " +
-          styles.currentNav +
-          " " +
-          (current ? styles.currentNavAdded : styles.currentNavRemoved)
+          `text-xs lg:text-xl my-2 inline float-right ${styles.currentNav} 
+          ${(current ? styles.currentNavAdded : styles.currentNavRemoved)}`
         }
       >
         {title}

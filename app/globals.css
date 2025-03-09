@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&display=swap");
 @import 'tailwindcss';
 
 :root {
@@ -11,6 +12,8 @@
 @theme {
   --color-roboHotPink: #dd1c8a;
   --color-roboPink: #e383b6;
+
+  --font-oswald: 'Oswald', sans-serif;
 }
 
 body {
