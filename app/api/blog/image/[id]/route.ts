@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation"
 import { PrismaClient } from "@prisma/client"
 
-export async function GET({ params }: {
+export async function GET(req: Request, { params }: {
   params: Promise<{ id: string }>
 }) {
   const prisma = new PrismaClient()

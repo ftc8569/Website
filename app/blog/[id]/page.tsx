@@ -5,7 +5,8 @@ import MarkdownIt from "markdown-it"
 import BlogWrapper from "@/app/blog/[id]/Blog"
 import { PrismaClient } from "@prisma/client"
 import { uint8ArrayToBase64 } from "@/utils/imageBuffer"
-
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
+import { getServerSession } from "next-auth"
 export default async function BlogPage({ params }: {
   params: Promise<{ id: string }>
 }) {
@@ -21,13 +22,18 @@ export default async function BlogPage({ params }: {
       content: true,
       description: true,
       imageType: true,
-      image: true,
       author: true,
-      createdAt: true
+      createdAt: true,
+      updatedAt: true,
+      published: true
     }
   })
 
   if(blog == null) return notFound()
+  if(!blog.published) {
+    const session = await getServerSession(authOptions)
+    if(session == null) return notFound()
+  }
 
   const clientBlog = {
     id: blog.id.toString(),
@@ -35,14 +41,17 @@ export default async function BlogPage({ params }: {
     readTime: blog.readTime,
     content: blog.content!,
     description: blog.description,
-    image: `data:image/${blog.imageType};base64,${uint8ArrayToBase64(blog.image)}`,
     author: blog.author.firstName + " " + blog.author.lastName,
     authorUrl: null,
-    date: blog.createdAt.toDateString()
+    date: blog.createdAt.toDateString(),
+    updatedAt: blog.updatedAt.toDateString(),
+    published: blog.published
   }
 
   const md = new MarkdownIt()
   const html = md.render(blog.content!)
+
+  console.log(html)
 
   return <BlogWrapper children={
     <div dangerouslySetInnerHTML={{ __html: html }} />

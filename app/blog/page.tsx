@@ -24,7 +24,7 @@ export default function Blog() {
           Where you can hear the minds of great thinkers and doers
         </h1>
       </div>
-      <div>
+      <div className={`pb-20`}>
         <ResponsiveMasonry
           className="px-8 pt-16"
           columnsCountBreakPoints={{ 350: 1, 750: 2, 800: 3 }}
@@ -64,8 +64,9 @@ export interface BlogItem {
   description: string
   author: string
   authorUrl: string | null
-  image: string
   date: string // MM/DD/YYYY
   readTime: string // "X minutes"
   content: string // In markdown
+  updatedAt: string,
+  published: boolean
 }

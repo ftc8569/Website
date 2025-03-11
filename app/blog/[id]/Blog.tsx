@@ -4,6 +4,7 @@ import { ReactNode, useRef } from "react"
 import Navbar from "@/app/navbar"
 import Image from "next/image"
 import { BlogItem } from "@/app/blog/page"
+import "@/app/blog/[id]/markdown.css"
 
 export default function BlogWrapper({ children, blog }: Readonly<{ children: ReactNode, blog: BlogItem }>) {
   const navbarRef = useRef<HTMLDivElement | null>(null)
