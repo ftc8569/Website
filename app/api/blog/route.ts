@@ -3,7 +3,6 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { notFound } from "next/navigation"
 import { PrismaClient } from "@prisma/client"
 import { writeFileSync } from "node:fs"
-import { uint8ArrayToBase64 } from "@/utils/imageBuffer"
 import { BlogItem } from "@/app/blog/page"
 import { NextRequest } from "next/server"
 
@@ -102,7 +101,11 @@ export async function PUT(req: Request) {
     const prisma = new PrismaClient()
     const data = await req.json()
 
-    const { id, title, readTime, content, description, image } = data
+    const { id, ...updateFields } = data
+
+    if (!id) {
+      return new Response(JSON.stringify({ error: "Post ID is required" }), { status: 400 })
+    }
 
     const postId = parseInt(id)
 
@@ -115,48 +118,55 @@ export async function PUT(req: Request) {
       return new Response(JSON.stringify({ error: "Post not found" }), { status: 404 })
     }
 
-    const updateData: any = {
-      title,
-      readTime,
-      content,
-      description,
-    }
+    const updateData: any = {}
 
-    if (image && image !== "") {
-      const imageType = image.split(",")[0].split("/")[1].split(";")[0]
-      const buffer = Buffer.from(image.split(",")[1], "base64")
+    if ('title' in updateFields && updateFields.title !== undefined)
+      updateData.title = updateFields.title
+
+
+    if ('readTime' in updateFields && updateFields.readTime !== undefined)
+      updateData.readTime = updateFields.readTime
+
+
+    if ('content' in updateFields && updateFields.content !== undefined)
+      updateData.content = updateFields.content
+
+
+    if ('description' in updateFields && updateFields.description !== undefined)
+      updateData.description = updateFields.description
+
+
+    if ('published' in updateFields && updateFields.published !== undefined)
+      updateData.published = updateFields.published
+
+    if ('image' in updateFields && updateFields.image && updateFields.image !== "") {
+      const imageType = updateFields.image.split(",")[0].split("/")[1].split(";")[0]
+      const buffer = Buffer.from(updateFields.image.split(",")[1], "base64")
 
       updateData.imageType = imageType
       updateData.image = buffer
     }
 
-    const updatedBlog = await prisma.blogPost.update({
-      where: {
-        id: postId
-      },
-      data: updateData,
-      include: {
-        author: {
-          select: {
-            firstName: true,
-            lastName: true
+    if (Object.keys(updateData).length > 0) {
+      await prisma.blogPost.update({
+        where: {
+          id: postId
+        },
+        data: updateData,
+        include: {
+          author: {
+            select: {
+              firstName: true,
+              lastName: true
+            }
           }
         }
-      }
-    })
+      })
 
-    const formattedBlog = {
-      id: updatedBlog.id.toString(),
-      title: updatedBlog.title,
-      readTime: updatedBlog.readTime,
-      content: updatedBlog.content,
-      description: updatedBlog.description,
-      image: `data:image/${updatedBlog.imageType};base64,${uint8ArrayToBase64(updatedBlog.image)}`,
-      author: `${updatedBlog.author.firstName} ${updatedBlog.author.lastName}`,
-      date: updatedBlog.createdAt.toDateString()
+      return new Response("Blog updated successfully", { status: 200 })
+    } else {
+      return new Response(JSON.stringify({ message: "No fields to update" }), { status: 200 })
     }
-
-    return new Response(JSON.stringify(formattedBlog), { status: 200 })
   } catch (error: any) {
     console.error("Error updating blog post:", error)
     return new Response(

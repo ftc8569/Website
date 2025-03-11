@@ -8,31 +8,16 @@ import markdownit from 'markdown-it'
 import ImageDropAndCrop from "@/app/admin/ImageDropAndCrop"
 import { createCroppedImage } from "@/utils/cropUtils"
 import { Area } from "react-easy-crop"
-
-// Define the blog item type
-interface BlogItem {
-  id: string;
-  title: string;
-  readTime: string;
-  content: string;
-  description: string;
-  image: string;
-  author: string;
-  authorUrl: string | null;
-  date: string;
-  updatedAt: string;
-  published?: boolean; // Assuming there's a published field, might need to be added to your API
-}
+import { BlogItem } from "@/app/blog/page"
 
 export function AdminApp() {
   const [showBlogEditor, setShowBlogEditor] = useState(false)
   const [blogs, setBlogs] = useState<BlogItem[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [updateBlogs, setUpdateBlogs] = useState(false) // Just a toggle to update state
+  const [editingBlog, setEditingBlog] = useState<BlogItem | null>(null)
 
-  const { data: session } = useSession()
-
-  // Fetch blogs on component mount
   useEffect(() => {
     const fetchBlogs = async () => {
       try {
@@ -51,21 +36,33 @@ export function AdminApp() {
     };
 
     fetchBlogs();
-  }, []);
+  }, [updateBlogs]);
 
   const handleDeleteBlog = (id: string) => {
-    // Placeholder for delete functionality
-    console.log('Delete blog with id:', id);
+    if (confirm("Are you sure you want to delete this blog post?")) {
+      fetch("/api/blog?id=" + id, {
+        method: "DELETE"
+      }).then(() => setUpdateBlogs(prev => !prev))
+    }
   };
 
   const handleEditBlog = (id: string) => {
-    // Placeholder for edit functionality
-    console.log('Edit blog with id:', id);
+    // Find the blog post by ID
+    const blogToEdit = blogs.find(blog => blog.id === id);
+
+    if (blogToEdit) {
+      setEditingBlog(blogToEdit);
+      setShowBlogEditor(true);
+    } else {
+      console.error('Blog post not found:', id);
+    }
   };
 
   const handlePublishToggle = (id: string, currentState: boolean | undefined) => {
-    // Placeholder for publish/unpublish functionality
-    console.log(`${currentState ? 'Unpublish' : 'Publish'} blog with id:`, id);
+    fetch("/api/blog", {
+      method: "PUT",
+      body: JSON.stringify({ id, published: !currentState })
+    }).then(() => setUpdateBlogs(prev => !prev))
   };
 
   return (
@@ -82,7 +79,10 @@ export function AdminApp() {
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-2xl font-bold text-stone-100">Blog Posts</h2>
             <button
-              onClick={() => setShowBlogEditor(true)}
+              onClick={() => {
+                setEditingBlog(null); // Ensure we're not in edit mode
+                setShowBlogEditor(true);
+              }}
               className="flex flex-row items-center p-3 bg-blue-500 hover:bg-blue-600 transition-colors rounded-2xl"
             >
               <h1 className="text-xl pr-3 h-full">Create Blog Post</h1>
@@ -170,38 +170,68 @@ export function AdminApp() {
           )}
         </div>
       ) : (
-        <BlogEditor setShowBlogEditor={setShowBlogEditor} />
+        <BlogEditor
+          setShowBlogEditor={setShowBlogEditor}
+          editBlog={editingBlog}
+          setUpdateBlogs={setUpdateBlogs}
+        />
       )}
     </>
   )
 }
 
-// Rest of your code for BlogEditor remains the same
-function BlogEditor({ setShowBlogEditor }: { setShowBlogEditor: (show: boolean) => void }) {
-  // Your existing BlogEditor code here...
+function BlogEditor({ setShowBlogEditor, editBlog = null, setUpdateBlogs }: {
+  setShowBlogEditor: (show: boolean) => void;
+  editBlog: BlogItem | null;
+  setUpdateBlogs: (fn: (prev: boolean) => boolean) => void;
+}) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
   const md = markdownit()
   const [html, setHtml] = useState("")
   const [showDropAndCrop, setShowDropAndCrop] = useState(false)
 
-  const onChange = (event: any) => {
-    setHtml(md.render(event.target.value))
-    setContent(event.target.value)
-  }
-
-  // Inside your App component
-  const [imageSrc, setImageSrc] = useState<Blob | null>(null);
-
-  const handleSave = async (croppedAreaPixels: Area, image: string) => {
-    const croppedImage = await createCroppedImage(image, croppedAreaPixels);
-    setShowDropAndCrop(false)
-    setImageSrc(croppedImage);
-  };
-
   const [title, setTitle] = useState("")
   const [readTime, setReadTime] = useState("")
   const [content, setContent] = useState("")
   const [description, setDescription] = useState("")
+  const [imageSrc, setImageSrc] = useState<Blob | null>(null)
+  const [imageChanged, setImageChanged] = useState(false)
+  const [isEditMode, setIsEditMode] = useState(false)
+  const [blogId, setBlogId] = useState<string | null>(null)
+
+  useEffect(() => {
+    if (editBlog) {
+      setIsEditMode(true);
+      setBlogId(editBlog.id);
+      setTitle(editBlog.title);
+      setReadTime(editBlog.readTime);
+      setContent(editBlog.content);
+      setDescription(editBlog.description);
+
+      fetch("/api/blog/image/" + editBlog.id)
+        .then(res => res.blob())
+        .then(blob => {
+          setImageSrc(blob);
+        })
+        .catch(err => console.error("Error loading image:", err));
+
+      // Set initial HTML preview
+      setHtml(md.render(editBlog.content));
+    }
+  }, []);
+
+  const onChange = (event: any) => {
+    const newContent = event.target.value;
+    setContent(newContent);
+    setHtml(md.render(newContent));
+  }
+
+  const handleSave = async (croppedAreaPixels: Area, image: string) => {
+    const croppedImage = await createCroppedImage(image, croppedAreaPixels);
+    setShowDropAndCrop(false);
+    setImageSrc(croppedImage);
+    setImageChanged(true);
+  };
 
   const convertToBase64 = (file: Blob) => {
     return new Promise((resolve, reject) => {
@@ -212,28 +242,59 @@ function BlogEditor({ setShowBlogEditor }: { setShowBlogEditor: (show: boolean) 
     });
   };
 
-  const handleCreatePost = () => {
-    if(title == "" || readTime == "" || content == "" || imageSrc == null) {
-      alert("Please fill out all fields before creating a blog post.")
-      return
+  const handleCreatePost = async () => {
+    if (title === "" || readTime === "" || content === "" || imageSrc === null) {
+      alert("Please fill out all fields before creating a blog post.");
+      return;
     }
 
-    (async () => {
-      const image = await convertToBase64(imageSrc);
+    const image = await convertToBase64(imageSrc);
 
-      await fetch("/api/blog", {
-        method: "POST",
-        body: JSON.stringify({
-          title: title,
-          readTime: readTime,
-          content: content,
-          image: image,
-          description: description,
-        })
+    await fetch("/api/blog", {
+      method: "POST",
+      body: JSON.stringify({
+        title,
+        readTime,
+        content,
+        image,
+        description,
       })
+    });
 
-      window.location.reload()
-    })();
+    setShowBlogEditor(false);
+    setUpdateBlogs(prev => !prev);
+  }
+
+  const handleUpdatePost = async () => {
+    if (title === "" || readTime === "" || content === "") {
+      alert("Title, read time, and content are required fields.");
+      return;
+    }
+
+    const updateData: any = {
+      id: blogId,
+      title,
+      readTime,
+      content,
+      description,
+    };
+
+    if (imageChanged && imageSrc) updateData.image = await convertToBase64(imageSrc);
+
+    try {
+      const response = await fetch("/api/blog", {
+        method: "PUT",
+        body: JSON.stringify(updateData)
+      });
+
+      if (!response.ok) throw new Error(`Error updating post: ${response.statusText}`);
+
+      setShowBlogEditor(false);
+      setUpdateBlogs(prev => !prev);
+    } catch (error) {
+      console.error("Error updating blog post:", error);
+      alert("Failed to update blog post. Please try again.");
+    }
   }
 
   const blobUrl = imageSrc && URL.createObjectURL(imageSrc);
@@ -241,6 +302,9 @@ function BlogEditor({ setShowBlogEditor }: { setShowBlogEditor: (show: boolean) 
   return (
     <>
       <div className="p-10">
+        <h1 className="text-3xl font-bold mb-6 text-stone-100">
+          {isEditMode ? "Edit Blog Post" : "Create New Blog Post"}
+        </h1>
         <div className="flex flex-row gap-x-4">
           <div>
             <p className={`text-3xl font-semibold text-stone-100 pb-2`}>Cover Image:</p>
@@ -263,12 +327,12 @@ function BlogEditor({ setShowBlogEditor }: { setShowBlogEditor: (show: boolean) 
             <div>
               <p className={`text-lg font-semibold text-stone-100 pb-1`}>Title:</p>
               <div className={`flex flex-row gap-x-8`}>
-                  <textarea
-                    onChange={(e) => setTitle(e.target.value)}
-                    value={title}
-                    placeholder="Enter Blog Title Here"
-                    className="bg-stone-900 w-96 h-20 p-2"
-                  />
+                <textarea
+                  onChange={(e) => setTitle(e.target.value)}
+                  value={title}
+                  placeholder="Enter Blog Title Here"
+                  className="bg-stone-900 w-96 h-20 p-2"
+                />
                 <p className={`text-4xl font-oswald`}>{title}</p>
               </div>
             </div>
@@ -291,64 +355,87 @@ function BlogEditor({ setShowBlogEditor }: { setShowBlogEditor: (show: boolean) 
           </div>
         </div>
 
-        <div className={`flex flex-row gap-x-4`}>
+        <div className={`flex flex-row gap-x-4 mt-6`}>
           <button
             onClick={() => setShowBlogEditor(false)}
-            className="flex flex-row items-center p-2 bg-red-400 rounded-2xl">
-            <h1 className="text-xl pr-3">Go Back</h1>
+            className="flex flex-row items-center p-3 bg-gray-500 hover:bg-gray-600 transition-colors rounded-2xl"
+          >
+            <h1 className="text-xl">Cancel</h1>
           </button>
+
           <button
             onClick={() => setShowDropAndCrop(true)}
-            className="flex flex-row items-center p-2 bg-green-400 rounded-2xl">
-            <h1 className="text-xl pr-3">Upload Image</h1>
+            className="flex flex-row items-center p-3 bg-green-600 hover:bg-green-700 transition-colors rounded-2xl"
+          >
+            <h1 className="text-xl pr-3">{imageSrc ? "Change Image" : "Upload Image"}</h1>
             <Image
               src={"/icons/plus-circle.svg"}
-              alt={"Create Blog Post"}
+              alt={"Upload Image"}
               width={35}
               height={35}
             />
           </button>
-          <button
-            onClick={handleCreatePost}
-            className="flex flex-row items-center p-2 bg-blue-500 rounded-2xl">
-            <h1 className="text-xl pr-3">Upload Blog Post</h1>
-            <Image
-              src={"/icons/plus-circle.svg"}
-              alt={"Create Blog Post"}
-              width={35}
-              height={35}
-            />
-          </button>
+
+          {isEditMode ? (
+            <button
+              onClick={handleUpdatePost}
+              className="flex flex-row items-center p-3 bg-blue-600 hover:bg-blue-700 transition-colors rounded-2xl"
+            >
+              <h1 className="text-xl pr-3">Update Blog Post</h1>
+              <Image
+                src={"/icons/plus-circle.svg"}
+                alt={"Create Blog Post"}
+                width={35}
+                height={35}
+              />
+            </button>
+          ) : (
+            <button
+              onClick={handleCreatePost}
+              className="flex flex-row items-center p-3 bg-blue-500 hover:bg-blue-600 transition-colors rounded-2xl"
+            >
+              <h1 className="text-xl pr-3">Upload Blog Post</h1>
+              <Image
+                src={"/icons/plus-circle.svg"}
+                alt={"Create Blog Post"}
+                width={35}
+                height={35}
+              />
+            </button>
+          )}
         </div>
       </div>
+
       <div className="flex flex-row w-full">
         <div className="w-full p-5">
           <textarea
-            className="bg-stone-900 w-full h-[50rem]"
-            content={content}
+            className="bg-stone-900 w-full h-[50rem] p-4 text-white"
+            value={content}
             id="blogpost"
             name="blogpost"
             onChange={onChange}
             ref={textareaRef}
+            placeholder="Write your blog content in Markdown format..."
           />
         </div>
-        <div className="w-full p-5">
+        <div className="w-full p-5 overflow-auto">
           <div
-            className="markdown"
+            className="markdown p-4 min-h-[50rem]"
             dangerouslySetInnerHTML={{ __html: html }}
           ></div>
         </div>
       </div>
-      {showDropAndCrop && <ImageDropAndCrop
-        aspectRatio={5/2} // Default aspect ratio (width/height)
-        onSave={handleSave}
-        // Optional: customize accepted file types
-        acceptedFileTypes={['image/jpeg', 'image/png']}
-        // Optional: set maximum file size (in bytes)
-        maxFileSize={10 * 1024 * 1024} // 10MB
-      />}
+
+      {showDropAndCrop && (
+        <ImageDropAndCrop
+          aspectRatio={5/2}
+          onSave={handleSave}
+          acceptedFileTypes={['image/jpeg', 'image/png']}
+          maxFileSize={10 * 1024 * 1024} // 10MB
+        />
+      )}
     </>
-  )
+  );
 }
 
 export default function AdminSessionWrapper() {
