@@ -6,7 +6,7 @@ import { useState, useRef } from "react"
 import "./markdown.css"
 import markdownit from 'markdown-it'
 import ImageDropAndCrop from "@/app/admin/ImageDropAndCrop"
-import { createCroppedImage } from "@/app/admin/cropUtils"
+import { createCroppedImage } from "@/utils/cropUtils"
 import { Area } from "react-easy-crop"
 
 export function AdminApp() {

@@ -2,16 +2,9 @@ import { getServerSession } from "next-auth"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { notFound } from "next/navigation"
 import { PrismaClient } from "@prisma/client"
-import { BlogItem } from "@/app/blog/blogs"
 import { writeFileSync } from "node:fs"
-
-function uint8ArrayToBase64(uint8Array: Uint8Array<ArrayBufferLike>) {
-  let binaryString = '';
-  for (let i = 0; i < uint8Array.length; i++) {
-    binaryString += String.fromCharCode(uint8Array[i]);
-  }
-  return btoa(binaryString);
-}
+import { uint8ArrayToBase64 } from "@/utils/imageBuffer"
+import { BlogItem } from "@/app/blog/page"
 
 export async function GET() {
   const prisma = new PrismaClient()

@@ -1,11 +1,10 @@
 import { notFound } from "next/navigation"
 import { PrismaClient } from "@prisma/client"
 
-export async function GET(req: Request, { params }: {
+export async function GET({ params }: {
   params: Promise<{ id: string }>
 }) {
   const prisma = new PrismaClient()
-  console.log(await params)
   const blog = await prisma.blogPost.findFirst({
     where: {
       id: parseInt((await params).id)

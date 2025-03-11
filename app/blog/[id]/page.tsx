@@ -1,0 +1,50 @@
+"use server";
+
+import { notFound } from "next/navigation"
+import MarkdownIt from "markdown-it"
+import BlogWrapper from "@/app/blog/[id]/Blog"
+import { PrismaClient } from "@prisma/client"
+import { uint8ArrayToBase64 } from "@/utils/imageBuffer"
+
+export default async function BlogPage({ params }: {
+  params: Promise<{ id: string }>
+}) {
+  const prisma = new PrismaClient()
+  const blog = await prisma.blogPost.findFirst({
+    where: {
+      id: parseInt((await params).id)
+    },
+    select: {
+      id: true,
+      title: true,
+      readTime: true,
+      content: true,
+      description: true,
+      imageType: true,
+      image: true,
+      author: true,
+      createdAt: true
+    }
+  })
+
+  if(blog == null) return notFound()
+
+  const clientBlog = {
+    id: blog.id.toString(),
+    title: blog.title,
+    readTime: blog.readTime,
+    content: blog.content!,
+    description: blog.description,
+    image: `data:image/${blog.imageType};base64,${uint8ArrayToBase64(blog.image)}`,
+    author: blog.author.firstName + " " + blog.author.lastName,
+    authorUrl: null,
+    date: blog.createdAt.toDateString()
+  }
+
+  const md = new MarkdownIt()
+  const html = md.render(blog.content!)
+
+  return <BlogWrapper children={
+    <div dangerouslySetInnerHTML={{ __html: html }} />
+  } blog={clientBlog} />
+}

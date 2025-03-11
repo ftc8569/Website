@@ -1,33 +1,11 @@
 "use client";
 
-import { BlogItem } from "@/app/blog/blogs"
-import { redirect } from "next/navigation"
 import { ReactNode, useRef } from "react"
 import Navbar from "@/app/navbar"
 import Image from "next/image"
-import MarkdownIt from "markdown-it"
+import { BlogItem } from "@/app/blog/page"
 
-export default async function BlogThing({
-  params
-}: {
-  params: Promise<{ blog: string }>
-}) {
-  const blogid = (await params).blog
-  const blog = blogs.find((b) => b.id == blogid)
-
-  const md = new MarkdownIt()
-
-  if (blog != null) return <BlogWrapper children={
-    <>
-      {md.render(blog.content)}
-    </>
-  } blog={blog} />
-  else {
-    redirect("/blog")
-  }
-}
-
-function BlogWrapper({ children, blog }: Readonly<{ children: ReactNode, blog: BlogItem }>) {
+export default function BlogWrapper({ children, blog }: Readonly<{ children: ReactNode, blog: BlogItem }>) {
   const navbarRef = useRef<HTMLDivElement | null>(null)
 
   let authorComponent = <span>{blog.author}</span>

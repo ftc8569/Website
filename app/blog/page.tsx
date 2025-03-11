@@ -3,9 +3,7 @@
 import Navbar from "@/app/navbar"
 import { useEffect, useRef, useState } from "react"
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
-import { BlogItem } from "@/app/blog/blogs"
 import Image from "next/image"
-import styles from "@/app/blog/blog.module.css"
 
 export default function Blog() {
   const navbarRef = useRef<HTMLDivElement | null>(null)
@@ -15,7 +13,7 @@ export default function Blog() {
     fetch("/api/blog")
       .then(res => res.json())
       .then(data => setBlogs(data))
-  })
+  }, [])
 
   return (
     <main>
@@ -48,7 +46,7 @@ function BlogCard({ data }: { data: BlogItem }) {
 
   return (
     <button onClick={() => window.open("/blog/" + data.id)}>
-      <div className={`bg-stone-900 rounded-2xl ${styles.card}`} >
+      <div className={`bg-stone-900 ring-2 ring-blue-500/50 hover:ring-blue-300/50 rounded-2xl`} >
         <Image src={`/api/blog/image/${data.id}`} alt={"Blog Image"} className={`rounded-t-2xl`} width={1000} height={600} />
         <div className="py-5 px-3 text-left">
           <h1 className="text-3xl font-semibold pb-2">{data.title}</h1>
@@ -58,4 +56,16 @@ function BlogCard({ data }: { data: BlogItem }) {
       </div>
     </button>
   )
+}
+
+export interface BlogItem {
+  id: string
+  title: string
+  description: string
+  author: string
+  authorUrl: string | null
+  image: string
+  date: string // MM/DD/YYYY
+  readTime: string // "X minutes"
+  content: string // In markdown
 }
