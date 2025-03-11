@@ -146,8 +146,8 @@ const ImageDropAndCrop: React.FC<ImageDropAndCropProps> = ({
         <div
           {...getRootProps()}
           className={`w-full h-full flex flex-col items-center justify-center border-3 border-dashed rounded-lg ${
-            isDragActive ? 'border-blue-500 bg-blue-50/80' : 'border-neutral-300 bg-neutral-50/80'
-          } text-neutral-600 cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-50/80`}
+            isDragActive ? 'border-blue-500 bg-blue-50' : 'border-neutral-300 bg-neutral-50'
+          } text-neutral-600 cursor-pointer transition-all duration-300 hover:border-blue-500 hover:bg-blue-50`}
         >
           <input {...getInputProps()} />
           <div className="text-center p-5">

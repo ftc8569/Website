@@ -1,14 +1,21 @@
 "use client"
 
 import Navbar from "@/app/navbar"
-import { useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
-import blogs, { BlogItem } from "@/app/blog/blogs"
+import { BlogItem } from "@/app/blog/blogs"
 import Image from "next/image"
 import styles from "@/app/blog/blog.module.css"
 
 export default function Blog() {
   const navbarRef = useRef<HTMLDivElement | null>(null)
+  const [blogs, setBlogs] = useState<BlogItem[]>([])
+
+  useEffect(() => {
+    fetch("/api/blog")
+      .then(res => res.json())
+      .then(data => setBlogs(data))
+  })
 
   return (
     <main>
@@ -38,10 +45,11 @@ export default function Blog() {
 }
 
 function BlogCard({ data }: { data: BlogItem }) {
+
   return (
     <button onClick={() => window.open("/blog/" + data.id)}>
       <div className={`bg-stone-900 rounded-2xl ${styles.card}`} >
-        <Image src={data.image} alt={"Blog Image"} className={`rounded-t-2xl`} width={1000} height={600} />
+        <Image src={`/api/blog/image/${data.id}`} alt={"Blog Image"} className={`rounded-t-2xl`} width={1000} height={600} />
         <div className="py-5 px-3 text-left">
           <h1 className="text-3xl font-semibold pb-2">{data.title}</h1>
           <h1>{data.description}</h1>

@@ -17,9 +17,13 @@ model BlogPost {
   id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  title     String   @db.VarChar(255)
 
-  content String?
+  title       String  @db.VarChar(255)
+  readTime    String
+  imageType   String
+  image       Bytes
+  description String
+  content     String?
 
   manualOverride Boolean @default(false)
   manualId       Int?    @unique

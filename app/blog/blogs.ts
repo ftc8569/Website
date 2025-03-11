@@ -11,7 +11,7 @@ const blogs: BlogItem[] = [
     image: "/blogImages/website.png",
     date: "03/08/2025",
     readTime: "5 minutes",
-    component: WebsiteBlog
+    content: "Hey!"
   }
 ]
 
@@ -24,7 +24,7 @@ export interface BlogItem {
   image: string
   date: string // MM/DD/YYYY
   readTime: string // "X minutes"
-  component: () => JSX.Element
+  content: string // In markdown
 }
 
 export default blogs

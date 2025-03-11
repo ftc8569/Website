@@ -1,10 +1,11 @@
 "use client";
 
-import blogs, { BlogItem } from "@/app/blog/blogs"
+import { BlogItem } from "@/app/blog/blogs"
 import { redirect } from "next/navigation"
 import { ReactNode, useRef } from "react"
 import Navbar from "@/app/navbar"
 import Image from "next/image"
+import MarkdownIt from "markdown-it"
 
 export default async function BlogThing({
   params
@@ -14,7 +15,13 @@ export default async function BlogThing({
   const blogid = (await params).blog
   const blog = blogs.find((b) => b.id == blogid)
 
-  if (blog != null) return <BlogWrapper children={blog.component()} blog={blog} />
+  const md = new MarkdownIt()
+
+  if (blog != null) return <BlogWrapper children={
+    <>
+      {md.render(blog.content)}
+    </>
+  } blog={blog} />
   else {
     redirect("/blog")
   }
@@ -41,7 +48,7 @@ function BlogWrapper({ children, blog }: Readonly<{ children: ReactNode, blog: B
       <div className="w-full flex-row py-10">
         <div className="flex flex-col gap-y-5 w-2/3 h-[100rem] p-10 justify-self-center bg-stone-900 rounded-lg">
           <div className="flex flex-row justify-center">
-            <Image src={blog.image} alt={"Blog Image"} className={`rounded-2xl`} width={2000} height={1200} />
+            <Image src={`/api/blog/image/${blog.id}`} alt={"Blog Image"} className={`rounded-2xl`} width={2000} height={1200} />
           </div>
           <div className="px-5">
             <p className="text-5xl pt-4 font-oswald">{blog.title}</p>
