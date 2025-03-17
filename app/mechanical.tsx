@@ -22,17 +22,18 @@ export default function MechanicalSection({
           className="rounded-2xl"
         />
         <p className="text-sm lg:text-xl">
-          Robots are cool because they combine advanced technology with
-          real-world applications, performing tasks with incredible precision
-          and efficiency. They can handle dangerous or repetitive jobs that
-          humans would find difficult or boring, like exploring space or
-          assembling intricate machinery. Robots also demonstrate the power of
-          artificial intelligence, learning and adapting to new environments and
+          Robots are cool because they combine advanced technology
+          with real-world applications, performing tasks with
+          incredible precision and efficiency. They can handle
+          dangerous or repetitive jobs that humans would find difficult
+          or boring, like exploring space or assembling intricate
+          machinery. Robots also demonstrate the power of artificial
+          intelligence, learning and adapting to new environments and
           challenges. Their ability to interact with people and their
           surroundings opens up exciting possibilities in fields like
-          healthcare, education, and entertainment. Ultimately, robots embody
-          the future of innovation, blending science fiction with reality in a
-          way that sparks imagination and curiosity.
+          healthcare, education, and entertainment. Ultimately, robots
+          embody the future of innovation, blending science fiction
+          with reality in a way that sparks imagination and curiosity.
         </p>
       </div>
       <div className="flex flex-col lg:flex-row-reverse pt-5 gap-5 lg:gap-10">
@@ -44,17 +45,21 @@ export default function MechanicalSection({
           className="rounded-2xl"
         />
         <p className="text-sm lg:text-xl">
-          Carbon fiber is an incredibly strong yet lightweight material that has
-          revolutionized industries ranging from aerospace to sports equipment.
-          Its high strength-to-weight ratio makes it ideal for applications
-          where both durability and weight reduction are critical. Carbon
-          fiber’s resistance to corrosion and ability to withstand extreme
-          temperatures add to its versatility, allowing it to be used in harsh
-          environments. Despite being lighter than steel, it is significantly
-          stronger, making it a go-to material for cutting-edge engineering
-          designs. Whether in aircraft, automobiles, or high-performance bikes,
-          carbon fiber continues to transform modern technology with its
-          remarkable properties.
+          As for our design, the biggest thing we’ve been working on
+          developing for a stable design process is the ability to
+          make master sketches. This generally serves to help give
+          us a better frame of reference as to the parameters of
+          the robot and various parts as we design, however, more
+          specifically, it serves to develop into the actual 3D
+          modeling of the robot as the team concludes how we want
+          to tackle a specific problem. As for the rest of the design,
+          once we have the master sketches completed, we tend to take
+          a more parallel computing-style approach. This affords us
+          multiple liberties, as if we haven’t come to a consensus among
+          the team as to how a part should function, then we can have team
+          members from either side design a different part; or, if they do,
+          then we can split that part into different subparts, which not
+          only allows everyone to contribute, but ensures a faster uptime.
         </p>
       </div>
     </div>

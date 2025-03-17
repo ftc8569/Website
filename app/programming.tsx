@@ -19,19 +19,14 @@ export default function ProgrammingSection({
           alt={"Programmer waiting for mech guy"}
           width={4032 / 6}
           height={1754 / 6}
-          className="rounded-2xl"
+          className="object-contain rounded-2xl"
         />
         <p className="text-sm lg:text-xl">
-          Java is an amazing programming language known for its platform
-          independence, allowing developers to "write once, run anywhere." Its
-          robust memory management, strong type system, and exception handling
-          make it highly reliable and less prone to runtime errors. Java's
-          extensive ecosystem of libraries and frameworks, like Spring and
-          Hibernate, supports efficient development for web, desktop, and
-          enterprise applications. It is also the backbone of Android app
-          development, powering millions of mobile applications worldwide. With
-          its versatility, performance, and scalability, Java remains a top
-          choice for developers across industries.
+          This year we have been working to develop advanced control systems to
+          improve the robot's performance. Our team has been working on PID controllers
+          for the control of our arm mechanism and it has greatly improved our control
+          and maneuverability. We are also working on using Choreo, ported to FTC, to improve
+          pathing and speed up our autos.
         </p>
       </div>
       <div className="flex flex-col lg:flex-row-reverse pt-5 gap-5 lg:gap-10">

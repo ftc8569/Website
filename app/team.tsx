@@ -27,17 +27,15 @@ export default function Team({
         </h1>
       </div>
       <p className="px-5 text-sm lg:text-xl pb-5 text-center">
-        An FTC (FIRST Tech Challenge) team is typically structured with students
-        taking on various roles, such as programmers, builders, designers, and
-        team managers, to collaboratively build and program a robot. Each team
-        operates under a leadership system, often with a captain and sub-team
-        leads, ensuring that tasks are distributed efficiently. The team’s goal
-        is to design, build, and code a robot capable of completing specific
-        challenges in regional and national competitions. Beyond robotics, FTC
-        teams emphasize critical skills such as problem-solving, teamwork, and
-        project management. Participation in an FTC team helps students develop
-        both technical abilities and leadership skills, preparing them for
-        future careers in STEM.
+        The Roboknights are divided into three subteams: Programming, Mechanical,
+        and Outreach. Every team member is part of at least two subteams, helping
+        in different areas. The Programming subteam works on coding the robot to
+        make sure it runs smoothly and is able to complete tasks The Mechanical
+        subteam focuses on building and fixing the robot to make sure it is capable
+        and efficient. The Outreach subteam connects with the community, spreads
+        awareness about STEM and FIRST, and helps find sponsors for our team.
+        Each subteam has a team lead who organizes tasks and helps everyone work
+        together to keep the team running successfully.
       </p>
       <SubTeam name={"Programming Team"} team={team?.programmers} />
       <SubTeam name={"Mechanical Team"} team={team?.mechanical} />

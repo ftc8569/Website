@@ -22,15 +22,19 @@ export default function OutreachSection({
           className="rounded-2xl"
         />
         <p className="text-sm lg:text-xl">
-          Pink pants make a bold fashion statement, offering a vibrant and
-          confident way to express individuality. Their bright color stands out,
-          allowing wearers to break away from traditional neutrals and embrace a
-          more playful style. Pink pants can symbolize creativity and
-          self-assurance, making them an important piece in a modern wardrobe.
-          They also provide versatility, working well in both casual and formal
-          settings when paired with the right accessories and clothing.
-          Ultimately, pink pants showcase the power of color in fashion, proving
-          that clothing can be a reflection of personal identity and confidence.
+          The RoboKnights outreach team is dedicated to expanding STEM
+          accessibility and fostering a passion for robotics within
+          diverse communities. Through a combination of mentorship,
+          hands-on learning opportunities, and professional networking,
+          the team strives to inspire the next generation of innovators.
+          By collaborating with local organizations and educational
+          institutions, RoboKnights works to provide students with
+          meaningful exposure to engineering, coding, and problem-solving.
+          Outreach efforts emphasize inclusivity, ensuring that students
+          from all backgrounds have the resources and encouragement needed
+          to explore STEM fields. The team also engages with industry
+          professionals and mentors to refine its own knowledge while extending
+          support to those looking to develop their technical skills.
         </p>
       </div>
       <div className="flex flex-col lg:flex-row-reverse pt-5 gap-5 lg:gap-10">
@@ -42,16 +46,20 @@ export default function OutreachSection({
           className="rounded-2xl"
         />
         <p className="text-sm lg:text-xl">
-          Legos hold a unique significance as both a beloved toy and a powerful
-          educational tool. These colorful interlocking bricks inspire
-          creativity and imagination in children and adults alike, allowing them
-          to build everything from simple structures to complex designs. Beyond
-          fun, Legos also teach important problem-solving skills, encouraging
-          users to think spatially and work through challenges. In classrooms
-          and STEM programs, Legos have become an essential tool for introducing
-          students to engineering, programming, and robotics through hands-on
-          learning. The versatility and timeless appeal of Legos make them an
-          enduring symbol of innovation, creativity, and the joy of building.
+          The RoboKnights outreach team is dedicated to expanding
+          STEM accessibility and fostering a passion for robotics
+          within diverse communities. Through a combination of
+          mentorship, hands-on learning opportunities, and professional
+          networking, the team strives to inspire the next generation
+          of innovators. By collaborating with local organizations and
+          educational institutions, RoboKnights works to provide
+          students with meaningful exposure to engineering, coding,
+          and problem-solving. Outreach efforts emphasize inclusivity,
+          ensuring that students from all backgrounds have the resources
+          and encouragement needed to explore STEM fields. The team also
+          engages with industry professionals and mentors to refine its
+          own knowledge while extending support to those looking to develop
+          their technical skills.
         </p>
       </div>
     </div>
