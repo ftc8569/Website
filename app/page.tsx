@@ -1,14 +1,14 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
-import Navbar from "@/app/navbar"
-import HomeContent from "@/app/home"
-import Team from "@/app/team"
-import ProgrammingSection from "@/app/programming"
-import MechanicalSection from "@/app/mechanical"
-import OutreachSection from "@/app/outreach"
-import ContactUs from "@/app/contact"
-import Footer from "@/app/footer"
+import { useRef } from "react"
+import Navbar from "@/components/navbar"
+import HomeContent from "@/components/home/home"
+import Team from "@/components/home/team"
+import ProgrammingSection from "@/components/home/programming"
+import MechanicalSection from "@/components/home/mechanical"
+import OutreachSection from "@/components/home/outreach"
+import ContactUs from "@/components/home/contact"
+import Footer from "@/components/home/footer"
 
 export default function Home() {
   const navbarRef = useRef<HTMLDivElement | null>(null)

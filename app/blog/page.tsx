@@ -1,6 +1,6 @@
 "use client"
 
-import Navbar from "@/app/navbar"
+import Navbar from "@/components/navbar"
 import { useEffect, useRef, useState } from "react"
 import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
 import Image from "next/image"

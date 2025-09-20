@@ -3,9 +3,9 @@
 import { SessionProvider, useSession } from "next-auth/react"
 import Image from "next/image"
 import { useState, useRef, useEffect } from "react"
-import "./markdown.css"
+import "@/components/admin/markdown.css"
 import markdownit from 'markdown-it'
-import ImageDropAndCrop from "@/app/admin/ImageDropAndCrop"
+import ImageDropAndCrop from "@/components/admin/ImageDropAndCrop"
 import { createCroppedImage } from "@/utils/cropUtils"
 import { Area } from "react-easy-crop"
 import { BlogItem } from "@/app/blog/page"

@@ -1,6 +1,6 @@
 import React, { RefObject, useEffect, useState } from "react"
 import Image from "next/image"
-import styles from "@/app/navbar.module.css"
+import styles from "@/components/navbar.module.css"
 
 export default function Navbar({
   navbarRef,
@@ -108,12 +108,18 @@ export default function Navbar({
   return (
     <div
       className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full justify-between
-      items-center px-4 py-1 z-[2] transition-all duration-[750ms]"
+      items-center px-4 py-2 z-[2] transition-all duration-[750ms]"
       ref={navbarRef}
       style={{
-        background: background ? "rgba(39,39,39,0.98)" : "rgba(0,0,0,0)"
+        background: background ? "rgba(25,25,25,0.98)" : "rgba(0,0,0,0)"
       }}
     >
+      {/* Animated bottom border */}
+      <div 
+        className={`absolute bottom-0 left-1/2 h-0.25 bg-stone-500 transition-all duration-[750ms] ${
+          background ? 'w-full -translate-x-1/2 opacity-100' : 'w-0 -translate-x-1/2 opacity-0'
+        }`}
+      />
       <div className="hidden lg:flex flex-row">
         <Image
           src="/stickerlogo.png"

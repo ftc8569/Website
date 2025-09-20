@@ -1,7 +1,7 @@
 import { RefObject, useEffect, useRef, useState } from "react"
 import Image from "next/image"
-import { Connection, Dot } from "@/app/animation.worker"
-import RobotAnimation from "@/app/robotAnimation"
+import { Connection, Dot } from "@/components/home/animation.worker"
+import RobotAnimation from "@/components/home/robotAnimation"
 
 export default function HomeContent({
   divRef,
@@ -129,6 +129,67 @@ export default function HomeContent({
   const handleBlogClick = () =>
     window.location.href = "/blog"
 
+  function IntroCard() {
+    return (
+      <div className="example-3 w-[30rem] rounded-lg">
+        <div className="inner bg-stone-900 rounded-lg">
+          <div className="flex flex-col p-3">
+            <div className='flex flex-row-reverse gap-x-2 w-full'>
+              <Image
+                src={`/icons/github.svg`}
+                alt="GitHub"
+                className={`hover:cursor-pointer`}
+                onClick={() => window.open("https://github.com/ftc8569")}
+                width={40}
+                height={40} />
+              <Image
+                src={`/icons/linkedin.svg`}
+                alt="LinkedIn"
+                className={`hover:cursor-pointer`}
+                onClick={() => window.open("https://www.linkedin.com/company/ftc8569")}
+                width={50}
+                height={50} />
+              <Image
+                src={`/icons/instagram.svg`}
+                alt="Instagram"
+                className={`hover:cursor-pointer`}
+                onClick={() => window.open("https://www.instagram.com/roboknights8569/")}
+                width={50}
+                height={50} />
+              <h1 className="text-2xl lg:text-5xl mr-auto pl-2">8569</h1>
+            </div>
+            <h1 className="text-4xl lg:text-6xl font-semibold p-2 lg:p-2 rounded-2xl w-min mt-1 mb-4">
+              RoboKnights
+            </h1>
+            <h1 className="text-2xl">
+              Innovative, Creative, Competitive.
+              <br />
+              That's the RoboKnights.
+            </h1>
+            <div className="flex flex-row pt-4 gap-x-4">
+              {[
+                { text: "Contact Us", func: handleContactUsClick },
+                { text: "Blog", func: handleBlogClick }
+              ].map(({ text, func }, index) => (
+                <button key={index} onClick={func}>
+                  <div className="flex flex-row p-2 border-1 border-roboHotPink rounded-xl gap-x-1 align-middle bg-transparent hover:bg-roboHotPink hover:bg-opacity-10 transition-colors">
+                    <h1 className="text-xl">{text}</h1>
+                    <Image
+                      src={`/icons/arrow-up-right.svg`}
+                      alt="Arrow"
+                      width={25}
+                      height={25}
+                    />
+                  </div>
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
   return (
     <>
       <div
@@ -139,60 +200,7 @@ export default function HomeContent({
       >
         <canvas className="" ref={canvasRef} />
         <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3 noselect">
-          <div className="w-[30rem] bg-stone-900 opacity-95 rounded-lg">
-            <div className="flex flex-col p-3">
-              <div className={`flex flex-row-reverse gap-x-2 w-full`}>
-                <Image
-                  src={`/icons/github.svg`}
-                  alt="GitHub"
-                  className={`hover:cursor-pointer`}
-                  onClick={() => window.open("https://github.com/ftc8569")}
-                  width={40}
-                  height={40} />
-                <Image
-                  src={`/icons/linkedin.svg`}
-                  alt="LinkedIn"
-                  className={`hover:cursor-pointer`}
-                  onClick={() => window.open("https://www.linkedin.com/company/ftc8569")}
-                  width={50}
-                  height={50} />
-                <Image
-                  src={`/icons/instagram.svg`}
-                  alt="Instagram"
-                  className={`hover:cursor-pointer`}
-                  onClick={() => window.open("https://www.instagram.com/roboknights8569/")}
-                  width={50}
-                  height={50} />
-                <h1 className="text-2xl lg:text-6xl mr-auto pl-2">8569</h1>
-              </div>
-              <h1 className="text-4xl lg:text-5xl p-2 lg:p-3 bg-roboPink text-black rounded-2xl w-min mt-1 mb-4">
-                RoboKnights
-              </h1>
-              <h1 className="text-2xl">
-                Innovative, Creative, Competitive.
-                <br />
-                That's the RoboKnights.
-              </h1>
-              <div className="flex flex-row pt-4 gap-x-4">
-                {[
-                  { text: "Contact Us", func: handleContactUsClick },
-                  { text: "Blog", func: handleBlogClick }
-                ].map(({ text, func }, index) => (
-                  <button key={index} onClick={func}>
-                    <div className="flex flex-row p-3 bg-roboHotPink rounded-xl gap-x-1 align-middle">
-                      <h1 className="text-2xl">{text}</h1>
-                      <Image
-                        src={`/icons/arrow-up-right.svg`}
-                        alt="Arrow"
-                        width={30}
-                        height={30}
-                      />
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
+          <IntroCard />
         </div>
       </div>
       <div className="h-[1px] w-full bg-white"></div>

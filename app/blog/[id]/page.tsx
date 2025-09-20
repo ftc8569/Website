@@ -2,7 +2,7 @@
 
 import { notFound } from "next/navigation"
 import MarkdownIt from "markdown-it"
-import BlogWrapper from "@/app/blog/[id]/Blog"
+import BlogWrapper from "@/components/blogs/Blog"
 import { PrismaClient } from "@prisma/client"
 import { uint8ArrayToBase64 } from "@/utils/imageBuffer"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"

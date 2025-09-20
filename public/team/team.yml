@@ -1,27 +1,18 @@
 programmers:
-  - src: steven.jpg
-    name: Steven Gu
-    role: Lead Programmer
   - src: trevor.jpg
     name: Trevor bedson
-    role: Programmer
+    role: Captain and Programming Lead
 mechanical:
-  - src: peyton.jpg
-    name: Peyton Harrell
-    role: Mechanical Lead
-  - src: luke.jpg
-    name: Luke Meardon
-    role: Mechanical Member
   - src: tanush.jpg
     name: Tanush Sai
+    role: Captain and Mechanical Lead
+  - src: peyton.jpg
+    name: Peyton Harrell
     role: Mechanical Member
   - src: prana.jpg
     name: Prana Bernstein
     role: Mechanical Member
 outreach:
-  - src: diego.jpg
-    name: Diego Sanchez
-    role: Outreach Lead
   - src: himanish.jpg
     name: Himanish Verma
     role: Outreach Member

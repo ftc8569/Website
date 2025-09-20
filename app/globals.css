@@ -58,3 +58,55 @@ button {
   user-select: none; /* Non-prefixed version, currently
                         supported by Chrome, Edge, Opera and Firefox */
 }
+
+/* Example 3 - Glowing animated border effect */
+.example-3 {
+  position: relative;
+  border-radius: 1rem; /* matches rounded-lg */
+  padding: 2px;
+}
+
+.example-3 .inner {
+  border-radius: 12px;
+}
+
+.example-3::before,
+.example-3::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  background: linear-gradient(
+    45deg,
+    #6b7280,
+    #dd1c8a,
+    #e383b6,
+    #dd1c8a,
+    #6b7280,
+    #dd1c8a
+  );
+  background-size: 400%;
+  z-index: -1;
+  animation: glow 20s linear infinite;
+  width: 100%;
+  border-radius: 1rem;
+}
+
+.example-3::after {
+  filter: blur(5px);
+  transform: translate3d(0, 0, 0); /* For Safari */
+}
+
+@keyframes glow {
+  0% {
+    background-position: 0 0;
+  }
+  50% {
+    background-position: 100% 0;
+  }
+  100% {
+    background-position: 0 0;
+  }
+}
