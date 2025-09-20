@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 import "./globals.css"
 import { ReCaptchaProvider } from "next-recaptcha-v3"
-import type { Viewport } from 'next'
+import type { Viewport } from "next"
 import { ReactNode } from "react"
 
 export const viewport: Viewport = {
-  colorScheme: 'only light'
+  colorScheme: "only light"
 }
 
 export const metadata: Metadata = {

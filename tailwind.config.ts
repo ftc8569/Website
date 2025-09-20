@@ -12,6 +12,12 @@ const config: Config = {
         roboHotPink: "var(--roboHotPink)",
         roboGray: "var(--roboGray)",
         roboPink: "var(--roboPink)"
+      },
+      spacing: {
+        "1/12": 100 / 12 + "%"
+      },
+      translate: {
+        "1/12": 100 / 12 + "%"
       }
     }
   },
