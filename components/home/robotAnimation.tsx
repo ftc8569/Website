@@ -7,7 +7,9 @@ export default function RobotAnimation() {
 
   useEffect(() => {
     if (typeof window !== "undefined") {
-      setViewportWidth(window.visualViewport ? window.visualViewport.width : null)
+      setViewportWidth(
+        window.visualViewport ? window.visualViewport.width : null
+      )
     }
 
     if (viewportWidth && viewportWidth < 1024) return
@@ -18,7 +20,11 @@ export default function RobotAnimation() {
     TODO: Utilize compression to reduce the size of the images
      */
 
-    const chunks = [[0, 100], [100, 200], [200, 320]]
+    const chunks = [
+      [0, 100],
+      [100, 200],
+      [200, 320]
+    ]
 
     for (let i = 0; i < chunks.length; i++) {
       setTimeout(() => {
@@ -47,7 +53,6 @@ export default function RobotAnimation() {
         }
       }, i * 1000)
     }
-
   }, [])
 
   return <div className="hidden lg:block flex-1">{images}</div>
