@@ -115,13 +115,7 @@ button {
   }
 }
 
-@layer utilities {
-  .writing-vertical-rl {
-    writing-mode: vertical-rl;
-    text-orientation: upright;
-  }
-  .writing-vertical-lr {
-    writing-mode: vertical-lr;
-    text-orientation: upright;
-  }
+@utility writing-vertical-lr {
+  writing-mode: vertical-lr;
+  text-orientation: upright;
 }

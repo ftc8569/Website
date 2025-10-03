@@ -8,13 +8,13 @@ export default function OutreachSection({
 }) {
   return (
     <div id={"outreach"} ref={divRef} className="px-5 lg:px-36 py-10">
-      <div className="flex gap-6 items-center">
-        <div className="w-min bg-stone-800 px-4 pt-3 pb-9 rounded-full">
-          <h2 className="writing-vertical-lr font-black text-5xl tracking-[-1.5rem] text-roboPink">
-            OUTREACH
+      <div className="flex xl:flex-row flex-col gap-4 xl:gap-6 items-center">
+        <div className="w-min bg-stone-800 pt-2 pb-2 px-4 xl:px-4 xl:pt-3 xl:pb-8 rounded-full">
+          <h2 className="xl:writing-vertical-lr font-black text-3xl lg:text-5xl xl:tracking-[-1.5rem] text-roboPink xl:uppercase">
+            Outreach
           </h2>
         </div>
-        <div className="flex gap-4">
+        <div className="flex lg:flex-row flex-col-reverse gap-4">
           <div className="flex flex-col gap-4 lg:gap-4 basis-0 grow">
             <div className="bg-stone-800 p-4 rounded-2xl">
               <h3 className="font-bold text-2xl mb-2">Our Values</h3>
@@ -67,7 +67,7 @@ export default function OutreachSection({
           <img
             src={"/activity/outreach-1.png"}
             alt={"Outreach team working together"}
-            className="aspect-video object-cover rounded-2xl w-[50%]"
+            className="aspect-video object-cover rounded-2xl lg:w-[50%] w-full"
           />
         </div>
       </div>

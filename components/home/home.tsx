@@ -165,7 +165,7 @@ export default function HomeContent({
 
   function IntroCard() {
     return (
-      <div className="example-3 w-[30rem] rounded-lg">
+      <div className="example-3 w-full mx-4 lg:w-[30rem] rounded-lg">
         <div className="inner bg-stone-900">
           <div className="flex flex-col p-4">
             <div className="flex flex-row-reverse gap-x-2 w-full">
@@ -252,7 +252,7 @@ export default function HomeContent({
               RoboKnights - Team 8569
             </h1>
           </div>
-          <div className="flex justify-around mt-2">
+          <div className="flex xl:flex-row flex-col-reverse justify-around items-center mt-2 gap-4">
             <div className="flex gap-2 items-center basis-0">
               <PiMapPinLineBold className="w-10 h-10" />
               <span className="text-2xl font-semibold w-max">

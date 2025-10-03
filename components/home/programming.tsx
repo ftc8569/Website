@@ -13,18 +13,18 @@ export default function ProgrammingSection({
           Programming Team
         </h1>
       </div> */}
-      <div className="flex gap-6 items-center">
-        <div className="w-min bg-stone-800 px-4 pt-3 pb-8 rounded-full">
-          <h2 className="writing-vertical-lr font-black text-5xl tracking-[-1.5rem] text-roboPink">
-            PROGRAMMING
+      <div className="flex xl:flex-row flex-col gap-2 xl:gap-6 items-center">
+        <div className="w-min bg-stone-800 pt-2 pb-2 px-4 xl:px-4 xl:pt-3 xl:pb-8 rounded-full">
+          <h2 className="xl:writing-vertical-lr font-black text-3xl lg:text-5xl xl:tracking-[-1.5rem] text-roboPink xl:uppercase">
+            Programming
           </h2>
         </div>
         <div className="flex flex-col gap-4">
-          <div className="flex flex-col lg:flex-row pt-5 gap-4 lg:gap-4">
+          <div className="flex flex-col xl:flex-row pt-5 gap-4 lg:gap-4 items-center">
             <img
               src={"/activity/programming-1.png"}
               alt={"Programmer waiting for mech guy"}
-              className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem]"
+              className="aspect-video object-cover rounded-2xl xl:w-[40%] w-full max-w-[32rem]"
             />
             <div className="bg-stone-800 p-4 rounded-2xl">
               <h3 className="font-bold text-2xl mb-2">
@@ -41,7 +41,7 @@ export default function ProgrammingSection({
               </p>
             </div>
           </div>
-          <div className="bg-stone-800 p-4 rounded-2xl flex">
+          <div className="bg-stone-800 p-4 rounded-2xl flex lg:flex-row flex-col-reverse gap-3">
             <div>
               <h3 className="font-bold text-2xl mb-2">Computer Vision</h3>
               <p className="text-sm lg:text-lg mb-2">
