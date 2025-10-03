@@ -8,52 +8,68 @@ export default function OutreachSection({
 }) {
   return (
     <div id={"outreach"} ref={divRef} className="px-5 lg:px-36 py-10">
-      <div className="flex items-center justify-center">
-        <h1 className="inline text-3xl lg:text-4xl p-3 text-roboPink font-extrabold rounded-2xl mt-2 mb-4">
-          Outreach Team
-        </h1>
-      </div>
-      <div className="flex flex-col lg:flex-row pt-5 gap-5 lg:gap-10">
-        <img
-          src={"/activity/outreach-1.png"}
-          alt={"Programmer locked in"}
-          className="rounded-2xl aspect-video object-cover w-[40vw] max-w-[36rem]"
-        />
-        <p className="text-sm lg:text-lg">
-          The RoboKnights outreach team is dedicated to expanding STEM
-          accessibility and fostering a passion for robotics within diverse
-          communities. Through a combination of mentorship, hands-on learning
-          opportunities, and professional networking, the team strives to
-          inspire the next generation of innovators. By collaborating with local
-          organizations and educational institutions, RoboKnights works to
-          provide students with meaningful exposure to engineering, coding, and
-          problem-solving. Outreach efforts emphasize inclusivity, ensuring that
-          students from all backgrounds have the resources and encouragement
-          needed to explore STEM fields. The team also engages with industry
-          professionals and mentors to refine its own knowledge while extending
-          support to those looking to develop their technical skills.
-        </p>
-      </div>
-      <div className="flex flex-col lg:flex-row-reverse pt-5 gap-5 lg:gap-10">
-        <img
-          src={"/activity/outreach-2.png"}
-          alt={"Programmer waiting for mech guy"}
-          className="rounded-2xl aspect-video object-cover w-[30vw] max-w-[32rem]"
-        />
-        <p className="text-sm lg:text-lg">
-          The RoboKnights outreach team is dedicated to expanding STEM
-          accessibility and fostering a passion for robotics within diverse
-          communities. Through a combination of mentorship, hands-on learning
-          opportunities, and professional networking, the team strives to
-          inspire the next generation of innovators. By collaborating with local
-          organizations and educational institutions, RoboKnights works to
-          provide students with meaningful exposure to engineering, coding, and
-          problem-solving. Outreach efforts emphasize inclusivity, ensuring that
-          students from all backgrounds have the resources and encouragement
-          needed to explore STEM fields. The team also engages with industry
-          professionals and mentors to refine its own knowledge while extending
-          support to those looking to develop their technical skills.
-        </p>
+      <div className="flex gap-6 items-center">
+        <div className="w-min bg-stone-800 px-4 pt-3 pb-9 rounded-full">
+          <h2 className="writing-vertical-lr font-black text-5xl tracking-[-1.5rem] text-roboPink">
+            OUTREACH
+          </h2>
+        </div>
+        <div className="flex gap-4">
+          <div className="flex flex-col gap-4 lg:gap-4 basis-0 grow">
+            <div className="bg-stone-800 p-4 rounded-2xl">
+              <h3 className="font-bold text-2xl mb-2">Our Values</h3>
+              <p className="text-sm lg:text-lg">
+                <ul className="list-disc ml-6">
+                  <li>
+                    <i>Inspire</i> the next generation of innovators
+                  </li>
+                  <li className="font-bold">Inclusivity</li>
+                  <ul className="list-disc ml-4">
+                    <li>
+                      Expanding <i>STEM accessibility</i> to students of all
+                      backgrounds
+                    </li>
+                    <li>
+                      Fostering a passion for robotics in{" "}
+                      <i>diverse communities</i>
+                    </li>
+                  </ul>
+                </ul>
+              </p>
+            </div>
+            <div className="bg-stone-800 p-4 rounded-2xl">
+              <h3 className="font-bold text-2xl mb-2">What We Do</h3>
+              <p className="text-sm lg:text-lg">
+                <ul className="list-disc ml-6">
+                  <li>Mentorship</li>
+                  <li>Providing hands-on learning opportunities</li>
+                  <li>
+                    Collaborating with local organizations and educational
+                    institutions
+                  </li>
+                  <li>
+                    Expose students to engineering, programming, and
+                    problem-solving
+                  </li>
+                  <li className="font-bold">
+                    Network with industry professionals
+                  </li>
+                  <ul className="list-disc ml-4">
+                    <li>To refine our own knowledge</li>
+                    <li>
+                      To help others looking to develop their technical skills
+                    </li>
+                  </ul>
+                </ul>
+              </p>
+            </div>
+          </div>
+          <img
+            src={"/activity/outreach-1.png"}
+            alt={"Outreach team working together"}
+            className="aspect-video object-cover rounded-2xl w-[50%]"
+          />
+        </div>
       </div>
     </div>
   )

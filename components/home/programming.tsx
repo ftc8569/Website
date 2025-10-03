@@ -7,41 +7,68 @@ export default function ProgrammingSection({
   divRef: RefObject<HTMLDivElement | null>
 }) {
   return (
-    <div id={"programming"} ref={divRef} className="px-5 lg:px-36 py-10">
-      <div className="flex items-center justify-center">
+    <div id={"programming"} ref={divRef} className="px-5 lg:px-36 pb-10">
+      {/* <div className="flex items-center justify-center">
         <h1 className="inline text-3xl lg:text-4xl p-3 text-roboPink font-extrabold rounded-2xl mt-2 mb-4">
           Programming Team
         </h1>
-      </div>
-      <div className="flex flex-col lg:flex-row pt-5 gap-5 lg:gap-10">
-        <img
-          src={"/activity/programming-1.png"}
-          alt={"Programmer waiting for mech guy"}
-          className="aspect-video object-cover rounded-2xl w-[40vw] max-w-[32rem]"
-        />
-        <p className="text-sm lg:text-lg">
-          This year we have been working to develop advanced control systems to
-          improve the robot's performance. Our team has been working on PID
-          controllers for the control of our arm mechanism and it has greatly
-          improved our control and maneuverability. We are also working on using
-          Choreo, ported to FTC, to improve pathing and speed up our autos.
-        </p>
-      </div>
-      <div className="flex flex-col lg:flex-row-reverse mt-2 pt-5 gap-5 lg:gap-10">
-        <img
-          src={"/activity/programming-2.png"}
-          alt={"Programmer locked in"}
-          className="rounded-2xl aspect-video object-contain w-[35vw] max-w-[24rem]"
-        />
-        <p className="text-sm lg:text-lg">
-          The programming team has been working to create computer vision
-          scripts that utilize OpenCV and Limelight 3A. The camera can
-          distinguish between the different color samples(blocks) and identify
-          their edges. Furthermore, it can estimate the sample's position down
-          to a margin of error of only about half a centimeter. All this
-          processing is done in real time, achieving 60 frames per second,
-          allowing for automated, accurate intake.{" "}
-        </p>
+      </div> */}
+      <div className="flex gap-6 items-center">
+        <div className="w-min bg-stone-800 px-4 pt-3 pb-8 rounded-full">
+          <h2 className="writing-vertical-lr font-black text-5xl tracking-[-1.5rem] text-roboPink">
+            PROGRAMMING
+          </h2>
+        </div>
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col lg:flex-row pt-5 gap-4 lg:gap-4">
+            <img
+              src={"/activity/programming-1.png"}
+              alt={"Programmer waiting for mech guy"}
+              className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem]"
+            />
+            <div className="bg-stone-800 p-4 rounded-2xl">
+              <h3 className="font-bold text-2xl mb-2">
+                Control &amp; Autonomous
+              </h3>
+              <p className="text-sm lg:text-lg mb-2">
+                We have been working to develop advanced control systems and{" "}
+                <i>PID controllers</i> for our arm mechanism, which have greatly
+                improved our control and maneuverability.
+                <br />
+                <br />
+                We are also working on using <i>Choreo</i>, ported to FTC, to
+                improve pathing and speed up our autos.
+              </p>
+            </div>
+          </div>
+          <div className="bg-stone-800 p-4 rounded-2xl flex">
+            <div>
+              <h3 className="font-bold text-2xl mb-2">Computer Vision</h3>
+              <p className="text-sm lg:text-lg mb-2">
+                We also have been working with computer vision–utilizing{" "}
+                <i>OpenCV and a Limelight 3A</i>.
+              </p>
+              <p className="text-sm lg:text-lg">
+                Our system can:
+                <ul className="list-disc ml-6">
+                  <li>Distinguish between sample (block) colors</li>
+                  <li>Identify block edges</li>
+                  <li>
+                    Estimate block position to a <i>~0.5cm accuracy</i>
+                  </li>
+                  <li>
+                    Runs efficiently at <i>60fps</i>
+                  </li>
+                </ul>
+              </p>
+            </div>
+            <img
+              src={"/activity/programming-2.png"}
+              alt={"Programmer locked in"}
+              className="rounded-2xl aspect-video object-contain w-[25vw]"
+            />
+          </div>
+        </div>
       </div>
     </div>
   )

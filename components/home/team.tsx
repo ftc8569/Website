@@ -22,12 +22,12 @@ export default function Team({
   return (
     <div id={"team"} className="flex flex-col w-full lg:px-36" ref={divRef}>
       <div className="flex items-center justify-center">
-        <h1 className="inline text-3xl lg:text-4xl p-3 text-roboPink font-extrabold text-center rounded-2xl mt-2 mb-4">
+        <h1 className="inline text-3xl lg:text-4xl p-3 text-roboHotPink font-extrabold text-center rounded-2xl mt-2 mb-4">
           Meet Our Team
         </h1>
       </div>
       <p className="px-5 text-sm lg:text-lg pb-5 text-center">
-        The Roboknights are divided into three subteams, where each has a team
+        The RoboKnights are divided into three subteams, where each has a team
         lead who organizes tasks and helps everyone work together to keep the
         team running successfully.
         {/* Programming,

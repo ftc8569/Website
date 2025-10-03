@@ -33,7 +33,25 @@ export default function Home() {
         }}
       />
       <HomeContent divRef={homeRef} navbarRef={navbarRef} />
+
+      {/* <p className="text-sm lg:text-lg">
+        Robots are cool because they combine advanced technology with real-world
+        applications, performing tasks with incredible precision and efficiency.
+        They can handle dangerous or repetitive jobs that humans would find
+        difficult or boring, like exploring space or assembling intricate
+        machinery. Robots also demonstrate the power of artificial intelligence,
+        learning and adapting to new environments and challenges. Their ability
+        to interact with people and their surroundings opens up exciting
+        possibilities in fields like healthcare, education, and entertainment.
+        Ultimately, robots embody the future of innovation, blending science
+        fiction with reality in a way that sparks imagination and curiosity.
+      </p> */}
       <Team divRef={teamRef} />
+      <div className="flex items-center justify-center">
+        <h1 className="inline text-3xl lg:text-4xl p-3 text-roboHotPink font-extrabold rounded-2xl mt-12 mb-8">
+          What We Do
+        </h1>
+      </div>
       <ProgrammingSection divRef={programmingRef} />
       <MechanicalSection divRef={mechanicalRef} />
       <OutreachSection divRef={outreachRef} />

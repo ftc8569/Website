@@ -218,7 +218,7 @@ export default function HomeContent({
       <div className="flex flex-row" ref={divRef}>
         <div className="flex-1 flex flex-col p-3 lg:p-10">
           <div className="flex items-center justify-center">
-            <h1 className="inline text-2xl text-center lg:text-3xl p-3 text-roboPink font-extrabold rounded-2xl my-2">
+            <h1 className="inline text-2xl text-center lg:text-3xl p-3 text-roboHotPink font-extrabold rounded-2xl my-2">
               RoboKnights - Team 8569
             </h1>
           </div>
