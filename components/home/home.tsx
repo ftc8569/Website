@@ -137,7 +137,7 @@ export default function HomeContent({
     return (
       <div className="example-3 w-[30rem] rounded-lg">
         <div className="inner bg-stone-900">
-          <div className="flex flex-col p-3">
+          <div className="flex flex-col p-4">
             <div className="flex flex-row-reverse gap-x-2 w-full">
               <Image
                 src={`/icons/github.svg`}
@@ -169,7 +169,7 @@ export default function HomeContent({
               />
               <h1 className="text-2xl lg:text-5xl mr-auto pl-2">8569</h1>
             </div>
-            <h1 className="text-4xl lg:text-6xl font-semibold p-2 lg:p-2 rounded-2xl w-min mt-1 mb-4">
+            <h1 className="text-4xl lg:text-6xl font-semibold py-2 lg:py-2 rounded-2xl w-min mt-1 mb-4">
               RoboKnights
             </h1>
             <h1 className="text-2xl">
