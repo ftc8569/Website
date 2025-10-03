@@ -20,9 +20,24 @@ export default function HomeContent({
   const backgroundRef = useRef<HTMLDivElement | null>(null)
   const animationRef = useRef<number | null>(null)
 
-  useEffect(() => {
-    if (navbarRef.current != null)
+  const handle_navbar_offset = () => {
+    if (
+      navbarRef.current != null &&
+      navbarRef.current.getBoundingClientRect().width >= 1280
+    )
       setOffset(navbarRef.current.getBoundingClientRect().height) // Offset for perfect height on home screen (The white bar)
+    else setOffset(0)
+  }
+
+  useEffect(() => {
+    window.addEventListener("resize", handle_navbar_offset)
+    return () => {
+      window.removeEventListener("resize", handle_navbar_offset)
+    }
+  }, [])
+
+  useEffect(() => {
+    handle_navbar_offset()
 
     const handleScroll = () => {
       if (!divRef.current || !backgroundRef.current) return
@@ -55,12 +70,25 @@ export default function HomeContent({
     const ctx = canvas.getContext("2d")
     if (!ctx) return
 
-    canvas.width = backgroundRef.current.clientWidth
-    canvas.height =
-      backgroundRef.current.clientHeight -
-      navbarRef.current.getBoundingClientRect().height
-
     const worker = new Worker(new URL("./animation.worker.ts", import.meta.url))
+
+    const update_canvas_size = () => {
+      // @ts-expect-error
+      canvas.width = backgroundRef.current.clientWidth
+      canvas.height =
+        // @ts-expect-error
+        backgroundRef.current.clientHeight -
+        // @ts-expect-error
+        navbarRef.current.getBoundingClientRect().height
+
+      worker.postMessage({
+        type: "resize",
+        width: canvas.width,
+        height: canvas.height
+      })
+    }
+
+    update_canvas_size()
 
     worker.postMessage({
       type: "init",
@@ -102,6 +130,7 @@ export default function HomeContent({
     }
 
     window.addEventListener("mousemove", handleMouseMove, { passive: true })
+    window.addEventListener("resize", update_canvas_size)
 
     canvas.addEventListener("click", (e) => {
       const rect = canvas.getBoundingClientRect()
@@ -125,6 +154,7 @@ export default function HomeContent({
       }
       worker.terminate()
       window.removeEventListener("mousemove", handleMouseMove)
+      window.removeEventListener("resize", update_canvas_size)
     }
   }, [])
 
@@ -209,7 +239,7 @@ export default function HomeContent({
         ref={backgroundRef}
         style={{ height: `calc(100vh - ${offset}px)` }}
       >
-        <canvas className="" ref={canvasRef} />
+        <canvas className="w-full h-full" ref={canvasRef} />
         <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3 noselect">
           <IntroCard />
         </div>
