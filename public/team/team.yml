@@ -9,6 +9,9 @@ mechanical:
   - src: peyton.jpg
     name: Peyton Harrell
     role: Mechanical Member
+  - src: billy.jpg
+    name: Billy Dyer
+    role: Mechanical Member
   - src: prana.jpg
     name: Prana Bernstein
     role: Mechanical Member

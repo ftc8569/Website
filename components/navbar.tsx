@@ -142,7 +142,7 @@ export default function Navbar({
             })()
           }
         />
-        <NavbarItem title={"Blog"} current={current == 6} ref={null} />
+        {/* <NavbarItem title={"Blog"} current={current == 6} ref={null} /> */}
         <NavbarItem
           title={"Team"}
           current={current == 1}

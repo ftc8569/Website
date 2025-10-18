@@ -36,8 +36,8 @@ export default function ProgrammingSection({
                 improved our control and maneuverability.
                 <br />
                 <br />
-                We are also working on using <i>Choreo</i>, ported to FTC, to
-                improve pathing and speed up our autos.
+                We are also working on devloping <i>full robot simulations</i>, to
+                speed up development and enable asynchronous work.
               </p>
             </div>
           </div>
@@ -45,7 +45,7 @@ export default function ProgrammingSection({
             <div>
               <h3 className="font-bold text-2xl mb-2">Computer Vision</h3>
               <p className="text-sm lg:text-lg mb-2">
-                We also have been working with computer vision–utilizing{" "}
+                We also have been working with computer vision-utilizing{" "}
                 <i>OpenCV and a Limelight 3A</i>.
               </p>
               <p className="text-sm lg:text-lg">

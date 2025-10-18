@@ -49,7 +49,7 @@ export default function Team({
         We connect with the community, spread awareness about STEM and FIRST,
         and help find sponsors for our team.
       </SubTeam>
-      <SubTeam name={"Mentors"} team={team?.mentors} />
+      {/* <SubTeam name={"Mentors"} team={team?.mentors} /> */}
     </div>
   )
 }

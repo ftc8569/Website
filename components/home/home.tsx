@@ -210,7 +210,7 @@ export default function HomeContent({
             <div className="flex flex-row pt-4 gap-x-4">
               {[
                 { text: "Contact Us", func: handleContactUsClick },
-                { text: "Blog", func: handleBlogClick }
+                // { text: "Blog", func: handleBlogClick }
               ].map(({ text, func }, index) => (
                 <button key={index} onClick={func}>
                   <div className="flex flex-row p-2 border-1 border-roboHotPink rounded-xl gap-x-1 align-middle bg-transparent hover:bg-roboHotPink hover:bg-opacity-10 transition-colors">
