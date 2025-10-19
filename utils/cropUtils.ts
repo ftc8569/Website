@@ -1,24 +1,24 @@
 export const createCroppedImage = async (
   imageSrc: string,
   pixelCrop: { x: number; y: number; width: number; height: number },
-  fileType = 'image/jpeg'
+  fileType = "image/jpeg"
 ): Promise<Blob | null> => {
   return new Promise((resolve) => {
-    const image = new Image();
-    image.crossOrigin = 'anonymous';
-    image.src = imageSrc;
+    const image = new Image()
+    image.crossOrigin = "anonymous"
+    image.src = imageSrc
 
     image.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
+      const canvas = document.createElement("canvas")
+      const ctx = canvas.getContext("2d")
 
       if (!ctx) {
-        resolve(null);
-        return;
+        resolve(null)
+        return
       }
 
-      canvas.width = pixelCrop.width;
-      canvas.height = pixelCrop.height;
+      canvas.width = pixelCrop.width
+      canvas.height = pixelCrop.height
 
       ctx.drawImage(
         image,
@@ -30,11 +30,11 @@ export const createCroppedImage = async (
         0,
         pixelCrop.width,
         pixelCrop.height
-      );
+      )
 
       canvas.toBlob((blob) => {
-        resolve(blob);
-      }, fileType);
-    };
-  });
-};
+        resolve(blob)
+      }, fileType)
+    }
+  })
+}

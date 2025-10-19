@@ -1,9 +1,14 @@
 import { notFound } from "next/navigation"
 import { PrismaClient } from "@prisma/client"
 
-export async function GET(req: Request, { params }: {
-  params: Promise<{ id: string }>
-}) {
+export async function GET(
+  req: Request,
+  {
+    params
+  }: {
+    params: Promise<{ id: string }>
+  }
+) {
   const prisma = new PrismaClient()
   const blog = await prisma.blogPost.findFirst({
     where: {
@@ -11,7 +16,10 @@ export async function GET(req: Request, { params }: {
     }
   })
 
-  if(blog != null)
-    return new Response(blog.image, { status: 200, headers: { "Content-Type": "image/" + blog.imageType } })
+  if (blog != null)
+    return new Response(blog.image, {
+      status: 200,
+      headers: { "Content-Type": "image/" + blog.imageType }
+    })
   else return notFound()
 }

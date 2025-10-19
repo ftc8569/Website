@@ -20,12 +20,12 @@ export default function Footer({
   return (
     <div
       className="bg-[#151515] w-full"
-      style={{ paddingBottom: `${downOffset}px` }}
+      style={{ paddingBottom: `${downOffset * 2}px` }}
     >
       <div className="flex flex-row justify-center">
         <div className="bg-roboGray w-full mx-2 lg:mx-10 p-[2px] rounded-xl"></div>
       </div>
-      <div className="flex flex-row p-5 lg:px-10 items-center">
+      <div className="flex lg:flex-row flex-col gap-2 p-5 lg:px-10 items-center">
         <div className="flex-1 flex items-center justify-start">
           <Image
             src="/stickerlogo.png"
@@ -46,21 +46,28 @@ export default function Footer({
             className={`hover:cursor-pointer`}
             onClick={() => window.open("https://github.com/ftc8569")}
             width={40}
-            height={40} />
+            height={40}
+          />
           <Image
             src={`/icons/linkedin.svg`}
             alt="LinkedIn"
             className={`hover:cursor-pointer`}
-            onClick={() => window.open("https://www.linkedin.com/company/ftc8569")}
+            onClick={() =>
+              window.open("https://www.linkedin.com/company/ftc8569")
+            }
             width={50}
-            height={50} />
+            height={50}
+          />
           <Image
             src={`/icons/instagram.svg`}
             alt="Instagram"
             className={`hover:cursor-pointer`}
-            onClick={() => window.open("https://www.instagram.com/roboknights8569/")}
+            onClick={() =>
+              window.open("https://www.instagram.com/roboknights8569/")
+            }
             width={50}
-            height={50} />
+            height={50}
+          />
         </div>
       </div>
     </div>

@@ -54,16 +54,16 @@ export default function ContactUs({
       className="py-10 bg-[#151515] px-2 lg:px-56"
       ref={divRef}
     >
-      <div className="flex items-center justify-center pb-5">
-        <h1 className="inline text-3xl lg:text-4xl p-3 bg-roboPink text-black rounded-2xl mt-2 mb-4">
-          Contact Us
+      <div className="flex items-center justify-center">
+        <h1 className="inline text-3xl lg:text-4xl p-3 text-roboPink font-extrabold text-center rounded-2xl mt-2 mb-4">
+          Contact
         </h1>
       </div>
-      <div className="flex flex-col lg:flex-row gap-5">
+      <div className="flex flex-col lg:flex-row gap-4">
         <textarea
           form="contact-form"
           className={
-            "w-full lg:w-2/3 h-36 p-1 bg-[#363636] rounded border-2 " +
+            "w-full lg:w-2/3 h-36 py-2 px-3 bg-[#363636] rounded-xl border-2 " +
             (validEntry ? "border-roboPink" : "border-red-500")
           }
           placeholder="I was wondering how you guys did..."
@@ -81,7 +81,7 @@ export default function ContactUs({
               type="email"
               placeholder="Enter your email"
               className={
-                "bg-[#363636] text-xl w-full mb-2 p-1 rounded-sm border-2 " +
+                "bg-[#363636] text-lg w-full mb-2 py-1 px-2 rounded-xl border-2 " +
                 (validEmail ? "border-roboPink" : "border-red-500")
               }
             />
@@ -89,18 +89,18 @@ export default function ContactUs({
               name="name"
               type="text"
               placeholder="Enter your name"
-              className="bg-[#363636] text-xl mb-2 p-1 rounded-sm border-roboPink border-2 w-full"
+              className="bg-[#363636] text-lg mb-2 py-1 px-2 rounded-xl border-roboPink border-2 w-full"
             />
             <div className="flex flex-row">
               <input
                 name="subject"
                 type="text"
                 placeholder="Enter your subject"
-                className="bg-[#363636] text-xl w-full p-1 rounded-sm border-roboPink border-2"
+                className="bg-[#363636] text-lg w-full py-1 px-2 rounded-xl border-roboPink border-2"
               />
               <button
                 type="submit"
-                className="g-recaptcha bg-roboHotPink px-4 ml-2 rounded-sm text-lg"
+                className="g-recaptcha bg-roboHotPink px-4 ml-2 rounded-xl text-lg"
               >
                 Send
               </button>

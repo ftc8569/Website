@@ -1,0 +1,112 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: roboknights-website
+spec:
+  revisionHistoryLimit: 3
+  replicas: 1
+  selector:
+    matchLabels:
+      app: roboknights
+  template:
+    metadata:
+      labels:
+        app: roboknights
+    spec:
+      containers:
+        - name: roboknights
+          image: docker.bedson.tech/tbedson/roboknights:1.0.0
+          ports:
+            - containerPort: 3000
+      imagePullSecrets:
+        - name: docker.bedson.tech
+      envFrom:
+        - secretRef:
+          name: roboknights-secret
+---
+# Postgresql deployment
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rk-postgres-pvc
+  labels:
+    app: rk-postgres
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi
+---
+# PostgreSQL Deployment - run postgres
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rk-postgres
+  labels:
+    app: rk-postgres
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rk-postgres
+  template:
+    metadata:
+      labels:
+        app: rk-postgres
+    spec:
+      containers:
+        - name: rk-postgres
+          image: postgres:17
+          env:
+            - name: POSTGRES_USER
+              valueFrom:
+                secretKeyRef:
+                  name: roboknights-secret
+                  key: POSTGRES_USER
+            - name: POSTGRES_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: roboknights-secret
+                  key: POSTGRES_PASSWORD
+            - name: POSTGRES_DB
+              value: roboknights
+          ports:
+            - containerPort: 5432
+          volumeMounts:
+            - mountPath: /var/lib/postgresql/data
+              name: rk-postgres-data
+      volumes:
+        - name: rk-postgres-data
+          persistentVolumeClaim:
+            claimName: rk-postgres-pvc
+---
+# PostgreSQL Service - allows connections internally, not exposed externally
+# Can still be accessed outside vm on the host machine though
+apiVersion: v1
+kind: Service
+metadata:
+  name: rk-postgres
+  labels:
+    app: rk-postgres
+spec:
+  selector:
+    app: rk-postgres
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: 5432
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: roboknights-service
+spec:
+  selector:
+    app: roboknights
+  ports:
+    - protocol: TCP
+      port: 3000
+      targetPort: 3000
+  type: NodePort

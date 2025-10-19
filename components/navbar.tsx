@@ -39,8 +39,8 @@ export default function Navbar({
         teamRef,
         programmingRef,
         mechanicalRef,
-        outreachRef,
-        contactRef
+        outreachRef
+        //        contactRef
       } = homePageRefs
 
       /*
@@ -107,7 +107,7 @@ export default function Navbar({
 
   return (
     <div
-      className="fixed bottom-0 lg:sticky lg:top-0 flex flex-row w-full justify-between
+      className="fixed bottom-0 xl:sticky xl:top-0 flex flex-row w-full justify-between
       items-center px-4 py-2 z-[2] transition-all duration-[750ms]"
       ref={navbarRef}
       style={{
@@ -115,12 +115,14 @@ export default function Navbar({
       }}
     >
       {/* Animated bottom border */}
-      <div 
+      <div
         className={`absolute bottom-0 left-1/2 h-0.25 bg-stone-500 transition-all duration-[750ms] ${
-          background ? 'w-full -translate-x-1/2 opacity-100' : 'w-0 -translate-x-1/2 opacity-0'
+          background
+            ? "w-full -translate-x-1/2 opacity-100"
+            : "w-0 -translate-x-1/2 opacity-0"
         }`}
       />
-      <div className="hidden lg:flex flex-row">
+      <div className="hidden xl:flex flex-row">
         <Image
           src="/stickerlogo.png"
           alt="Sticker Logo"
@@ -130,7 +132,7 @@ export default function Navbar({
         />
         <h1 className="text-4xl font-semibold pl-4">RoboKnights</h1>
       </div>
-      <div className="flex flex-row flex-wrap space-x-2 lg:space-x-8">
+      <div className="flex flex-row flex-wrap space-x-2 lg:space-x-4 xl:space-x-8">
         <NavbarItem
           title={"Home"}
           current={current == 0}
@@ -140,7 +142,7 @@ export default function Navbar({
             })()
           }
         />
-        <NavbarItem title={"Blog"} current={current == 6} ref={null} />
+        {/* <NavbarItem title={"Blog"} current={current == 6} ref={null} /> */}
         <NavbarItem
           title={"Team"}
           current={current == 1}
@@ -199,10 +201,8 @@ function NavbarItem({
   return (
     <button onClick={handleClick}>
       <p
-        className={
-          `text-xs lg:text-xl my-2 inline float-right ${styles.currentNav} 
-          ${(current ? styles.currentNavAdded : styles.currentNavRemoved)}`
-        }
+        className={`text-xs md:text-base lg:text-lg xl:text-xl my-2 inline float-right ${styles.currentNav} 
+          ${current ? styles.currentNavAdded : styles.currentNavRemoved}`}
       >
         {title}
       </p>

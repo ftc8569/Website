@@ -1,13 +1,14 @@
-"use server";
+"use server"
 
 import { notFound } from "next/navigation"
 import MarkdownIt from "markdown-it"
 import BlogWrapper from "@/components/blogs/Blog"
 import { PrismaClient } from "@prisma/client"
-import { uint8ArrayToBase64 } from "@/utils/imageBuffer"
 import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 import { getServerSession } from "next-auth"
-export default async function BlogPage({ params }: {
+export default async function BlogPage({
+  params
+}: {
   params: Promise<{ id: string }>
 }) {
   const prisma = new PrismaClient()
@@ -29,10 +30,10 @@ export default async function BlogPage({ params }: {
     }
   })
 
-  if(blog == null) return notFound()
-  if(!blog.published) {
+  if (blog == null) return notFound()
+  if (!blog.published) {
     const session = await getServerSession(authOptions)
-    if(session == null) return notFound()
+    if (session == null) return notFound()
   }
 
   const clientBlog = {
@@ -53,7 +54,9 @@ export default async function BlogPage({ params }: {
 
   console.log(html)
 
-  return <BlogWrapper children={
-    <div dangerouslySetInnerHTML={{ __html: html }} />
-  } blog={clientBlog} />
+  return (
+    <BlogWrapper blog={clientBlog}>
+      <div dangerouslySetInnerHTML={{ __html: html }} />
+    </BlogWrapper>
+  )
 }

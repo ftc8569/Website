@@ -1,6 +1,6 @@
 programmers:
   - src: trevor.jpg
-    name: Trevor bedson
+    name: Trevor Bedson
     role: Captain and Programming Lead
 mechanical:
   - src: tanush.jpg
@@ -8,6 +8,9 @@ mechanical:
     role: Captain and Mechanical Lead
   - src: peyton.jpg
     name: Peyton Harrell
+    role: Mechanical Member
+  - src: billy.jpg
+    name: Billy Dyer
     role: Mechanical Member
   - src: prana.jpg
     name: Prana Bernstein

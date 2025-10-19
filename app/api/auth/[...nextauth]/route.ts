@@ -1,10 +1,8 @@
-import NextAuth, { AuthOptions, Session, User } from "next-auth"
+import NextAuth, { AuthOptions } from "next-auth"
 import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import CredentialsProvider from "next-auth/providers/credentials"
 import * as argon2 from "argon2"
-import { JWT } from "next-auth/jwt"
-import { AdapterUser } from "next-auth/adapters"
 
 const prisma = new PrismaClient()
 
@@ -21,7 +19,7 @@ const authOptions: AuthOptions = {
         },
         password: { label: "Password", type: "password" }
       },
-      async authorize(credentials, req) {
+      async authorize(credentials) {
         if (!credentials) return null
 
         let user
@@ -72,7 +70,7 @@ const authOptions: AuthOptions = {
       }
       return token
     },
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       // Add user ID to the session
       session.user.id = token.id
       session.user.email = token.email

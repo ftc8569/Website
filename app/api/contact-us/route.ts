@@ -13,13 +13,17 @@ export async function POST(req: Request) {
     .then((res) => res.success)
 
   if (!valid) return new Response(null, { status: 403 })
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,
     secure: true,
     auth: {
-      user: process.env.CONTACT_EMAIL,
-      pass: process.env.CONTACT_PASSWORD
+      type: "OAUTH2",
+      user: "ftcteam8569@roboknights.net",
+      clientId: process.env.GMAIL_CLIENT_ID,
+      clientSecret: process.env.GMAIL_CLIENT_SECRET,
+      refreshToken: process.env.GMAIL_CLIENT_REFRESH_TOKEN
     }
   })
 
@@ -27,7 +31,7 @@ export async function POST(req: Request) {
     from: data.email,
     to: process.env.CONTACT_EMAIL,
     envelope: {
-      from: "Contact Us <bedson26t@ncssm.edu>",
+      from: "Contact Us <ftcteam8569@roboknights.net>",
       to: process.env.CONTACT_EMAIL,
       cc: data.email
     },

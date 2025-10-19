@@ -11,8 +11,8 @@ export default function Blog() {
 
   useEffect(() => {
     fetch("/api/blog")
-      .then(res => res.json())
-      .then(data => setBlogs(data))
+      .then((res) => res.json())
+      .then((data) => setBlogs(data))
   }, [])
 
   return (
@@ -31,9 +31,7 @@ export default function Blog() {
         >
           <Masonry gutter="1rem">
             {blogs.map((blog, index) => {
-              return (
-                <BlogCard data={blog} key={index} />
-              )
+              return <BlogCard data={blog} key={index} />
             })}
           </Masonry>
         </ResponsiveMasonry>
@@ -43,11 +41,18 @@ export default function Blog() {
 }
 
 function BlogCard({ data }: { data: BlogItem }) {
-
   return (
     <button onClick={() => window.open("/blog/" + data.id)}>
-      <div className={`bg-stone-900 ring-2 ring-blue-500/50 hover:ring-blue-300/50 rounded-2xl`} >
-        <Image src={`/api/blog/image/${data.id}`} alt={"Blog Image"} className={`rounded-t-2xl`} width={1000} height={600} />
+      <div
+        className={`bg-stone-900 ring-2 ring-blue-500/50 hover:ring-blue-300/50 rounded-2xl`}
+      >
+        <Image
+          src={`/api/blog/image/${data.id}`}
+          alt={"Blog Image"}
+          className={`rounded-t-2xl`}
+          width={1000}
+          height={600}
+        />
         <div className="py-5 px-3 text-left">
           <h1 className="text-3xl font-semibold pb-2">{data.title}</h1>
           <h1>{data.description}</h1>
@@ -67,6 +72,6 @@ export interface BlogItem {
   date: string // MM/DD/YYYY
   readTime: string // "X minutes"
   content: string // In markdown
-  updatedAt: string,
+  updatedAt: string
   published: boolean
 }

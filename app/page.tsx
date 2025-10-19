@@ -34,6 +34,11 @@ export default function Home() {
       />
       <HomeContent divRef={homeRef} navbarRef={navbarRef} />
       <Team divRef={teamRef} />
+      <div className="flex items-center justify-center">
+        <h1 className="inline text-3xl lg:text-4xl p-3 text-roboHotPink font-extrabold rounded-2xl mt-12 mb-8">
+          What We Do
+        </h1>
+      </div>
       <ProgrammingSection divRef={programmingRef} />
       <MechanicalSection divRef={mechanicalRef} />
       <OutreachSection divRef={outreachRef} />
