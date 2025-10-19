@@ -5,14 +5,24 @@ import { MailOptions } from "nodemailer/lib/smtp-transport"
 export async function POST(req: Request) {
   const data: ContactUsData = await req.json()
 
-  const valid: boolean = await fetch(
-    `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.SECRET_KEY}&response=${data.token}`,
-    { method: "POST" }
+  const valid: any = await fetch(
+    `https://recaptchaenterprise.googleapis.com/v1/projects/prorickey/assessments?key=${process.env.GOOGLE_API_KEY}`,
+    { 
+      method: "POST",
+      body: JSON.stringify({
+        event: {
+          token: data.token,
+          siteKey: process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY
+        }
+      })
+    }
   )
     .then((res) => res.json())
-    .then((res) => res.success)
 
-  if (!valid) return new Response(null, { status: 403 })
+  if (!valid.tokenProperties.valid) {
+    console.log(valid)
+    return new Response(null, { status: 403 })
+  }
 
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",

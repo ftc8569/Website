@@ -18,11 +18,11 @@ spec:
           image: docker.bedson.tech/tbedson/roboknights:1.0.0
           ports:
             - containerPort: 3000
+          envFrom:
+            - secretRef:
+              name: roboknights-secret
       imagePullSecrets:
         - name: docker.bedson.tech
-      envFrom:
-        - secretRef:
-          name: roboknights-secret
 ---
 # Postgresql deployment
 apiVersion: v1

@@ -20,7 +20,7 @@ export default function RootLayout({
   children: ReactNode
 }>) {
   return (
-    <ReCaptchaProvider>
+    <ReCaptchaProvider reCaptchaKey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}>
       <html lang="en">
         <body>
           <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
