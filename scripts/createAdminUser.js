@@ -1,8 +1,7 @@
 import { PrismaClient } from "@prisma/client"
 import * as argon2 from "argon2"
 
-(async () => {
-
+;(async () => {
   const prisma = new PrismaClient()
 
   const password = await argon2.hash(process.env.ADMIN_PASSWORD)
@@ -17,5 +16,4 @@ import * as argon2 from "argon2"
   })
 
   console.log(res)
-
 })()

@@ -7,7 +7,7 @@
     "build": "npx next build",
     "start": "npx next start",
     "lint": "npx next lint",
-    "pretty": "npx prettier . --write",
+    "format": "npx prettier . --write",
     "createAdminUser": "node scripts/createAdminUser.js",
     "prisma:deploy": "npx prisma db push"
   },
@@ -17,7 +17,6 @@
     "@tailwindcss/postcss": "^4.1.13",
     "argon2": "^0.44.0",
     "dotenv": "^17.2.2",
-    "googleapis": "^164.0.0",
     "markdown-it": "^14.1.0",
     "next": "15.5.3",
     "next-auth": "^4.24.11",

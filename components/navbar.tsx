@@ -39,8 +39,8 @@ export default function Navbar({
         teamRef,
         programmingRef,
         mechanicalRef,
-        outreachRef,
-        contactRef
+        outreachRef
+        //        contactRef
       } = homePageRefs
 
       /*

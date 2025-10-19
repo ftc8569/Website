@@ -21,7 +21,7 @@ export default function ProgrammingSection({
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col xl:flex-row pt-5 gap-4 lg:gap-4 items-center">
-            <img
+            <Image
               src={"/activity/programming-1.png"}
               alt={"Programmer waiting for mech guy"}
               className="aspect-video object-cover rounded-2xl xl:w-[40%] w-full max-w-[32rem]"
@@ -36,8 +36,8 @@ export default function ProgrammingSection({
                 improved our control and maneuverability.
                 <br />
                 <br />
-                We are also working on devloping <i>full robot simulations</i>, to
-                speed up development and enable asynchronous work.
+                We are also working on devloping <i>full robot simulations</i>,
+                to speed up development and enable asynchronous work.
               </p>
             </div>
           </div>
@@ -62,7 +62,7 @@ export default function ProgrammingSection({
                 </ul>
               </p>
             </div>
-            <img
+            <Image
               src={"/activity/programming-2.png"}
               alt={"Programmer locked in"}
               className="rounded-2xl aspect-video object-contain w-[25vw]"

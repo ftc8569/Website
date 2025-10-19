@@ -1,5 +1,4 @@
 import nodemailer from "nodemailer"
-import { google } from 'googleapis'
 import { readFileSync } from "fs"
 import { MailOptions } from "nodemailer/lib/smtp-transport"
 
@@ -14,7 +13,7 @@ export async function POST(req: Request) {
     .then((res) => res.success)
 
   if (!valid) return new Response(null, { status: 403 })
-  
+
   const transporter = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 465,

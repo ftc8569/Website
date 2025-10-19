@@ -27,8 +27,8 @@ export async function GET() {
   const session = await getServerSession(authOptions)
 
   const retBlogs: BlogItem[] = []
-  for(const blog of blogs) {
-    if(session == null && !blog.published) continue
+  for (const blog of blogs) {
+    if (session == null && !blog.published) continue
     retBlogs.push({
       id: blog.id.toString(),
       title: blog.title,
@@ -48,7 +48,7 @@ export async function GET() {
 
 export async function POST(req: Request) {
   const session = await getServerSession(authOptions)
-  if(session) {
+  if (session) {
     const prisma = new PrismaClient()
 
     const data = await req.json()
@@ -66,7 +66,8 @@ export async function POST(req: Request) {
         description: data.description,
         imageType: imageType,
         image: buffer
-    }})
+      }
+    })
 
     return new Response(JSON.stringify(blog), { status: 200 })
   } else return notFound()
@@ -74,11 +75,11 @@ export async function POST(req: Request) {
 
 export async function DELETE(req: NextRequest) {
   const session = await getServerSession(authOptions)
-  if(session) {
+  if (session) {
     const prisma = new PrismaClient()
     const searchParams = req.nextUrl.searchParams
-    const query = searchParams.get('id')
-    if(query == null) return notFound()
+    const query = searchParams.get("id")
+    if (query == null) return notFound()
 
     const id = parseInt(query)
 
@@ -104,7 +105,9 @@ export async function PUT(req: Request) {
     const { id, ...updateFields } = data
 
     if (!id) {
-      return new Response(JSON.stringify({ error: "Post ID is required" }), { status: 400 })
+      return new Response(JSON.stringify({ error: "Post ID is required" }), {
+        status: 400
+      })
     }
 
     const postId = parseInt(id)
@@ -115,32 +118,37 @@ export async function PUT(req: Request) {
     })
 
     if (!existingPost) {
-      return new Response(JSON.stringify({ error: "Post not found" }), { status: 404 })
+      return new Response(JSON.stringify({ error: "Post not found" }), {
+        status: 404
+      })
     }
 
     const updateData: any = {}
 
-    if ('title' in updateFields && updateFields.title !== undefined)
+    if ("title" in updateFields && updateFields.title !== undefined)
       updateData.title = updateFields.title
 
-
-    if ('readTime' in updateFields && updateFields.readTime !== undefined)
+    if ("readTime" in updateFields && updateFields.readTime !== undefined)
       updateData.readTime = updateFields.readTime
 
-
-    if ('content' in updateFields && updateFields.content !== undefined)
+    if ("content" in updateFields && updateFields.content !== undefined)
       updateData.content = updateFields.content
 
-
-    if ('description' in updateFields && updateFields.description !== undefined)
+    if ("description" in updateFields && updateFields.description !== undefined)
       updateData.description = updateFields.description
 
-
-    if ('published' in updateFields && updateFields.published !== undefined)
+    if ("published" in updateFields && updateFields.published !== undefined)
       updateData.published = updateFields.published
 
-    if ('image' in updateFields && updateFields.image && updateFields.image !== "") {
-      const imageType = updateFields.image.split(",")[0].split("/")[1].split(";")[0]
+    if (
+      "image" in updateFields &&
+      updateFields.image &&
+      updateFields.image !== ""
+    ) {
+      const imageType = updateFields.image
+        .split(",")[0]
+        .split("/")[1]
+        .split(";")[0]
       const buffer = Buffer.from(updateFields.image.split(",")[1], "base64")
 
       updateData.imageType = imageType
@@ -165,12 +173,17 @@ export async function PUT(req: Request) {
 
       return new Response("Blog updated successfully", { status: 200 })
     } else {
-      return new Response(JSON.stringify({ message: "No fields to update" }), { status: 200 })
+      return new Response(JSON.stringify({ message: "No fields to update" }), {
+        status: 200
+      })
     }
   } catch (error: any) {
     console.error("Error updating blog post:", error)
     return new Response(
-      JSON.stringify({ error: "Failed to update blog post", details: error.message }),
+      JSON.stringify({
+        error: "Failed to update blog post",
+        details: error.message
+      }),
       { status: 500 }
     )
   }

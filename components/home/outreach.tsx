@@ -64,7 +64,7 @@ export default function OutreachSection({
               </p>
             </div>
           </div>
-          <img
+          <Image
             src={"/activity/outreach-1.png"}
             alt={"Outreach team working together"}
             className="aspect-video object-cover rounded-2xl lg:w-[50%] w-full"

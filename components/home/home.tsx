@@ -1,10 +1,9 @@
-import { RefObject, useEffect, useRef, useState } from "react"
+import { RefObject, useCallback, useEffect, useRef, useState } from "react"
 import Image from "next/image"
 import { Connection, Dot } from "@/components/home/animation.worker"
 import RobotAnimation from "@/components/home/robotAnimation"
 import { PiMapPinLineBold } from "react-icons/pi"
-import { FaAngleDown, FaCalendarAlt } from "react-icons/fa"
-import { BiDownArrow } from "react-icons/bi"
+import { FaCalendarAlt } from "react-icons/fa"
 import Dropdown from "../dropdown"
 
 export default function HomeContent({
@@ -20,21 +19,21 @@ export default function HomeContent({
   const backgroundRef = useRef<HTMLDivElement | null>(null)
   const animationRef = useRef<number | null>(null)
 
-  const handle_navbar_offset = () => {
+  const handle_navbar_offset = useCallback(() => {
     if (
       navbarRef.current != null &&
       navbarRef.current.getBoundingClientRect().width >= 1280
     )
       setOffset(navbarRef.current.getBoundingClientRect().height) // Offset for perfect height on home screen (The white bar)
     else setOffset(0)
-  }
+  }, [navbarRef])
 
   useEffect(() => {
     window.addEventListener("resize", handle_navbar_offset)
     return () => {
       window.removeEventListener("resize", handle_navbar_offset)
     }
-  }, [])
+  }, [handle_navbar_offset])
 
   useEffect(() => {
     handle_navbar_offset()
@@ -61,7 +60,7 @@ export default function HomeContent({
 
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [divRef])
+  }, [divRef, handle_navbar_offset])
 
   useEffect(() => {
     if (!canvasRef.current || !backgroundRef.current || !navbarRef.current)
@@ -73,12 +72,12 @@ export default function HomeContent({
     const worker = new Worker(new URL("./animation.worker.ts", import.meta.url))
 
     const update_canvas_size = () => {
-      // @ts-expect-error
+      // @ts-expect-error it just works
       canvas.width = backgroundRef.current.clientWidth
       canvas.height =
-        // @ts-expect-error
+        // @ts-expect-error it just works
         backgroundRef.current.clientHeight -
-        // @ts-expect-error
+        // @ts-expect-error it just works
         navbarRef.current.getBoundingClientRect().height
 
       worker.postMessage({
@@ -156,12 +155,12 @@ export default function HomeContent({
       window.removeEventListener("mousemove", handleMouseMove)
       window.removeEventListener("resize", update_canvas_size)
     }
-  }, [])
+  }, [navbarRef])
 
   const handleContactUsClick = () =>
     window.scrollTo({ top: document.body.scrollHeight, behavior: "smooth" })
 
-  const handleBlogClick = () => (window.location.href = "/blog")
+  //const handleBlogClick = () => (window.location.href = "/blog")
 
   function IntroCard() {
     return (
@@ -209,7 +208,7 @@ export default function HomeContent({
             </h1>
             <div className="flex flex-row pt-4 gap-x-4">
               {[
-                { text: "Contact Us", func: handleContactUsClick },
+                { text: "Contact Us", func: handleContactUsClick }
                 // { text: "Blog", func: handleBlogClick }
               ].map(({ text, func }, index) => (
                 <button key={index} onClick={func}>

@@ -1,4 +1,4 @@
-import { JSX, useEffect, useState } from "react"
+//import { JSX, useEffect, useState } from "react"
 import Image from "next/image"
 
 export default function RobotAnimation() {
@@ -58,7 +58,7 @@ export default function RobotAnimation() {
   // return <div className="hidden lg:block flex-1">{images}</div>
   return (
     <div className="hidden lg:block my-15 w-[45%] px-10">
-      <Image 
+      <Image
         src={`/team.jpg`}
         alt={"Robot Render"}
         width={1920}

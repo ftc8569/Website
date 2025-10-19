@@ -1,7 +1,7 @@
 let dots: Dot[] = []
 let width = 0
 let height = 0
-let mouse = { x: 0, y: 0 }
+const mouse = { x: 0, y: 0 }
 const connectionRadius = 150
 const mouseRadius = 150
 const speedFactor = 1
@@ -88,7 +88,7 @@ function handleClick(x: number, y: number) {
 
 function updatePositions() {
   for (let i = 0; i < dots.length; i++) {
-    let dot = dots[i]
+    const dot = dots[i]
 
     // Update position
     dot.x += dot.dx
@@ -103,12 +103,12 @@ function updatePositions() {
     }
 
     // Mouse repulsion
-    let dx = dot.x - mouse.x
-    let dy = dot.y - mouse.y
-    let distanceToMouse = Math.sqrt(dx * dx + dy * dy)
+    const dx = dot.x - mouse.x
+    const dy = dot.y - mouse.y
+    const distanceToMouse = Math.sqrt(dx * dx + dy * dy)
 
     if (distanceToMouse < mouseRadius) {
-      let repulse = Math.min(
+      const repulse = Math.min(
         Math.max(80 * (-1 * Math.pow(distanceToMouse / mouseRadius, 2) + 1), 0),
         40
       )
