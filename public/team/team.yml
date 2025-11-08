@@ -9,6 +9,9 @@ mechanical:
   - src: peyton.jpg
     name: Peyton Harrell
     role: Mechanical Member
+  - src: andy.jpg
+    name: Andy Lin
+    role: Mechanical Member
   - src: billy.jpg
     name: Billy Dyer
     role: Mechanical Member

@@ -7,7 +7,7 @@ export async function POST(req: Request) {
 
   const valid: any = await fetch(
     `https://recaptchaenterprise.googleapis.com/v1/projects/prorickey/assessments?key=${process.env.GOOGLE_API_KEY}`,
-    { 
+    {
       method: "POST",
       body: JSON.stringify({
         event: {
@@ -16,8 +16,7 @@ export async function POST(req: Request) {
         }
       })
     }
-  )
-    .then((res) => res.json())
+  ).then((res) => res.json())
 
   if (!valid.tokenProperties.valid) {
     console.log(valid)

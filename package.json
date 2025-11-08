@@ -1,12 +1,15 @@
 {
   "name": "roboknights",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "private": true,
+  "dockerImage": "docker.bedson.tech/tbedson/roboknights",
   "scripts": {
     "dev": "npx next dev",
     "build": "npx next build",
     "start": "npx next start",
     "lint": "npx next lint",
+    "docker:build": "node build.mjs",
+    "docker:push": "node build.mjs --push",
     "format": "npx prettier . --write",
     "createAdminUser": "node scripts/createAdminUser.js",
     "prisma:deploy": "npx prisma db push"

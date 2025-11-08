@@ -21,7 +21,7 @@ export default function ProgrammingSection({
         </div>
         <div className="flex flex-col gap-4">
           <div className="flex flex-col xl:flex-row pt-5 gap-4 lg:gap-4 items-center">
-            <Image
+            <img
               src={"/activity/programming-1.png"}
               alt={"Programmer waiting for mech guy"}
               className="aspect-video object-cover rounded-2xl xl:w-[40%] w-full max-w-[32rem]"
@@ -48,21 +48,19 @@ export default function ProgrammingSection({
                 We also have been working with computer vision-utilizing{" "}
                 <i>OpenCV and a Limelight 3A</i>.
               </p>
-              <p className="text-sm lg:text-lg">
-                Our system can:
-                <ul className="list-disc ml-6">
-                  <li>Distinguish between sample (block) colors</li>
-                  <li>Identify block edges</li>
-                  <li>
-                    Estimate block position to a <i>~0.5cm accuracy</i>
-                  </li>
-                  <li>
-                    Runs efficiently at <i>60fps</i>
-                  </li>
-                </ul>
-              </p>
+              <p className="text-sm lg:text-lg">Our system can:</p>
+              <ul className="list-disc ml-6">
+                <li>Distinguish between sample (block) colors</li>
+                <li>Identify block edges</li>
+                <li>
+                  Estimate block position to a <i>~0.5cm accuracy</i>
+                </li>
+                <li>
+                  Runs efficiently at <i>60fps</i>
+                </li>
+              </ul>
             </div>
-            <Image
+            <img
               src={"/activity/programming-2.png"}
               alt={"Programmer locked in"}
               className="rounded-2xl aspect-video object-contain w-[25vw]"
