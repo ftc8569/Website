@@ -13,7 +13,7 @@ export default function MechanicalSection({
       className="flex px-5 lg:px-36 py-10 xl:flex-row-reverse flex-col gap-4 xl:gap-6 items-center"
     >
       <div className="w-min bg-stone-800 py-2 px-4 xl:px-4 xl:pt-3 xl:pb-8 rounded-full">
-        <h2 className="xl:writing-vertical-lr font-black text-3xl lg:text-5xl xl:tracking-[-1.5rem] text-roboPink xl:uppercase">
+        <h2 className="xl:writing-vertical-lr font-black text-3xl lg:text-5xl xl:tracking-[-1rem] text-roboPink xl:uppercase">
           Mechanical
         </h2>
       </div>

@@ -15,7 +15,7 @@ export default function ProgrammingSection({
       </div> */}
       <div className="flex xl:flex-row flex-col gap-2 xl:gap-6 items-center">
         <div className="w-min bg-stone-800 pt-2 pb-2 px-4 xl:px-4 xl:pt-3 xl:pb-8 rounded-full">
-          <h2 className="xl:writing-vertical-lr font-black text-3xl lg:text-5xl xl:tracking-[-1.5rem] text-roboPink xl:uppercase">
+          <h2 className="xl:writing-vertical-lr font-black text-3xl lg:text-5xl xl:tracking-[-1rem] text-roboPink xl:uppercase">
             Programming
           </h2>
         </div>

@@ -4,8 +4,6 @@ import { notFound } from "next/navigation"
 import MarkdownIt from "markdown-it"
 import BlogWrapper from "@/components/blogs/Blog"
 import { PrismaClient } from "@prisma/client"
-import { authOptions } from "@/app/api/auth/[...nextauth]/route"
-import { getServerSession } from "next-auth"
 export default async function BlogPage({
   params
 }: {
@@ -31,10 +29,6 @@ export default async function BlogPage({
   })
 
   if (blog == null) return notFound()
-  if (!blog.published) {
-    const session = await getServerSession(authOptions)
-    if (session == null) return notFound()
-  }
 
   const clientBlog = {
     id: blog.id.toString(),
