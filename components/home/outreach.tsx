@@ -18,7 +18,7 @@ export default function OutreachSection({
           <div className="flex flex-col gap-4 lg:gap-4 basis-0 grow">
             <div className="bg-stone-800 p-4 rounded-2xl">
               <h3 className="font-bold text-2xl mb-2">Our Values</h3>
-              <p className="text-sm lg:text-lg">
+              <div className="text-sm lg:text-lg">
                 <ul className="list-disc ml-6">
                   <li>
                     <i>Inspire</i> the next generation of innovators
@@ -35,11 +35,11 @@ export default function OutreachSection({
                     </li>
                   </ul>
                 </ul>
-              </p>
+              </div>
             </div>
             <div className="bg-stone-800 p-4 rounded-2xl">
               <h3 className="font-bold text-2xl mb-2">What We Do</h3>
-              <p className="text-sm lg:text-lg">
+              <div className="text-sm lg:text-lg">
                 <ul className="list-disc ml-6">
                   <li>Mentorship</li>
                   <li>Providing hands-on learning opportunities</li>
@@ -61,7 +61,7 @@ export default function OutreachSection({
                     </li>
                   </ul>
                 </ul>
-              </p>
+              </div>
             </div>
           </div>
           <img

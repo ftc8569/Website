@@ -9,6 +9,12 @@ mechanical:
   - src: peyton.jpg
     name: Peyton Harrell
     role: Mechanical Member
+  - src: abhinav.png
+    name: Abhinav Karthikeyan
+    role: Mechanical Member 
+  - src: yug.png
+    name: Yug Gokharu
+    role: Mechanical Member
   - src: andy.jpg
     name: Andy Lin
     role: Mechanical Member
@@ -19,9 +25,6 @@ mechanical:
     name: Prana Bernstein
     role: Mechanical Member
 outreach:
-  - src: himanish.jpg
-    name: Himanish Verma
-    role: Outreach Member
 mentors:
   - src: sid.jpg
     name: Sid Gupta
