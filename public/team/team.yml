@@ -1,13 +1,22 @@
 programmers:
-  - src: trevor.jpg
+  - src: trevor.png
     name: Trevor Bedson
     role: Captain and Programming Lead
+  - src: nicholas.png
+    name: Nicholas Fasching
+    role: Programmer 
+  - src: blake.png
+    name: Blake Smith
+    role: Programmer
+  - src: tanay.png
+    name: Tanay Vinaykya
+    role: Programmer
 mechanical:
   - src: tanush.jpg
     name: Tanush Sai
     role: Captain and Mechanical Lead
-  - src: peyton.jpg
-    name: Peyton Harrell
+  - src: christian.png
+    name: Christian Burnett
     role: Mechanical Member
   - src: abhinav.png
     name: Abhinav Karthikeyan
@@ -15,16 +24,28 @@ mechanical:
   - src: yug.png
     name: Yug Gokharu
     role: Mechanical Member
-  - src: andy.jpg
-    name: Andy Lin
+  - src: peyton.jpg
+    name: Peyton Harrell
     role: Mechanical Member
-  - src: billy.jpg
-    name: Billy Dyer
-    role: Mechanical Member
-  - src: prana.jpg
-    name: Prana Bernstein
-    role: Mechanical Member
+  # - src: andy.jpg
+  #   name: Andy Lin
+  #   role: Mechanical Member
+  # - src: billy.jpg
+  #   name: Billy Dyer
+  #   role: Mechanical Member
+  # - src: prana.jpg
+  #   name: Prana Bernstein
+  #   role: Mechanical Member
 outreach:
+  - src: ishaan.png
+    name: Ishaan Luthra
+    role: Outreach Lead
+  - src: rishika.png
+    name: Rishika Subudhi
+    role: Outreach Member
+  - src: alaina.png
+    name: Alaina Roberts
+    role: Outreach Member
 mentors:
   - src: sid.jpg
     name: Sid Gupta
