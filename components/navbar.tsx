@@ -47,6 +47,7 @@ export default function Navbar({
       This is the most cooked code I have ever written
       TODO: Fix whatever this is when in a state of clear thinking
       03/09/2025 - Bruh
+      02/10/2026 - Bruh again; I need to get around to looking at this?
      */
       if (
         homeRef.current &&
@@ -122,15 +123,22 @@ export default function Navbar({
             : "w-0 -translate-x-1/2 opacity-0"
         }`}
       />
-      <div className="hidden xl:flex flex-row">
+      <div className="hidden xl:flex flex-row items-center">
         <Image
-          src="/stickerlogo.png"
+          src="/assets/logo.png"
           alt="Sticker Logo"
-          width={50}
-          height={50}
+          width={45}
+          height={45}
           priority
         />
-        <h1 className="text-4xl font-semibold pl-4">RoboKnights</h1>
+        <Image
+          src="/assets/text_designed.png"
+          alt="RoboKnights"
+          width={200}
+          height={50}
+          className="pl-4 w-auto h-[50px]"
+          priority
+        />
       </div>
       <div className="flex flex-row flex-wrap space-x-2 lg:space-x-4 xl:space-x-8">
         <NavbarItem

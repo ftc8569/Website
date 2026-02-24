@@ -26,7 +26,7 @@ export default function MechanicalSection({
           />
           <div>
             <h3 className="font-bold text-2xl mb-2">Master Sketches</h3>
-            <p className="text-sm lg:text-lg mb-2">
+            <div className="text-sm lg:text-lg mb-2">
               We have been working on a stable design process through master
               sketches, which have the benefit of:
               <ul className="list-disc ml-6">
@@ -43,13 +43,13 @@ export default function MechanicalSection({
                   problems
                 </li>
               </ul>
-            </p>
+            </div>
           </div>
         </div>
         <div className="bg-stone-800 gap-6 p-4 rounded-2xl flex lg:flex-row flex-col-reverse">
           <div>
             <h3 className="font-bold text-2xl mb-2">Parallel Work</h3>
-            <p className="text-sm lg:text-lg mb-2">
+            <div className="text-sm lg:text-lg mb-2">
               Following master sketches, we spilt into smaller
               groups/individuals so we can be <i>inclusive</i> and work more{" "}
               <i>efficiently</i> in parallel. For this, we usually go down one
@@ -65,7 +65,7 @@ export default function MechanicalSection({
                   smaller <i>subparts</i> divided among the members.
                 </li>
               </ol>
-            </p>
+            </div>
           </div>
           <img
             src={"/activity/mechanical-1.png"}

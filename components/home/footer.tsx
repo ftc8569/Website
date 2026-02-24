@@ -28,7 +28,7 @@ export default function Footer({
       <div className="flex lg:flex-row flex-col gap-2 p-5 lg:px-10 items-center">
         <div className="flex-1 flex items-center justify-start">
           <Image
-            src="/stickerlogo.png"
+            src="/assets/logo.png"
             alt="RoboKnights Logo"
             width={1198 / 16}
             height={1008 / 16}
