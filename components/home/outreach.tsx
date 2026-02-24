@@ -14,9 +14,14 @@ export default function OutreachSection({
             Outreach
           </h2>
         </div>
-        <div className="flex lg:flex-row flex-col-reverse gap-4">
-          <div className="flex flex-col gap-4 lg:gap-4 basis-0 grow">
-            <div className="bg-stone-800 p-4 rounded-2xl">
+        <div className="flex flex-col gap-4">
+          <div className="flex lg:flex-row flex-col bg-stone-800 p-4 rounded-2xl gap-4">
+            <img
+              src={"/activity/outreach-1.jpg"}
+              alt={"Outreach team working together"}
+              className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem] min-w-[16rem] mx-auto"
+            />
+            <div>
               <h3 className="font-bold text-2xl mb-2">Our Values</h3>
               <div className="text-sm lg:text-lg">
                 <ul className="list-disc ml-6">
@@ -37,7 +42,9 @@ export default function OutreachSection({
                 </ul>
               </div>
             </div>
-            <div className="bg-stone-800 p-4 rounded-2xl">
+          </div>
+          <div className="bg-stone-800 gap-6 p-4 rounded-2xl flex lg:flex-row flex-col-reverse">
+            <div>
               <h3 className="font-bold text-2xl mb-2">What We Do</h3>
               <div className="text-sm lg:text-lg">
                 <ul className="list-disc ml-6">
@@ -63,12 +70,12 @@ export default function OutreachSection({
                 </ul>
               </div>
             </div>
+            <img
+              src={"/activity/outreach-2.jpg"}
+              alt={"Outreach activity"}
+              className="aspect-video object-cover rounded-2xl w-[35%] max-w-[32rem] min-w-[16rem] mx-auto"
+            />
           </div>
-          <img
-            src={"/activity/outreach-1.png"}
-            alt={"Outreach team working together"}
-            className="aspect-video object-cover rounded-2xl lg:w-[50%] w-full"
-          />
         </div>
       </div>
     </div>
