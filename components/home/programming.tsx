@@ -19,14 +19,14 @@ export default function ProgrammingSection({
             Programming
           </h2>
         </div>
-        <div className="flex flex-col gap-4">
-          <div className="flex flex-col xl:flex-row pt-5 gap-4 lg:gap-4 items-center">
+        <div className="flex flex-col gap-4 flex-1">
+          <div className="flex flex-col xl:flex-row pt-5 gap-4 lg:gap-4 items-center xl:items-stretch">
             <img
               src={"/activity/programming-1.png"}
               alt={"Programmer waiting for mech guy"}
               className="aspect-video object-cover rounded-2xl xl:w-[40%] w-full max-w-[32rem]"
             />
-            <div className="bg-stone-800 p-4 rounded-2xl">
+            <div className="bg-stone-800 p-4 rounded-2xl flex-1">
               <h3 className="font-bold text-2xl mb-2">
                 Control &amp; Autonomous
               </h3>
@@ -42,7 +42,7 @@ export default function ProgrammingSection({
             </div>
           </div>
           <div className="bg-stone-800 p-4 rounded-2xl flex lg:flex-row flex-col-reverse gap-3">
-            <div>
+            <div className="flex-1">
               <h3 className="font-bold text-2xl mb-2">Computer Vision</h3>
               <p className="text-sm lg:text-lg mb-2">
                 We also have been working with computer vision-utilizing{" "}

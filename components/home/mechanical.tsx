@@ -17,14 +17,14 @@ export default function MechanicalSection({
           Mechanical
         </h2>
       </div>
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-4 flex-1">
         <div className="flex lg:flex-row flex-col bg-stone-800 p-4 rounded-2xl gap-4">
           <img
             src={"/activity/mechanical-2.png"}
             alt={"Mechanical team collaborating together on the robot's design"}
             className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem] min-w-[16rem] mx-auto"
           />
-          <div>
+          <div className="flex-1">
             <h3 className="font-bold text-2xl mb-2">Master Sketches</h3>
             <div className="text-sm lg:text-lg mb-2">
               We have been working on a stable design process through master
@@ -47,7 +47,7 @@ export default function MechanicalSection({
           </div>
         </div>
         <div className="bg-stone-800 gap-6 p-4 rounded-2xl flex lg:flex-row flex-col-reverse">
-          <div>
+          <div className="flex-1">
             <h3 className="font-bold text-2xl mb-2">Parallel Work</h3>
             <div className="text-sm lg:text-lg mb-2">
               Following master sketches, we spilt into smaller
