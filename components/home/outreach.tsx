@@ -17,7 +17,7 @@ export default function OutreachSection({
         <div className="flex flex-col gap-4 flex-1">
           <div className="flex lg:flex-row flex-col bg-stone-800 p-4 rounded-2xl gap-4">
             <img
-              src={"/activity/outreach-1.jpg"}
+              src={"/activity/outreach.jpg"}
               alt={"Outreach team working together"}
               className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem] min-w-[16rem] mx-auto"
             />

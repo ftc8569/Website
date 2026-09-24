@@ -68,7 +68,7 @@ export default function MechanicalSection({
             </div>
           </div>
           <img
-            src={"/activity/mechanical-1.png"}
+            src={"/activity/mechanical.jpg"}
             alt={"2 RoboKnights members working in parallel on the robot"}
             className="aspect-video object-cover rounded-2xl w-[35%] max-w-[32rem] min-w-[16rem] mx-auto"
           />
@@ -77,7 +77,7 @@ export default function MechanicalSection({
       {/* <div>
         <div className="flex flex-col lg:flex-row pt-5 gap-5 lg:gap-10">
           <img
-            src={"/activity/mechanical-1.png"}
+            src={"/activity/mechanical.jpg"}
             alt={"Programmer locked in"}
             className="rounded-2xl aspect-video object-cover w-[40vw] max-w-[36rem]"
           />

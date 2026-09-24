@@ -22,7 +22,7 @@ export default function ProgrammingSection({
         <div className="flex flex-col gap-4 flex-1">
           <div className="flex flex-col xl:flex-row pt-5 gap-4 lg:gap-4 items-center xl:items-stretch">
             <img
-              src={"/activity/programming-1.png"}
+              src={"/activity/programming.jpg"}
               alt={"Programmer waiting for mech guy"}
               className="aspect-video object-cover rounded-2xl xl:w-[40%] w-full max-w-[32rem]"
             />
