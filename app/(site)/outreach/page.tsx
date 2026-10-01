@@ -14,6 +14,7 @@ export default function OutreachPage() {
   return (
     <main>
       <PageHeader
+        image="/activity/outreach.jpg"
         eyebrow="Outreach"
         title={
           <>

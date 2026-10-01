@@ -55,7 +55,7 @@ export const subsystems = [
     name: "Intake",
     detail:
       "Two-layer compliant roller intake feeding a steep ramp straight into the rack.",
-    image: "/cad/intake-compliant.jpg"
+    image: "/cad/intake-v3.jpg"
   },
   {
     name: "Drivetrain",
@@ -94,13 +94,13 @@ export const iterationTracks: IterationTrack[] = [
         version: "V1",
         title: "Active intake",
         note: "Faster than a four-bar claw, but bootleg wheels caught on the artifact notches and the ramp slope pressed balls flat.",
-        image: "/cad/intake-v1.jpg"
+        image: "/cad/intake-v2.jpg"
       },
       {
         version: "V2",
         title: "Compliant rollers",
         note: "Silicone rollers and a chain-driven compliant bar. Steeper, flatter ramp with guides to aim the ball at the slot.",
-        image: "/cad/intake-v2.jpg"
+        image: "/cad/intake-v1.jpg"
       },
       {
         version: "V3",
@@ -120,7 +120,7 @@ export const iterationTracks: IterationTrack[] = [
         version: "V1",
         title: "Simple spindexer",
         note: "Minimal artifact support. Hard to start and stop cleanly; ended up a centimetre or two out of position and bounced balls back.",
-        image: "/cad/spicerack-v2.jpg"
+        image: "/cad/spicerack-v1.jpg"
       },
       {
         version: "V2",
@@ -140,7 +140,7 @@ export const iterationTracks: IterationTrack[] = [
         version: "V1",
         title: "Stick transfer",
         note: "Pushed the ball up mechanically. Reset too slowly to use the Geneva's full speed.",
-        image: "/cad/transfer-motor.jpg"
+        image: "/cad/transfer-stick.jpg"
       },
       {
         version: "V2",
@@ -152,7 +152,7 @@ export const iterationTracks: IterationTrack[] = [
         version: "V3",
         title: "6000 RPM roller",
         note: "Motor swap plus a third roller to cover the dead space. Sorted balls now shoot in tandem — 2–5 second cycles including sorting.",
-        image: "/cad/intake-chain.jpg"
+        image: "/cad/transfer-motor.jpg"
       }
     ]
   }
@@ -317,13 +317,13 @@ export const worldsSystems = [
     name: "Flywheel shooter",
     detail:
       "Two 6000 RPM motors driving two steel flywheels, with a dynamically integrated hood through 36° of travel and 10 mm of compression. Steel over aluminium bought us RPM stability and sub-second recovery between shots.",
-    image: "/worlds/shooter.jpg"
+    image: "/worlds/turret-shooter.jpg"
   },
   {
     name: "Bearing stack turret",
     detail:
       "A bearing stack on the top plate lets the turret spin without friction from anything below it. We swapped the 435 RPM motor for two Axon servos and freed a motor for the rest of the robot.",
-    image: "/worlds/turret.jpg"
+    image: "/worlds/bearing-turret.jpg"
   },
   {
     name: "Vectoring intake",
@@ -341,7 +341,7 @@ export const worldsSystems = [
     name: "Ranking-point strategy",
     detail:
       "We scored each ranking point against its mechanical cost and committed to the goal RP. That decision let us cut the lift and the brake outright — a lighter, less complex robot aimed squarely at winning matches.",
-    image: "/worlds/drivetrain.jpg"
+    image: "/worlds/bot-full.jpg"
   }
 ]
 
@@ -433,15 +433,25 @@ export const collaborators = [
   { name: "WarmHub", src: "/logos/warmhub.png" }
 ]
 
-/* Mentors, kept deliberately small — names and affiliations only. */
-export const mentors = [
+/*
+ * Mentors, kept deliberately small — names and affiliations only. Lead
+ * mentors are featured on their own row above the rest. `src` is optional:
+ * without a photo the card falls back to initials.
+ */
+export type Mentor = { name: string; org?: string; src?: string }
+
+export const leadMentors: Mentor[] = [
   {
     name: "Robyn Stephens",
     org: "Powered Research",
     src: "/team/mentors/robyn.jpg"
   },
-  { name: "Eric Liu", org: "WarmHub", src: "/team/mentors/eric.jpg" },
   { name: "Carl Ryden", org: "WarmHub", src: "/team/mentors/carl.jpg" },
+  { name: "Ashley Ryden" }
+]
+
+export const mentors: Mentor[] = [
+  { name: "Eric Liu", org: "WarmHub", src: "/team/mentors/eric.jpg" },
   { name: "Angela Ireland", org: "Rubrik", src: "/team/mentors/angela.jpg" },
   { name: "Shikha Srivastava", org: "IBM", src: "/team/mentors/shikha.jpg" },
   { name: "Ben Caunt", org: "WarmHub", src: "/team/mentors/benc.jpg" },

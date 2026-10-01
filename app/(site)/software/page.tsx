@@ -2,13 +2,11 @@ import type { Metadata } from "next"
 import Image from "next/image"
 
 import PageHeader from "@/components/site/page-header"
-import { ArrowIcon } from "@/components/site/shell"
 import {
   aiPractice,
   codePractice,
   controlWork,
-  programmingCards,
-  resourceLinks
+  programmingCards
 } from "@/components/home/content"
 
 export const metadata: Metadata = {
@@ -21,6 +19,7 @@ export default function SoftwarePage() {
   return (
     <main>
       <PageHeader
+        image="/activity/programming.jpg"
         eyebrow="Software"
         title={
           <>
@@ -91,24 +90,6 @@ export default function SoftwarePage() {
             <p className="section-index">How we use AI</p>
             <p className="ai-note-body">{aiPractice}</p>
           </div>
-        </div>
-
-        <div className="resources" data-reveal>
-          {resourceLinks.map((link) => (
-            <a
-              className="resource"
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="resource-label">
-                {link.label}
-                <ArrowIcon />
-              </span>
-              <span className="resource-detail">{link.detail}</span>
-            </a>
-          ))}
         </div>
       </section>
     </main>

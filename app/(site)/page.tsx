@@ -7,12 +7,16 @@ import { type MouseEvent } from "react"
 import PhotoMarquee from "@/components/home/photo-marquee"
 import RobotViewer from "@/components/home/robot-viewer"
 import { ArrowIcon } from "@/components/site/shell"
-import { galleryImages, impactStats } from "@/components/home/content"
+import {
+  galleryImages,
+  impactStats,
+  resourceLinks
+} from "@/components/home/content"
 
 const capabilities = [
   {
     number: "01",
-    eyebrow: "Autonomous systems",
+    eyebrow: "Programming",
     title: "Code that thinks\nbefore we do.",
     description:
       "Computer vision, motion planning, and control systems engineered for decisive performance.",
@@ -22,7 +26,7 @@ const capabilities = [
   },
   {
     number: "02",
-    eyebrow: "Mechanical engineering",
+    eyebrow: "Mechanical",
     title: "Built for the\npoint of impact.",
     description:
       "Every gram, gear, and geometry choice is designed to survive the match—and dominate it.",
@@ -32,7 +36,7 @@ const capabilities = [
   },
   {
     number: "03",
-    eyebrow: "Human connection",
+    eyebrow: "Outreach",
     title: "Impact beyond\nthe arena.",
     description:
       "We build access, curiosity, and the next generation of people who refuse to think small.",
@@ -131,17 +135,12 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* -------------------------------------------------------- Impact */}
-      <section id="impact" className="impact" data-reveal>
-        <p className="section-index">01 / Impact</p>
-        <div className="impact-grid">
-          {impactStats.map((stat) => (
-            <div className="impact-cell" key={stat.label}>
-              <p className="impact-value">{stat.value}</p>
-              <p className="impact-label">{stat.label}</p>
-            </div>
-          ))}
-        </div>
+      <section id="gallery" className="gallery-section" data-reveal>
+        <header className="gallery-header">
+          <p className="section-index">01 / In the field</p>
+          <h2>The season, as it happened.</h2>
+        </header>
+        <PhotoMarquee images={galleryImages} />
       </section>
 
       <section id="systems" className="systems-section">
@@ -186,18 +185,52 @@ export default function HomePage() {
         ))}
       </section>
 
-      <section id="gallery" className="gallery-section" data-reveal>
-        <header className="gallery-header">
-          <p className="section-index">03 / In the field</p>
-          <h2>The season, as it happened.</h2>
+      {/* -------------------------------------------------------- Impact */}
+      <section id="impact" className="impact" data-reveal>
+        <p className="section-index">03 / Impact</p>
+        <div className="impact-grid">
+          {impactStats.map((stat) => (
+            <div className="impact-cell" key={stat.label}>
+              <p className="impact-value">{stat.value}</p>
+              <p className="impact-label">{stat.label}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- Social */}
+      <section id="social" className="social-section">
+        <header className="systems-header" data-reveal>
+          <p className="section-index">04 / Follow along</p>
+          <h2>Find us online.</h2>
+          <p className="section-lede">
+            Build updates, competition days, our code, and the engineering
+            write-ups behind it all.
+          </p>
         </header>
-        <PhotoMarquee images={galleryImages} />
+        <div className="resources" data-reveal>
+          {resourceLinks.map((link) => (
+            <a
+              className="resource"
+              key={link.label}
+              href={link.href}
+              target="_blank"
+              rel="noreferrer"
+            >
+              <span className="resource-label">
+                {link.label}
+                <ArrowIcon />
+              </span>
+              <span className="resource-detail">{link.detail}</span>
+            </a>
+          ))}
+        </div>
       </section>
 
       {/* ------------------------------------------------------- Contact */}
       <section id="contact" className="finale" data-reveal>
         <div className="finale-glow" aria-hidden="true" />
-        <p className="section-index">04 / Contact</p>
+        <p className="section-index">05 / Contact</p>
         <h2>
           Ready to build
           <br />

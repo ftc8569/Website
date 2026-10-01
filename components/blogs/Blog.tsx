@@ -43,7 +43,9 @@ export default function BlogWrapper({
             />
           </div>
           <div className="px-5">
-            <p className="text-5xl pt-4 font-oswald">{blog.title}</p>
+            <p className="text-5xl pt-4 font-sans font-bold tracking-tight">
+              {blog.title}
+            </p>
             <p className="text-md text-stone-300 pt-4">
               {authorComponent} • {blog.date} • {blog.readTime}
             </p>

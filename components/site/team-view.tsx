@@ -4,7 +4,36 @@ import Image from "next/image"
 import { type MouseEvent } from "react"
 
 import Roster, { type TeamData } from "@/components/home/roster"
-import { collaborators, mentors, sponsors } from "@/components/home/content"
+import {
+  collaborators,
+  leadMentors,
+  mentors,
+  sponsors,
+  type Mentor
+} from "@/components/home/content"
+
+function mentorInitials(name: string) {
+  return name
+    .split(" ")
+    .map((part) => part[0])
+    .slice(0, 2)
+    .join("")
+}
+
+/* Photo when we have one, initials otherwise. */
+function MentorPhoto({ mentor, size }: { mentor: Mentor; size: number }) {
+  return mentor.src ? (
+    <Image
+      src={mentor.src}
+      alt=""
+      width={size * 2}
+      height={size * 2}
+      sizes={`${size}px`}
+    />
+  ) : (
+    <span className="mentor-initials">{mentorInitials(mentor.name)}</span>
+  )
+}
 
 export default function TeamView({ team }: { team: TeamData }) {
   const trackPointer = (event: MouseEvent<HTMLElement>) => {
@@ -89,22 +118,31 @@ export default function TeamView({ team }: { team: TeamData }) {
           ))}
         </div>
 
+        <p className="partners-label">Lead mentors</p>
+        <ul className="lead-mentors">
+          {leadMentors.map((mentor) => (
+            <li key={mentor.name}>
+              <span className="lead-mentor-photo">
+                <MentorPhoto mentor={mentor} size={96} />
+              </span>
+              <span className="mentor-text">
+                <span className="lead-mentor-name">{mentor.name}</span>
+                {mentor.org && <span className="mentor-org">{mentor.org}</span>}
+              </span>
+            </li>
+          ))}
+        </ul>
+
         <p className="partners-label">Mentors</p>
         <ul className="mentor-strip">
           {mentors.map((mentor) => (
             <li key={mentor.name}>
               <span className="mentor-avatar">
-                <Image
-                  src={mentor.src}
-                  alt=""
-                  width={64}
-                  height={64}
-                  sizes="48px"
-                />
+                <MentorPhoto mentor={mentor} size={48} />
               </span>
               <span className="mentor-text">
                 <span className="mentor-name">{mentor.name}</span>
-                <span className="mentor-org">{mentor.org}</span>
+                {mentor.org && <span className="mentor-org">{mentor.org}</span>}
               </span>
             </li>
           ))}

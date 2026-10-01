@@ -24,6 +24,7 @@ export default function RobotPage() {
   return (
     <main>
       <PageHeader
+        image="/activity/mechanical.jpg"
         eyebrow="The machine"
         title={
           <>

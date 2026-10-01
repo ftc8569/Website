@@ -386,7 +386,9 @@ function BlogEditor({
                   placeholder="Enter Blog Title Here"
                   className="bg-stone-900 w-96 h-20 p-2"
                 />
-                <p className={`text-4xl font-oswald`}>{title}</p>
+                <p className={`text-4xl font-sans font-bold tracking-tight`}>
+                  {title}
+                </p>
               </div>
             </div>
             <div>
