@@ -16,7 +16,8 @@
     "typecheck": "tsc --noEmit",
     "check:format": "prettier --check app components scripts DESIGN.md README.md eslint.config.mjs",
     "test:browser": "node scripts/browser-check.mjs",
-    "audit:react": "react-doctor . --no-supply-chain --no-telemetry"
+    "audit:react": "react-doctor . --no-supply-chain --no-telemetry",
+    "test:cad": "node scripts/cad-check.mjs"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

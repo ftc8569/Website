@@ -2542,6 +2542,9 @@ html.reveal-ready [data-reveal].is-visible {
 }
 .hero-machine .robot3d {
   filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.9));
+}
+/* Float the model, keeping its touch/keyboard controls stationary. */
+.hero-machine :is(.robot3d-stage, .robot3d-poster) {
   animation: machineFloat 6s ease-in-out infinite;
 }
 

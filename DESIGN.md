@@ -84,7 +84,8 @@ new card shapes or aesthetic treatments unrelated to the current branch.
 
 Target WCAG 2.2 AA: visible focus, keyboard reachability, labelled controls,
 4.5:1 body contrast, 3:1 large text, reduced motion, and a skip-to-content link.
-Touch controls have at least 44px targets. No horizontal document overflow at
+Touch controls have at least 44px targets and remain stationary even when the
+CAD model floats. No horizontal document overflow at
 375px. Closed drawers contain no keyboard stops. Keep route/hash navigation,
 back/forward, direct URLs and no-JavaScript content working.
 
