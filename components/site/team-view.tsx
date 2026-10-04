@@ -63,11 +63,11 @@ export default function TeamView({ team }: { team: TeamData }) {
         <div className="team-overlay" />
         <div className="team-copy">
           <p className="section-index">01 / The team</p>
-          <h2>
+          <h1>
             Small team.
             <br />
             <em>Heavy impact.</em>
-          </h2>
+          </h1>
           <p>Different disciplines. One standard.</p>
         </div>
       </section>

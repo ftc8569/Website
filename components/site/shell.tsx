@@ -3,28 +3,10 @@
 import Image from "next/image"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { useEffect, useState, type ReactNode } from "react"
+import { useEffect, type ReactNode } from "react"
 
 import Loader from "@/components/home/loader"
-
-declare global {
-  interface Window {
-    __rkRevealFailsafe?: ReturnType<typeof setTimeout>
-  }
-}
-
-/*
- * Site chrome. Lives in the (site) route group layout, so nav, footer and the
- * boot sequence stay mounted across client-side navigation — the splash only
- * replays on a genuine page load, never when moving between pages.
- */
-
-const NAV_LINKS = [
-  { href: "/robot", label: "Robot" },
-  { href: "/software", label: "Software" },
-  { href: "/outreach", label: "Outreach" },
-  { href: "/team", label: "Team" }
-]
+import SiteNavigation, { NAV_LINKS } from "@/components/site/navigation"
 
 export function ArrowIcon() {
   return (
@@ -40,95 +22,57 @@ export function ArrowIcon() {
 }
 
 export default function SiteShell({ children }: { children: ReactNode }) {
-  const [scrolled, setScrolled] = useState(false)
-  const [menuOpen, setMenuOpen] = useState(false)
   const pathname = usePathname()
 
+  // Arm reveals only after the observer exists; server/no-JS content is visible.
   useEffect(() => {
-    const updateNav = () => setScrolled(window.scrollY > 40)
-    updateNav()
-    window.addEventListener("scroll", updateNav, { passive: true })
-    return () => window.removeEventListener("scroll", updateNav)
-  }, [])
-
-  // Re-run per route: each page mounts its own [data-reveal] nodes.
-  useEffect(() => {
+    if (!("IntersectionObserver" in window)) return
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches
     const observer = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (entry.isIntersecting) entry.target.classList.add("is-visible")
-        }),
-      { threshold: 0.12 }
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            entry.target.classList.add("is-visible")
+            observer.unobserve(entry.target)
+          }
+        }
+      },
+      { threshold: 0.01 }
     )
-
-    const attach = () =>
+    const attach = () => {
       document
         .querySelectorAll("[data-reveal]:not(.is-visible)")
-        .forEach((node) => observer.observe(node))
-
-    attach()
-    const retry = setTimeout(attach, 400)
-
-    // React is alive and observing, so the layout's blank-page failsafe
-    // (which would un-arm the reveal animation) is no longer needed.
-    clearTimeout(window.__rkRevealFailsafe)
-
-    return () => {
-      clearTimeout(retry)
-      observer.disconnect()
+        .forEach((node) => {
+          const bounds = node.getBoundingClientRect()
+          if (
+            reduced ||
+            (bounds.top < window.innerHeight && bounds.bottom > 0)
+          ) {
+            node.classList.add("is-visible")
+          } else observer.observe(node)
+        })
     }
-  }, [pathname])
-
-  useEffect(() => {
-    setMenuOpen(false)
+    attach()
+    document.documentElement.classList.add("reveal-ready")
+    const mutations = new MutationObserver(attach)
+    mutations.observe(
+      document.querySelector(".route-content") ?? document.body,
+      { childList: true, subtree: true }
+    )
+    return () => {
+      observer.disconnect()
+      mutations.disconnect()
+      document.documentElement.classList.remove("reveal-ready")
+    }
   }, [pathname])
 
   return (
     <>
       <Loader />
       <div className="launch-site">
-        <nav
-          className={`launch-nav ${scrolled ? "launch-nav--scrolled" : ""}`}
-          aria-label="Primary navigation"
-        >
-          <Link className="launch-brand" href="/" aria-label="RoboKnights home">
-            <Image
-              src="/assets/logo.png"
-              alt=""
-              width={42}
-              height={42}
-              priority
-            />
-            <span>RK / 8569</span>
-          </Link>
-          <button
-            className="launch-menu-button"
-            type="button"
-            aria-expanded={menuOpen}
-            aria-controls="launch-menu"
-            onClick={() => setMenuOpen((value) => !value)}
-          >
-            <span />
-            <span />
-            <span className="sr-only">Toggle menu</span>
-          </button>
-          <div
-            id="launch-menu"
-            className={`launch-links ${menuOpen ? "launch-links--open" : ""}`}
-          >
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className={
-                  pathname.startsWith(link.href) ? "is-current" : undefined
-                }
-              >
-                {link.label}
-              </Link>
-            ))}
-          </div>
-        </nav>
+        <SiteNavigation />
 
         {children}
 
@@ -148,6 +92,7 @@ export default function SiteShell({ children }: { children: ReactNode }) {
                 </Link>
               ))}
               <Link href="/#contact">Contact</Link>
+              <Link href="/blog">Blog</Link>
             </nav>
           </div>
           <div className="site-footer-bottom">

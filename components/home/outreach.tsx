@@ -16,7 +16,10 @@ export default function OutreachSection({
         </div>
         <div className="flex flex-col gap-4 flex-1">
           <div className="flex lg:flex-row flex-col bg-stone-800 p-4 rounded-2xl gap-4">
-            <img
+            <Image
+              width={960}
+              height={540}
+              sizes="(max-width: 900px) 100vw, 40vw"
               src={"/activity/outreach.jpg"}
               alt={"Outreach team working together"}
               className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem] min-w-[16rem] mx-auto"
@@ -70,7 +73,10 @@ export default function OutreachSection({
                 </ul>
               </div>
             </div>
-            <img
+            <Image
+              width={960}
+              height={540}
+              sizes="(max-width: 900px) 100vw, 40vw"
               src={"/activity/outreach-2.jpg"}
               alt={"Outreach activity"}
               className="aspect-video object-cover rounded-2xl w-[35%] max-w-[32rem] min-w-[16rem] mx-auto"

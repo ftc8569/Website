@@ -78,7 +78,6 @@ function SubTeam({
       </div>
       <div className="flex flex-row justify-center gap-4 px-1 lg:px-10 flex-wrap">
         {team?.map((m) => (
-          // eslint-disable-next-line react/jsx-key
           <MemberIcon name={m.name} role={m.role} src={m.src} key={m.name} />
         ))}
       </div>

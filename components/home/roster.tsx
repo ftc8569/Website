@@ -49,7 +49,8 @@ const GROUPS: {
 
 function initials(name: string) {
   return name
-    .split(" ")
+    .trim()
+    .split(/\s+/)
     .map((part) => part[0])
     .slice(0, 2)
     .join("")
@@ -112,7 +113,7 @@ export default function Roster({ team }: { team: TeamData }) {
             <span className="roster-count">
               {captains.length.toString().padStart(2, "0")}
             </span>
-            <p>Set the direction for the season and lead each subteam.</p>
+            <p>Captains coordinate priorities and guide their subteams.</p>
           </div>
           <div className="roster-grid roster-grid--captains">
             {captains.map((member) => (
@@ -144,7 +145,11 @@ export default function Roster({ team }: { team: TeamData }) {
           </div>
         )
       })}
-      {total > 0 && (
+      {total === 0 ? (
+        <p className="roster-total" role="status">
+          Roster information is currently unavailable.
+        </p>
+      ) : (
         <p className="roster-total">
           {total} students. Three subteams. One machine.
         </p>

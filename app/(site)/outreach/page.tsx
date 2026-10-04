@@ -5,7 +5,7 @@ import PageHeader from "@/components/site/page-header"
 import { mentoredTeams, outreachPrograms } from "@/components/home/content"
 
 export const metadata: Metadata = {
-  title: "Outreach — RoboKnights 8569",
+  title: "Outreach",
   description:
     "Founding FLL teams, mentoring FIRST teams worldwide, and teaching STEM across North Carolina."
 }

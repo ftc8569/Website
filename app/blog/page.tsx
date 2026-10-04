@@ -1,77 +1,95 @@
-"use client"
-
-import Navbar from "@/components/navbar"
-import { useEffect, useRef, useState } from "react"
-import Masonry, { ResponsiveMasonry } from "react-responsive-masonry"
+import type { Metadata } from "next"
 import Image from "next/image"
+import Link from "next/link"
 
-export default function Blog() {
-  const navbarRef = useRef<HTMLDivElement | null>(null)
-  const [blogs, setBlogs] = useState<BlogItem[]>([])
+import styles from "@/components/blogs/blog.module.css"
+import PageHeader from "@/components/site/page-header"
+import { prisma } from "@/lib/prisma"
 
-  useEffect(() => {
-    fetch("/api/blog")
-      .then((res) => res.json())
-      .then((data) => setBlogs(data))
-  }, [])
+export const dynamic = "force-dynamic"
+export const metadata: Metadata = {
+  title: "Blog",
+  description:
+    "Build updates, competition days, and engineering from RoboKnights Team 8569."
+}
+
+const dateFormatter = new Intl.DateTimeFormat("en-US", {
+  dateStyle: "medium",
+  timeZone: "UTC"
+})
+
+export default async function BlogPage() {
+  let posts
+  try {
+    posts = await prisma.blogPost.findMany({
+      where: { published: true },
+      orderBy: { createdAt: "desc" },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        readTime: true,
+        createdAt: true,
+        author: { select: { firstName: true, lastName: true } }
+      }
+    })
+  } catch {
+    return (
+      <main className={styles.page}>
+        <PageHeader
+          eyebrow="06 / Field notes"
+          title="RoboKnights Blog"
+          lede="Build updates, competition days, and the engineering behind our work."
+        />
+        <p className={styles.status} role="status">
+          Articles are temporarily unavailable. Please try again later.
+        </p>
+      </main>
+    )
+  }
 
   return (
-    <main>
-      <Navbar navbarRef={navbarRef} homePageRefs={null} />
-      <div className="w-1/3 bg-roboHotPink rounded-lg mt-32 ml-10">
-        <h1 className="text-6xl p-3 pl-10">RoboKnights Blog</h1>
-        <h1 className="text-3xl p-3 pl-10">
-          Where you can hear the minds of great thinkers and doers
-        </h1>
-      </div>
-      <div className={`pb-20`}>
-        <ResponsiveMasonry
-          className="px-8 pt-16"
-          columnsCountBreakPoints={{ 350: 1, 750: 2, 800: 3 }}
-        >
-          <Masonry gutter="1rem">
-            {blogs.map((blog, index) => {
-              return <BlogCard data={blog} key={index} />
-            })}
-          </Masonry>
-        </ResponsiveMasonry>
-      </div>
+    <main className={styles.page}>
+      <PageHeader
+        eyebrow="06 / Field notes"
+        title="RoboKnights Blog"
+        lede="Build updates, competition days, and the engineering behind our work."
+      />
+
+      {posts.length === 0 ? (
+        <p className={styles.status}>No articles have been published yet.</p>
+      ) : (
+        <div className={styles.grid}>
+          {posts.map((post) => (
+            <article key={post.id} className={styles.card}>
+              <Link href={`/blog/${post.id}`} className={styles.cardLink}>
+                <div className={styles.cover}>
+                  <Image
+                    src={`/api/blog/image/${post.id}`}
+                    alt=""
+                    fill
+                    sizes="(max-width: 640px) 100vw, (max-width: 1100px) 50vw, 33vw"
+                  />
+                </div>
+                <div className={styles.cardCopy}>
+                  <p className={styles.cardMeta}>
+                    {dateFormatter.format(post.createdAt)}{" "}
+                    <span aria-hidden="true">·</span> {post.readTime}
+                  </p>
+                  <h2>{post.title}</h2>
+                  <p className={styles.description}>{post.description}</p>
+                  <p className={styles.author}>
+                    By{" "}
+                    {[post.author.firstName, post.author.lastName]
+                      .filter(Boolean)
+                      .join(" ")}
+                  </p>
+                </div>
+              </Link>
+            </article>
+          ))}
+        </div>
+      )}
     </main>
   )
-}
-
-function BlogCard({ data }: { data: BlogItem }) {
-  return (
-    <button onClick={() => window.open("/blog/" + data.id)}>
-      <div
-        className={`bg-stone-900 ring-2 ring-blue-500/50 hover:ring-blue-300/50 rounded-2xl`}
-      >
-        <Image
-          src={`/api/blog/image/${data.id}`}
-          alt={"Blog Image"}
-          className={`rounded-t-2xl`}
-          width={1000}
-          height={600}
-        />
-        <div className="py-5 px-3 text-left">
-          <h1 className="text-3xl font-semibold pb-2">{data.title}</h1>
-          <h1>{data.description}</h1>
-          <h1 className="text-stone-500 pt-2">Author: {data.author}</h1>
-        </div>
-      </div>
-    </button>
-  )
-}
-
-export interface BlogItem {
-  id: string
-  title: string
-  description: string
-  author: string
-  authorUrl: string | null
-  date: string // MM/DD/YYYY
-  readTime: string // "X minutes"
-  content: string // In markdown
-  updatedAt: string
-  published: boolean
 }

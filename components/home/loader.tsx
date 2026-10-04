@@ -1,7 +1,7 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 
 /*
  * Boot sequence.
@@ -25,14 +25,17 @@ const TOTAL = 2500 // fill + fade, must match the bootOut keyframes
 
 export default function Loader() {
   const [done, setDone] = useState(false)
-  const [count, setCount] = useState(0)
+  const countRef = useRef<HTMLSpanElement>(null)
 
   useEffect(() => {
     const started = performance.now()
 
     const ticker = setInterval(() => {
       const pct = Math.min(100, ((performance.now() - started) / RUN) * 100)
-      setCount(pct)
+      if (countRef.current)
+        countRef.current.textContent = Math.round(pct)
+          .toString()
+          .padStart(3, "0")
       if (pct >= 100) clearInterval(ticker)
     }, 60)
 
@@ -47,7 +50,10 @@ export default function Loader() {
   if (done) return null
 
   return (
-    <div className="boot" role="status" aria-label="Loading RoboKnights">
+    <div className="boot">
+      <span className="sr-only" role="status">
+        Welcome to RoboKnights
+      </span>
       <div className="boot-grid" aria-hidden="true" />
       <div className="boot-core">
         <div className="boot-ring" aria-hidden="true" />
@@ -75,11 +81,21 @@ export default function Loader() {
 
       <div className="boot-readout">
         <span>RoboKnights</span>
-        <span className="boot-count">
-          {Math.round(count).toString().padStart(3, "0")}
+        <span className="boot-count" ref={countRef} aria-hidden="true">
+          000
         </span>
         <span>8569</span>
       </div>
+      <button
+        className="boot-skip"
+        type="button"
+        onClick={() => {
+          setDone(true)
+          document.querySelector<HTMLAnchorElement>(".launch-brand")?.focus()
+        }}
+      >
+        Skip intro
+      </button>
       <div className="boot-bar" aria-hidden="true">
         <i />
       </div>

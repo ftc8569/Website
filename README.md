@@ -1,61 +1,73 @@
-# RoboKnights Website
+# RoboKnights website
 
----
+The website for FTC Team 8569 at NCSSM Durham. Built with Next.js 16 App Router,
+React 19, TypeScript, Tailwind CSS 4, Three.js, KaTeX, and Prisma/PostgreSQL.
 
-This is the code for the RoboKnights website. This README will explain a little about
-the architecture and where things are located. The hope is that if you are reading
-this, you know how to install all your packages and what not. If that is not true, someone
-should update this to include information on that.
+## Run locally
 
-This uses NextJS, Typescript, Tailwindcss, and React. There are various other frameowrks
-baked in too but those are the important ones to know.
+Use Node.js 20.9 or newer. Install dependencies and generate the Prisma client:
 
-### Important Folders and Files
-
-- **public/robot** - Contains the rendered frames for the robot. This is rendered in
-  blender and stored as pngs there. The blender file should be on the google drive because
-  it is too large for github.
-- **.env** - This file is needed to make the recaptcha work. To use it, rename .env.example
-  to just .env and fill in the correct values.
-
-_The Nextjs README below has been kept for information on running the app_
-
----
-
-## Important information to run the app
-
-The app needs a database to run, this must be configured to persist during deplopyment but for development
-it can be run locally. The command below will start a database to run locally for testing.
-
-`docker run --name roboknights-db -p 5432:5432 -e POSTGRES_PASSWORD=temporarypass -e POSTGRES_DB=blog -e POSTGRES_USER=web -d postgres`
-
----
-
-## Getting Started
-
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```sh
+npm ci
+npx prisma generate
+npm run dev -- --port 8569
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:8569. The public home, robot, software, outreach, and team
+pages work without service credentials. Team data is read from
+`public/team/team.yml`; shared technical/outreach content is in
+`components/home/content.ts`. Treat season results and measurements as dated
+team-supplied portfolio data and verify them before updating.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Checks
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```sh
+npm run lint
+npm run typecheck
+npm run build
+npm run test:browser -- http://localhost:8569
+npm run audit:react
+```
 
-## Learn More
+The browser check uses installed Google Chrome via Playwright and runs the six
+public pages at 375, 768, and 1280 pixels. It checks route/history/hash navigation,
+mobile menus, horizontal overflow, MathML, reduced motion, no-JavaScript content,
+invalid contact requests, runtime exceptions, and axe accessibility rules.
+Screenshots and reports are written to ignored `output/playwright/`.
+Run it against the production server as well as the dev server.
 
-To learn more about Next.js, take a look at the following resources:
+For a local production check, run `npm run build` followed by
+`npm run start -- --port 8570`. The Docker deployment uses the generated
+standalone server with its public/static assets, as configured in `Dockerfile`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Development-only React Grab and React Scan load through
+`components/site/dev-tools.tsx`. Set `NEXT_PUBLIC_DISABLE_REACT_DEVTOOLS=1` before
+starting dev to disable instrumentation during timing measurements.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Services
+
+Copy `.env.example` to `.env.local` and set only the services you need. Never
+commit credentials. Public pages do not require a database; blog reads require
+`DATABASE_URL` pointing to PostgreSQL and an applied Prisma schema. List, detail,
+and image endpoints expose only published posts. With the database unavailable,
+the site shows a service-unavailable message rather than an empty or broken page.
+The legacy editor is not exposed as an authenticated admin route by this branch.
+
+The legacy contact form requires `NEXT_PUBLIC_RECAPTCHA_SITE_KEY`,
+`GOOGLE_API_KEY`, `CONTACT_EMAIL`, `GMAIL_CLIENT_ID`, `GMAIL_CLIENT_SECRET`, and
+`GMAIL_CLIENT_REFRESH_TOKEN`. Its assessment uses the existing reCAPTCHA
+Enterprise project `prorickey` and action `form_submit`. The Gmail OAuth sender
+must be authorized for `ftcteam8569@roboknights.net`. Delivery is awaited before
+success is reported. The redesigned contact CTA opens an email client directly.
+Do not test successful mail delivery without explicitly authorizing that send.
+
+## Structure
+
+- `app/(site)/`: home, robot, software, outreach, and team routes.
+- `components/site/`: shared navigation, shell, page headers, math, dev tooling.
+- `components/home/robot-viewer.tsx`: responsive CAD viewer with poster fallback.
+- `app/blog/`, `app/api/blog/`: public published-article routes.
+- `app/api/contact-us/`: validated legacy contact handler.
+- `public/models/`: compressed robot GLB, poster, and local Draco decoder assets.
+- `public/robot/`: legacy Blender frame sequence, retained for compatibility.
+- `DESIGN.md`: styling, motion, responsive behavior, and accessibility contract.

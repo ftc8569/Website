@@ -1,0 +1,124 @@
+.robot3d-stage {
+  touch-action: pan-y;
+  cursor: grab;
+  outline: none;
+}
+
+.robot3d-stage:active {
+  cursor: grabbing;
+}
+
+.robot3d-stage:focus-visible {
+  outline: 2px solid var(--pink, #ff2b87);
+  outline-offset: -6px;
+}
+
+.robot3d-interface {
+  position: absolute;
+  z-index: 5;
+  right: 0;
+  bottom: 12px;
+  left: 0;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.robot3d-status {
+  width: min(320px, calc(100% - 24px));
+  margin: 0;
+  padding: 6px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(5, 5, 5, 0.82);
+  color: #f7f7f4;
+  font: 500 12px/1.4 var(--font-sans, Poppins, system-ui, sans-serif);
+  text-align: center;
+  text-wrap: balance;
+  backdrop-filter: blur(8px);
+}
+
+.robot3d-status:not(:empty) {
+  min-height: 28px;
+}
+
+.robot3d-status[data-state="error"] {
+  color: #ff8dbc;
+}
+
+.robot3d-controls {
+  display: flex;
+  gap: 4px;
+  pointer-events: auto;
+}
+
+.robot3d-controls button {
+  display: grid;
+  width: 44px;
+  height: 44px;
+  padding: 10px;
+  place-items: center;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  background: rgba(5, 5, 5, 0.88);
+  color: #f7f7f4;
+  transition:
+    color 180ms ease,
+    border-color 180ms ease,
+    background-color 180ms ease,
+    opacity 180ms ease;
+  backdrop-filter: blur(8px);
+}
+
+.robot3d-controls button:hover:not(:disabled) {
+  border-color: var(--pink, #ff2b87);
+  background: var(--pink, #ff2b87);
+  color: #050505;
+}
+
+.robot3d-controls button:focus-visible {
+  outline: 2px solid var(--pink, #ff2b87);
+  outline-offset: 2px;
+}
+
+.robot3d-controls button:disabled {
+  cursor: wait;
+  opacity: 0.52;
+}
+
+.robot3d-controls svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.7;
+}
+
+.robot3d-icon-minus {
+  display: none;
+}
+
+@media (max-width: 520px) {
+  .robot3d-interface {
+    bottom: 8px;
+    gap: 6px;
+  }
+
+  .robot3d-status {
+    padding: 5px 8px;
+    font-size: 12px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-machine:has(.robot3d) .robot3d {
+    animation: none;
+  }
+
+  .robot3d-poster,
+  .robot3d-stage,
+  .robot3d-controls button {
+    transition: none;
+  }
+}

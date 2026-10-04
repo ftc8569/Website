@@ -7,7 +7,7 @@ import TeamView from "@/components/site/team-view"
 import type { TeamData } from "@/components/home/roster"
 
 export const metadata: Metadata = {
-  title: "Team — RoboKnights 8569",
+  title: "Team",
   description: "The students, mentors, sponsors and partners behind Team 8569."
 }
 

@@ -19,7 +19,10 @@ export default function MechanicalSection({
       </div>
       <div className="flex flex-col gap-4 flex-1">
         <div className="flex lg:flex-row flex-col bg-stone-800 p-4 rounded-2xl gap-4">
-          <img
+          <Image
+            width={960}
+            height={540}
+            sizes="(max-width: 900px) 100vw, 40vw"
             src={"/activity/mechanical-2.png"}
             alt={"Mechanical team collaborating together on the robot's design"}
             className="aspect-video object-cover rounded-2xl w-[40%] max-w-[32rem] min-w-[16rem] mx-auto"
@@ -50,7 +53,7 @@ export default function MechanicalSection({
           <div className="flex-1">
             <h3 className="font-bold text-2xl mb-2">Parallel Work</h3>
             <div className="text-sm lg:text-lg mb-2">
-              Following master sketches, we spilt into smaller
+              Following master sketches, we split into smaller
               groups/individuals so we can be <i>inclusive</i> and work more{" "}
               <i>efficiently</i> in parallel. For this, we usually go down one
               of 2 paths:
@@ -67,7 +70,10 @@ export default function MechanicalSection({
               </ol>
             </div>
           </div>
-          <img
+          <Image
+            width={960}
+            height={540}
+            sizes="(max-width: 900px) 100vw, 40vw"
             src={"/activity/mechanical.jpg"}
             alt={"2 RoboKnights members working in parallel on the robot"}
             className="aspect-video object-cover rounded-2xl w-[35%] max-w-[32rem] min-w-[16rem] mx-auto"
@@ -76,7 +82,10 @@ export default function MechanicalSection({
       </div>
       {/* <div>
         <div className="flex flex-col lg:flex-row pt-5 gap-5 lg:gap-10">
-          <img
+          <Image
+              width={960}
+              height={540}
+              sizes="(max-width: 900px) 100vw, 40vw"
             src={"/activity/mechanical.jpg"}
             alt={"Programmer locked in"}
             className="rounded-2xl aspect-video object-cover w-[40vw] max-w-[36rem]"

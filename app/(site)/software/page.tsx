@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
+import MathEquation from "@/components/site/math-equation"
 import PageHeader from "@/components/site/page-header"
 import {
   aiPractice,
@@ -10,7 +11,7 @@ import {
 } from "@/components/home/content"
 
 export const metadata: Metadata = {
-  title: "Software — RoboKnights 8569",
+  title: "Software",
   description:
     "Kotlin, command-based, simulated first: localization, vision, simulation and optimal control."
 }
@@ -56,10 +57,24 @@ export default function SoftwarePage() {
           <div className="control-intro">
             <h3>Optimal control</h3>
             <p>
-              For Worlds we rebuilt the control stack around explicit
-              mathematical models — identify the dynamics, simplify what can be
-              linearised, write a cost function, then optimise it.
+              For the post-States Worlds robot, we modeled its motion and
+              mechanisms, then used those models to shape planning and feedback
+              control. The simplified objective below shows how a time-optimal
+              trajectory can be written; it is an illustration, not a claim
+              about the exact solver used on the robot.
             </p>
+            <MathEquation
+              label="Simplified time-optimal trajectory objective"
+              formula={String.raw`\begin{aligned}
+                \min_{N,\,u_0,\ldots,u_{N-1}}\quad & N\Delta t \\
+                \text{subject to}\quad
+                & N\in\mathbb{Z}_{>0},\\
+                & x_{k+1}=f(x_k,u_k), \quad k=0,\ldots,N-1,\\
+                & x_0=x_{\mathrm{start}}, \quad x_N\in\mathcal{X}_{\mathrm{goal}},\\
+                & x_k\in\mathcal{X}, \quad u_k\in\mathcal{U}
+              \end{aligned}`}
+              description="N is the positive number of control steps and Δt is the timestep duration in seconds. At each step, x is the robot state, u is a motor command, and f is the motion model. X and U represent the modeled state and command limits; the goal set contains acceptable final poses and speeds."
+            />
           </div>
           <div className="control-grid">
             {controlWork.map((item) => (

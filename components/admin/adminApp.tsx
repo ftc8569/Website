@@ -1,14 +1,13 @@
 "use client"
 
-import { SessionProvider } from "next-auth/react"
 import Image from "next/image"
-import { useState, useRef, useEffect } from "react"
+import { useState, useRef, useEffect, useMemo, type ChangeEvent } from "react"
 import "@/components/admin/markdown.css"
 import markdownit from "markdown-it"
 import ImageDropAndCrop from "@/components/admin/ImageDropAndCrop"
 import { createCroppedImage } from "@/utils/cropUtils"
 import { Area } from "react-easy-crop"
-import { BlogItem } from "@/app/blog/page"
+import type { BlogItem } from "@/components/blogs/types"
 
 export function AdminApp() {
   const [showBlogEditor, setShowBlogEditor] = useState(false)
@@ -206,6 +205,7 @@ export function AdminApp() {
         </div>
       ) : (
         <BlogEditor
+          key={editingBlog?.id ?? "new"}
           setShowBlogEditor={setShowBlogEditor}
           editBlog={editingBlog}
           setUpdateBlogs={setUpdateBlogs}
@@ -225,44 +225,33 @@ function BlogEditor({
   setUpdateBlogs: (fn: (prev: boolean) => boolean) => void
 }) {
   const textareaRef = useRef<HTMLTextAreaElement | null>(null)
-  const md = markdownit()
-  const [html, setHtml] = useState("")
+  const md = useMemo(() => markdownit(), [])
   const [showDropAndCrop, setShowDropAndCrop] = useState(false)
 
-  const [title, setTitle] = useState("")
-  const [readTime, setReadTime] = useState("")
-  const [content, setContent] = useState("")
-  const [description, setDescription] = useState("")
+  const [title, setTitle] = useState(editBlog?.title ?? "")
+  const [readTime, setReadTime] = useState(editBlog?.readTime ?? "")
+  const [content, setContent] = useState(editBlog?.content ?? "")
+  const [description, setDescription] = useState(editBlog?.description ?? "")
   const [imageSrc, setImageSrc] = useState<Blob | null>(null)
   const [imageChanged, setImageChanged] = useState(false)
-  const [isEditMode, setIsEditMode] = useState(false)
-  const [blogId, setBlogId] = useState<string | null>(null)
+  const isEditMode = editBlog !== null
+  const blogId = editBlog?.id ?? null
+  const html = md.render(content)
 
   useEffect(() => {
     if (editBlog) {
-      setIsEditMode(true)
-      setBlogId(editBlog.id)
-      setTitle(editBlog.title)
-      setReadTime(editBlog.readTime)
-      setContent(editBlog.content)
-      setDescription(editBlog.description)
-
       fetch("/api/blog/image/" + editBlog.id)
         .then((res) => res.blob())
         .then((blob) => {
           setImageSrc(blob)
         })
         .catch((err) => console.error("Error loading image:", err))
-
-      // Set initial HTML preview
-      setHtml(md.render(editBlog.content))
     }
-  }, [editBlog, md])
+  }, [editBlog])
 
-  const onChange = (event: any) => {
+  const onChange = (event: ChangeEvent<HTMLTextAreaElement>) => {
     const newContent = event.target.value
     setContent(newContent)
-    setHtml(md.render(newContent))
   }
 
   const handleSave = async (croppedAreaPixels: Area, image: string) => {
@@ -273,7 +262,7 @@ function BlogEditor({
   }
 
   const convertToBase64 = (file: Blob) => {
-    return new Promise((resolve, reject) => {
+    return new Promise<string | ArrayBuffer | null>((resolve, reject) => {
       const reader = new FileReader()
       reader.readAsDataURL(file)
       reader.onload = () => resolve(reader.result)
@@ -315,7 +304,14 @@ function BlogEditor({
       return
     }
 
-    const updateData: any = {
+    const updateData: {
+      id: string | null
+      title: string
+      readTime: string
+      content: string
+      description: string
+      image?: string | ArrayBuffer | null
+    } = {
       id: blogId,
       title,
       readTime,
@@ -343,7 +339,16 @@ function BlogEditor({
     }
   }
 
-  const blobUrl = imageSrc && URL.createObjectURL(imageSrc)
+  const blobUrl = useMemo(
+    () => (imageSrc ? URL.createObjectURL(imageSrc) : null),
+    [imageSrc]
+  )
+  useEffect(
+    () => () => {
+      if (blobUrl) URL.revokeObjectURL(blobUrl)
+    },
+    [blobUrl]
+  )
 
   return (
     <>
@@ -496,9 +501,5 @@ function BlogEditor({
 }
 
 export default function AdminSessionWrapper() {
-  return (
-    <SessionProvider>
-      <AdminApp />
-    </SessionProvider>
-  )
+  return <AdminApp />
 }

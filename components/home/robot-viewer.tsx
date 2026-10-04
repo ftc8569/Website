@@ -1,38 +1,119 @@
 "use client"
 
 import Image from "next/image"
-import { useEffect, useRef, useState } from "react"
+import {
+  useEffect,
+  useRef,
+  useState,
+  type KeyboardEvent,
+  type PointerEvent
+} from "react"
+import type {
+  Group,
+  Mesh,
+  MeshStandardMaterial,
+  PMREMGenerator,
+  Texture,
+  WebGLRenderer,
+  WebGLRenderTarget
+} from "three"
+import type { DRACOLoader as DRACOLoaderInstance } from "three/examples/jsm/loaders/DRACOLoader.js"
+import "./robot-viewer.css"
 
 /*
- * Hero robot: interactive 3D, with a rendered poster as the floor.
- *
- * The poster is NOT a spinner — it is the real product. It ships in the HTML,
- * paints immediately, and is what everyone sees if three.js is slow, if WebGL
- * is unavailable, if the GLB 404s, or if the dynamic import throws. The 3D is
- * an enhancement layered on top and faded in only once it has actually
- * rendered a frame. Nothing here can leave a hole in the hero.
- *
- * The model is a 1.53 MB Draco-compressed GLB (297k tris, 57 materials) built
- * from the Onshape export of the Worlds robot. Camera values match the angle
- * the poster was rendered at, so the crossfade lands in place.
+ * The poster is the reliable first frame and remains visible whenever WebGL,
+ * the model, or the user's device cannot provide the interactive view.
  */
-
-// From the poster render, so 3D and placeholder line up exactly.
 const CAMERA = { x: 1.6805, y: 1.0581, z: 1.6805, fov: 36.24 }
+const MIN_ZOOM = 1
+const MAX_ZOOM = 1.8
+const ZOOM_STEP = 0.15
+
+type ViewerControls = {
+  rotate: (horizontal: number, vertical?: number) => void
+  zoom: (amount: number) => void
+  reset: () => void
+}
+
+type DragState = {
+  pointerId: number
+  startX: number
+  startY: number
+  lastX: number
+  lastY: number
+  dragging: boolean
+  touch: boolean
+}
+
+function ControlIcon({
+  name
+}: {
+  name: "left" | "right" | "plus" | "minus" | "reset"
+}) {
+  if (name === "reset") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" />
+        <path d="M3 3v5h5M12 7v5l3 2" />
+      </svg>
+    )
+  }
+
+  if (name === "plus" || name === "minus") {
+    return (
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="11" cy="11" r="7" />
+        <path d="M8 11h6M16.5 16.5 21 21" />
+        {name === "plus" && <path d="M11 8v6" />}
+      </svg>
+    )
+  }
+
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true">
+      <path d={name === "left" ? "m14 5-7 7 7 7" : "m10 5 7 7-7 7"} />
+    </svg>
+  )
+}
 
 export default function RobotViewer() {
   const mount = useRef<HTMLDivElement>(null)
+  const viewerControls = useRef<ViewerControls | null>(null)
+  const drag = useRef<DragState | null>(null)
   const [live, setLive] = useState(false)
+  const [status, setStatus] = useState("Loading 3D robot…")
+  const [failed, setFailed] = useState(false)
 
   useEffect(() => {
     const node = mount.current
     if (!node) return
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
+
+    const motionPreference = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    )
+    if (motionPreference.matches) {
+      const statusFrame = window.requestAnimationFrame(() => {
+        setStatus("Static view · Reduced motion preference")
+      })
+      return () => window.cancelAnimationFrame(statusFrame)
+    }
 
     let disposed = false
+    let onScreen = false
+    let raf = 0
     let cleanup: (() => void) | undefined
+    let updateVisibility = () => {}
 
     const start = async () => {
+      let renderer: WebGLRenderer | undefined
+      let draco: DRACOLoaderInstance | undefined
+      let pmrem: PMREMGenerator | undefined
+      let environment: WebGLRenderTarget | undefined
+      let gltfScene: Group | undefined
+      let resizeObserver: ResizeObserver | undefined
+      let intersectionObserver: IntersectionObserver | undefined
+      let stopLoop: (() => void) | undefined
+
       try {
         const [THREE, { GLTFLoader }, { DRACOLoader }, { RoomEnvironment }] =
           await Promise.all([
@@ -43,44 +124,85 @@ export default function RobotViewer() {
           ])
         if (disposed) return
 
-        const renderer = new THREE.WebGLRenderer({
+        const compact = window.matchMedia(
+          "(max-width: 600px), (pointer: coarse)"
+        ).matches
+        renderer = new THREE.WebGLRenderer({
           antialias: true,
           alpha: true,
-          powerPreference: "high-performance"
+          powerPreference: compact ? "low-power" : "high-performance"
         })
-        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2))
+        const release = () => {
+          stopLoop?.()
+          intersectionObserver?.disconnect()
+          resizeObserver?.disconnect()
+          document.removeEventListener("visibilitychange", updateVisibility)
+          viewerControls.current = null
+          interactionRef.current = null
+          renderer?.dispose()
+          draco?.dispose()
+          environment?.dispose()
+          pmrem?.dispose()
+          const disposedTextures = new Set<Texture>()
+          gltfScene?.traverse((object) => {
+            const mesh = object as Mesh
+            if (!mesh.isMesh) return
+            mesh.geometry?.dispose()
+            const materials = Array.isArray(mesh.material)
+              ? mesh.material
+              : [mesh.material]
+            materials.forEach((material) => {
+              Object.values(material).forEach((value) => {
+                if (
+                  value instanceof THREE.Texture &&
+                  !disposedTextures.has(value)
+                ) {
+                  disposedTextures.add(value)
+                  value.dispose()
+                }
+              })
+              material.dispose()
+            })
+          })
+          renderer?.domElement.remove()
+          renderer = undefined
+          draco = undefined
+          environment = undefined
+          pmrem = undefined
+          gltfScene = undefined
+        }
+        cleanup = release
+        renderer.setPixelRatio(
+          Math.min(window.devicePixelRatio, compact ? 1.35 : 1.75)
+        )
         renderer.toneMapping = THREE.ACESFilmicToneMapping
         renderer.toneMappingExposure = 0.86
-        // Parts casting onto each other is what stops a CAD assembly reading
-        // as a flat sticker. This is the single biggest realism win here.
         renderer.shadowMap.enabled = true
-        renderer.shadowMap.type = THREE.PCFSoftShadowMap
+        renderer.shadowMap.type = THREE.PCFShadowMap
 
         const scene = new THREE.Scene()
         const camera = new THREE.PerspectiveCamera(CAMERA.fov, 1, 0.1, 100)
         camera.position.set(CAMERA.x, CAMERA.y, CAMERA.z)
         camera.lookAt(0, 0, 0)
 
-        // Neutral studio IBL so the 57 CAD colours read as materials, not flats.
-        const pmrem = new THREE.PMREMGenerator(renderer)
-        scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture
-        // Low ambient: a high IBL fill is what was washing the model out. The
-        // environment is here for reflections, not for lighting the whole thing.
+        pmrem = new THREE.PMREMGenerator(renderer)
+        environment = pmrem.fromScene(new RoomEnvironment(), 0.04)
+        scene.environment = environment.texture
         scene.environmentIntensity = 0.3
 
-        // Three-point rig. The key carries the shadows and the form.
         const key = new THREE.DirectionalLight(0xfff4e8, 2.35)
         key.position.set(2.6, 3.6, 2.2)
         key.castShadow = true
-        key.shadow.mapSize.set(2048, 2048)
+        const shadowSize = compact ? 1024 : 2048
+        key.shadow.mapSize.set(shadowSize, shadowSize)
         key.shadow.bias = -0.0009
         key.shadow.normalBias = 0.012
-        const sc = key.shadow.camera
-        sc.near = 0.5
-        sc.far = 12
-        sc.left = sc.bottom = -1.1
-        sc.right = sc.top = 1.1
-        sc.updateProjectionMatrix()
+        const shadowCamera = key.shadow.camera
+        shadowCamera.near = 0.5
+        shadowCamera.far = 12
+        shadowCamera.left = shadowCamera.bottom = -1.1
+        shadowCamera.right = shadowCamera.top = 1.1
+        shadowCamera.updateProjectionMatrix()
         scene.add(key)
 
         const fill = new THREE.DirectionalLight(0xbfd4ff, 0.4)
@@ -92,48 +214,41 @@ export default function RobotViewer() {
         scene.add(rim)
 
         const resize = () => {
-          const w = node.clientWidth
-          const h = node.clientHeight
-          if (!w || !h) return
-          renderer.setSize(w, h, false)
-          camera.aspect = w / h
+          const width = node.clientWidth
+          const height = node.clientHeight
+          if (!width || !height || !renderer) return
+          renderer.setSize(width, height, false)
+          camera.aspect = width / height
           camera.updateProjectionMatrix()
         }
-        resize()
-        // The stage can be laid out after init (fonts, image decode, layout
-        // shifts), so track it rather than sizing once.
-        const ro = new ResizeObserver(resize)
-        ro.observe(node)
+        resizeObserver = new ResizeObserver(resize)
+        resizeObserver.observe(node)
         node.appendChild(renderer.domElement)
+        renderer.domElement.setAttribute("aria-hidden", "true")
 
-        const draco = new DRACOLoader().setDecoderPath("/draco/")
+        draco = new DRACOLoader().setDecoderPath("/draco/")
         const loader = new GLTFLoader().setDRACOLoader(draco)
-
         const gltf = await loader.loadAsync("/models/worlds-bot.glb")
+        gltfScene = gltf.scene
         if (disposed) {
-          renderer.dispose()
-          draco.dispose()
+          release()
           return
         }
 
-        /*
-         * The MTL carried `Ns 0`, which converts to roughness 1.0 — completely
-         * matte, no specular, which is why it read as faded. Tighten roughness
-         * and add a little metalness so the machined parts catch a highlight.
-         * Colours are left exactly as exported.
-         */
-        gltf.scene.traverse((o) => {
-          const m = o as THREE.Mesh
-          if (!m.isMesh) return
-          m.castShadow = true
-          m.receiveShadow = true
-          const mats = Array.isArray(m.material) ? m.material : [m.material]
-          mats.forEach((raw) => {
-            const mat = raw as THREE.MeshStandardMaterial
-            if (!mat || !("roughness" in mat)) return
-            mat.roughness = 0.42
-            mat.metalness = 0.15
-            mat.envMapIntensity = 0.85
+        gltf.scene.traverse((object) => {
+          const mesh = object as Mesh
+          if (!mesh.isMesh) return
+          mesh.castShadow = true
+          mesh.receiveShadow = true
+          const materials = Array.isArray(mesh.material)
+            ? mesh.material
+            : [mesh.material]
+          materials.forEach((raw) => {
+            const material = raw as MeshStandardMaterial
+            if (!("roughness" in material)) return
+            material.roughness = 0.42
+            material.metalness = 0.15
+            material.envMapIntensity = 0.85
           })
         })
 
@@ -141,101 +256,209 @@ export default function RobotViewer() {
         pivot.add(gltf.scene)
         scene.add(pivot)
 
-        // Pause work when the hero is scrolled away or the tab is hidden.
-        let onScreen = true
-        const io = new IntersectionObserver(
-          ([e]) => {
-            onScreen = e.isIntersecting
+        let userRotationY = 0
+        let userRotationX = 0
+        let zoom = MIN_ZOOM
+        viewerControls.current = {
+          rotate: (horizontal, vertical = 0) => {
+            userRotationY = THREE.MathUtils.clamp(
+              userRotationY + horizontal,
+              -Math.PI,
+              Math.PI
+            )
+            userRotationX = THREE.MathUtils.clamp(
+              userRotationX + vertical,
+              -0.45,
+              0.45
+            )
+          },
+          zoom: (amount) => {
+            zoom = THREE.MathUtils.clamp(zoom + amount, MIN_ZOOM, MAX_ZOOM)
+            camera.zoom = zoom
+            camera.updateProjectionMatrix()
+          },
+          reset: () => {
+            userRotationY = 0
+            userRotationX = 0
+            zoom = MIN_ZOOM
+            camera.zoom = zoom
+            camera.updateProjectionMatrix()
+          }
+        }
+
+        let time = 0
+        let tiltX = 0
+        let tiltY = 0
+        let pointerX = 0
+        let pointerY = 0
+        let previousFrame = performance.now()
+        const animate = () => {
+          raf = 0
+          if (disposed || !onScreen || document.hidden || !renderer) return
+          const now = performance.now()
+          time += Math.min((now - previousFrame) / 1000, 0.05)
+          previousFrame = now
+          tiltY += (pointerX * 0.2 - tiltY) * 0.045
+          tiltX += (pointerY * 0.1 - tiltX) * 0.045
+          pivot.rotation.y =
+            Math.sin(time * 0.32) * 0.42 + userRotationY + tiltY
+          pivot.rotation.x = userRotationX + tiltX
+          pivot.position.y = Math.sin(time * 0.55) * 0.012
+          renderer.render(scene, camera)
+          raf = requestAnimationFrame(animate)
+        }
+        const startLoop = () => {
+          if (!raf && onScreen && !document.hidden) {
+            previousFrame = performance.now()
+            raf = requestAnimationFrame(animate)
+          }
+        }
+        stopLoop = () => {
+          if (raf) cancelAnimationFrame(raf)
+          raf = 0
+        }
+
+        intersectionObserver = new IntersectionObserver(
+          ([entry]) => {
+            onScreen = entry.isIntersecting
+            if (onScreen) startLoop()
+            else stopLoop?.()
           },
           { rootMargin: "120px" }
         )
-        io.observe(node)
+        intersectionObserver.observe(node)
 
-        let pointerX = 0
-        let pointerY = 0
-        const onPointer = (event: PointerEvent) => {
-          const r = node.getBoundingClientRect()
-          pointerX = ((event.clientX - r.left) / r.width - 0.5) * 2
-          pointerY = ((event.clientY - r.top) / r.height - 0.5) * 2
+        updateVisibility = () => {
+          if (document.hidden) stopLoop?.()
+          else startLoop()
         }
-        window.addEventListener("pointermove", onPointer, { passive: true })
-        window.addEventListener("resize", resize)
+        document.addEventListener("visibilitychange", updateVisibility)
 
-        let raf = 0
-        let t = 0
-        let tiltX = 0
-        let tiltY = 0
-        const clock = new THREE.Clock()
-
-        const tick = () => {
-          raf = requestAnimationFrame(tick)
-          const dt = clock.getDelta()
-          if (!onScreen || document.hidden) return
-
-          t += dt
-          // Sway around the poster's 3/4 angle instead of spinning a full turn.
-          // A continuous rotation parks the robot at unflattering rear angles
-          // half the time; this keeps the hero shot always readable.
-          const sway = Math.sin(t * 0.32) * 0.42
-
-          // Ease toward the pointer rather than snapping to it.
-          tiltY += (pointerX * 0.2 - tiltY) * 0.045
-          tiltX += (pointerY * 0.1 - tiltX) * 0.045
-
-          pivot.rotation.y = sway + tiltY
-          pivot.rotation.x = tiltX
-          pivot.position.y = Math.sin(t * 0.55) * 0.012
-
-          renderer.render(scene, camera)
+        const setPointerTarget = (x: number, y: number) => {
+          const bounds = node.getBoundingClientRect()
+          pointerX = THREE.MathUtils.clamp(
+            ((x - bounds.left) / bounds.width - 0.5) * 2,
+            -1,
+            1
+          )
+          pointerY = THREE.MathUtils.clamp(
+            ((y - bounds.top) / bounds.height - 0.5) * 2,
+            -1,
+            1
+          )
         }
-        tick()
+        const interactions = {
+          pointerMove: setPointerTarget,
+          rotate: (horizontal: number, vertical: number) =>
+            viewerControls.current?.rotate(horizontal, vertical)
+        }
+        interactionRef.current = interactions
 
-        // Only reveal once a real frame exists, so there is never a blank flash.
+        startLoop()
+        setFailed(false)
+        setStatus("Drag to rotate · Arrow keys to turn")
         requestAnimationFrame(() => {
           if (!disposed) setLive(true)
         })
-
-        cleanup = () => {
-          cancelAnimationFrame(raf)
-          io.disconnect()
-          ro.disconnect()
-          window.removeEventListener("pointermove", onPointer)
-          window.removeEventListener("resize", resize)
-          renderer.dispose()
-          draco.dispose()
-          pmrem.dispose()
-          gltf.scene.traverse((o) => {
-            const m = o as THREE.Mesh
-            if (m.isMesh) {
-              m.geometry?.dispose()
-              const mat = m.material
-              if (Array.isArray(mat)) mat.forEach((x) => x.dispose())
-              else mat?.dispose()
-            }
-          })
-          renderer.domElement.remove()
-        }
       } catch {
-        // Poster stays. The hero is never empty.
+        cleanup?.()
+        if (!disposed) {
+          setFailed(true)
+          setStatus("3D view unavailable · Showing poster")
+        }
       }
     }
 
-    // Defer past first paint so the 3D never competes with the hero rendering.
-    const idle =
-      "requestIdleCallback" in window
-        ? window.requestIdleCallback(() => start(), { timeout: 2200 })
-        : window.setTimeout(start, 600)
+    // Defer Three.js and the compressed model until after the hero's first paint.
+    const idleWindow = window as Window & {
+      requestIdleCallback?: (
+        callback: () => void,
+        options?: { timeout: number }
+      ) => number
+      cancelIdleCallback?: (handle: number) => void
+    }
+    const idle = idleWindow.requestIdleCallback
+      ? {
+          kind: "idle" as const,
+          handle: idleWindow.requestIdleCallback(() => start(), {
+            timeout: 2200
+          })
+        }
+      : { kind: "timeout" as const, handle: globalThis.setTimeout(start, 600) }
 
     return () => {
       disposed = true
-      if ("cancelIdleCallback" in window && typeof idle === "number") {
-        window.cancelIdleCallback(idle)
-      } else {
-        clearTimeout(idle as number)
-      }
+      if (idle.kind === "idle") idleWindow.cancelIdleCallback?.(idle.handle)
+      else globalThis.clearTimeout(idle.handle)
       cleanup?.()
     }
   }, [])
+
+  const interactionRef = useRef<{
+    pointerMove: (x: number, y: number) => void
+    rotate: (horizontal: number, vertical: number) => void
+  } | null>(null)
+
+  const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
+    if (!live || event.button > 0) return
+    drag.current = {
+      pointerId: event.pointerId,
+      startX: event.clientX,
+      startY: event.clientY,
+      lastX: event.clientX,
+      lastY: event.clientY,
+      dragging: false,
+      touch: event.pointerType === "touch"
+    }
+  }
+
+  const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    const current = drag.current
+    if (!current || current.pointerId !== event.pointerId || !live) return
+
+    const dx = event.clientX - current.lastX
+    const dy = event.clientY - current.lastY
+    if (!current.dragging) {
+      const totalX = event.clientX - current.startX
+      const totalY = event.clientY - current.startY
+      if (current.touch && Math.abs(totalY) > Math.abs(totalX)) return
+      if (Math.abs(totalX) + Math.abs(totalY) < 5) return
+      current.dragging = true
+      event.currentTarget.setPointerCapture(event.pointerId)
+    }
+
+    const width = event.currentTarget.clientWidth || 1
+    interactionRef.current?.rotate(
+      (dx / width) * Math.PI * 1.6,
+      (dy / width) * Math.PI * 1.1
+    )
+    interactionRef.current?.pointerMove(event.clientX, event.clientY)
+    current.lastX = event.clientX
+    current.lastY = event.clientY
+  }
+
+  const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    if (drag.current?.pointerId !== event.pointerId) return
+    if (event.currentTarget.hasPointerCapture(event.pointerId)) {
+      event.currentTarget.releasePointerCapture(event.pointerId)
+    }
+    drag.current = null
+  }
+
+  const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    const rotate = Math.PI / 12
+    if (event.key === "ArrowLeft") viewerControls.current?.rotate(-rotate)
+    else if (event.key === "ArrowRight") viewerControls.current?.rotate(rotate)
+    else if (event.key === "ArrowUp") viewerControls.current?.rotate(0, -rotate)
+    else if (event.key === "ArrowDown")
+      viewerControls.current?.rotate(0, rotate)
+    else if (event.key === "+" || event.key === "=")
+      viewerControls.current?.zoom(ZOOM_STEP)
+    else if (event.key === "-") viewerControls.current?.zoom(-ZOOM_STEP)
+    else if (event.key === "Home") viewerControls.current?.reset()
+    else return
+    event.preventDefault()
+  }
 
   return (
     <div className={`robot3d ${live ? "robot3d--live" : ""}`}>
@@ -248,7 +471,74 @@ export default function RobotViewer() {
         priority
         sizes="(max-width: 900px) 100vw, 62vw"
       />
-      <div className="robot3d-stage" ref={mount} aria-hidden="true" />
+      <div
+        className="robot3d-stage"
+        ref={mount}
+        role="group"
+        aria-label="Interactive 3D robot model. Drag to rotate. Use arrow keys to turn, plus or minus to zoom, and Home to reset."
+        tabIndex={0}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerCancel={onPointerUp}
+        onKeyDown={onKeyDown}
+      />
+      <div className="robot3d-interface">
+        <p
+          className="robot3d-status"
+          data-state={failed ? "error" : undefined}
+          role="status"
+          aria-live="polite"
+        >
+          {status}
+        </p>
+        <div
+          className="robot3d-controls"
+          role="group"
+          aria-label="Robot view controls"
+        >
+          <button
+            type="button"
+            aria-label="Rotate robot left"
+            onClick={() => viewerControls.current?.rotate(-Math.PI / 6)}
+            disabled={!live}
+          >
+            <ControlIcon name="left" />
+          </button>
+          <button
+            type="button"
+            aria-label="Zoom out"
+            onClick={() => viewerControls.current?.zoom(-ZOOM_STEP)}
+            disabled={!live}
+          >
+            <ControlIcon name="minus" />
+          </button>
+          <button
+            type="button"
+            aria-label="Reset robot view"
+            onClick={() => viewerControls.current?.reset()}
+            disabled={!live}
+          >
+            <ControlIcon name="reset" />
+          </button>
+          <button
+            type="button"
+            aria-label="Zoom in"
+            onClick={() => viewerControls.current?.zoom(ZOOM_STEP)}
+            disabled={!live}
+          >
+            <ControlIcon name="plus" />
+          </button>
+          <button
+            type="button"
+            aria-label="Rotate robot right"
+            onClick={() => viewerControls.current?.rotate(Math.PI / 6)}
+            disabled={!live}
+          >
+            <ControlIcon name="right" />
+          </button>
+        </div>
+      </div>
     </div>
   )
 }

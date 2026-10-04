@@ -199,7 +199,7 @@ export const programmingCards = [
   {
     title: "Physics model",
     blurb:
-      "Before either simulator is trustworthy it needs a real model. We derived ours from motor dynamics, mecanum kinematics, and projectile motion, so the simulated robot responds to control input the way the physical one actually does — and we can find the edges of its capability without breaking anything.",
+      "A useful simulator needs a model of the robot. Ours combines motor dynamics, mecanum kinematics, and projectile motion to approximate how the physical robot responds to control input and explore its limits before testing on hardware.",
     image: "/figures/mpc-optimizer.jpg",
     tag: "Motor dynamics, kinematics, projectile motion"
   },
@@ -213,7 +213,7 @@ export const programmingCards = [
   {
     title: "Optimal pathing",
     blurb:
-      "Trajectories between waypoints are solved as an optimisation problem: the time-optimal path the robot can actually achieve within its motor constraints. Inspired by FRC's Choreo, we built a web interface for creating and editing those paths, so tuning an auto does not mean editing numbers in source.",
+      "We pose trajectories between waypoints as an optimisation problem with modeled motor constraints, with shorter traversal time as a goal. Inspired by FRC's Choreo, we built a web interface for creating and editing those paths, so tuning an auto does not mean editing numbers in source.",
     image: "/figures/optimal-pathing.jpg",
     tag: "We built the path editor too"
   },
@@ -251,37 +251,37 @@ export const programmingCards = [
 export const controlWork = [
   {
     name: "Model Predictive Control",
-    result: "15% more efficient",
+    result: "Model-based trajectory planning",
     detail:
-      "Computes the optimal path by minimising total traversal time inside the robot's real physical limits — measured against conventional followers like PedroPathing.",
+      "Uses a robot model to evaluate future motion and choose control inputs within modeled drivetrain limits. The trajectory objective favors shorter traversal time; the result depends on model accuracy and the chosen constraints.",
     image: "/figures/mpc-horizon.jpg"
   },
   {
     name: "Factor-graph localization",
-    result: "75% less drift",
+    result: "Corrects accumulated odometry drift",
     detail:
-      "GTSAM sensor fusion folds Limelight AprilTag detections into the pose estimate, cutting long-term precision error against odometry alone.",
+      "A GTSAM factor graph combines odometry with Limelight AprilTag observations to update the robot's pose. Reliable tag observations can correct error accumulated by odometry.",
     image: "/figures/gtsam.jpg"
   },
   {
     name: "LTV path following",
-    result: "Runs every timestep",
+    result: "Feedback along a reference path",
     detail:
-      "Full MPC is too heavy for the onboard processor, so we pre-compute optimal headings offline and collapse the nonlinear problem into a Linear Time-Varying one.",
+      "We linearize the motion model around a reference path and use a Linear Time-Varying controller to update drive commands as the robot moves. Performance depends on how closely the model and reference match the robot's motion.",
     image: "/figures/ltv.jpg"
   },
   {
     name: "Global Lipschitz \u2014 Virtual Sort",
-    result: "Sorting without a sorter",
+    result: "Chooses shot settings to separate landing points",
     detail:
-      "With no mechanical sorting on the Worlds bot, we sort consecutive shots mid-air with the turret. We bound how much a ball's arc changes the shooter state to find the Lipschitz constant, then use the Shubert\u2013Piyavskii method to maximise the landing gap between shots.",
+      "With no mechanical sorter on the Worlds bot, the turret separates consecutive shots in flight. Given a Lipschitz bound on how launch settings change predicted landing position, the Shubert\u2013Piyavskii method searches for settings that maximize the gap between landing points.",
     image: "/figures/lipschitz.jpg"
   },
   {
     name: "LQR flywheel control",
-    result: "Sub-second recovery",
+    result: "Balances speed error and control effort",
     detail:
-      "A Linear-Quadratic Regulator drives the flywheel to speed as fast as possible while suppressing overshoot and voltage spikes.",
+      "A Linear-Quadratic Regulator balances flywheel speed error against voltage effort in its cost. Its settling time and overshoot depend on the model, tuned weights, and motor voltage limits, so they need to be measured on the robot.",
     image: "/figures/lqr.jpg"
   }
 ]

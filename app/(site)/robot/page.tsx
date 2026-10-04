@@ -15,7 +15,7 @@ import {
 } from "@/components/home/content"
 
 export const metadata: Metadata = {
-  title: "Robot — RoboKnights 8569",
+  title: "Robot",
   description:
     "Elite Ball Knowledge and the Worlds bot: subsystems, iteration history, and manufacturing."
 }

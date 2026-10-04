@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef } from "react"
+import { useEffect, useMemo, useRef, useState } from "react"
 
 /*
  * Two-row photo marquee: the rows drift in opposite directions, and a
@@ -45,6 +45,8 @@ function Track({
       <div ref={trackRef} className="marquee-track">
         {items.map((img, i) => (
           <div className="marquee-card" key={`${keyPrefix}-${i}`}>
+            {/* Fixed-size local thumbnails bypass redundant optimizer requests. */}
+            {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
               src={img.src}
               alt={i < items.length / REPEATS ? img.alt : ""}
@@ -69,6 +71,7 @@ function Track({
 }
 
 export default function PhotoMarquee({ images }: { images: MarqueeImage[] }) {
+  const [paused, setPaused] = useState(false)
   const half = Math.ceil(images.length / 2)
   const rowA = useMemo(() => images.slice(0, half), [images, half])
   const rowB = useMemo(() => images.slice(half), [images, half])
@@ -92,7 +95,7 @@ export default function PhotoMarquee({ images }: { images: MarqueeImage[] }) {
 
   useEffect(() => {
     const node = shell.current
-    if (!node) return
+    if (!node || paused) return
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return
 
     // One repeat's worth of width, measured live so it survives a resize.
@@ -102,6 +105,7 @@ export default function PhotoMarquee({ images }: { images: MarqueeImage[] }) {
     const io = new IntersectionObserver(
       ([entry]) => {
         visible.current = entry.isIntersecting
+        syncAnimation()
       },
       { rootMargin: "200px" }
     )
@@ -116,9 +120,14 @@ export default function PhotoMarquee({ images }: { images: MarqueeImage[] }) {
     node.addEventListener("wheel", onWheel, { passive: false })
 
     let raf = 0
+    const syncAnimation = () => {
+      cancelAnimationFrame(raf)
+      if (visible.current && !document.hidden) raf = requestAnimationFrame(tick)
+    }
+    document.addEventListener("visibilitychange", syncAnimation)
     const tick = () => {
+      if (!visible.current || document.hidden) return
       raf = requestAnimationFrame(tick)
-      if (!visible.current) return
 
       const loopA = loopOf(trkA.current)
       const loopB = loopOf(trkB.current)
@@ -154,12 +163,21 @@ export default function PhotoMarquee({ images }: { images: MarqueeImage[] }) {
     return () => {
       cancelAnimationFrame(raf)
       io.disconnect()
+      document.removeEventListener("visibilitychange", syncAnimation)
       node.removeEventListener("wheel", onWheel)
     }
-  }, [])
+  }, [paused])
 
   return (
     <div className="marquee" ref={shell}>
+      <button
+        className="marquee-toggle"
+        type="button"
+        aria-pressed={paused}
+        onClick={() => setPaused((value) => !value)}
+      >
+        {paused ? "Resume gallery" : "Pause gallery"}
+      </button>
       <div className="marquee-fade marquee-fade--left" aria-hidden="true" />
       <div className="marquee-fade marquee-fade--right" aria-hidden="true" />
       <Track trackRef={trkA} items={trackA} keyPrefix="a" />

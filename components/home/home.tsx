@@ -6,6 +6,74 @@ import { PiMapPinLineBold } from "react-icons/pi"
 import { FaCalendarAlt } from "react-icons/fa"
 import Dropdown from "../dropdown"
 
+function IntroCard({ onContact }: { onContact: () => void }) {
+  return (
+    <div className="example-3 w-full mx-4 lg:w-[30rem] rounded-lg">
+      <div className="inner bg-stone-900">
+        <div className="flex flex-col p-4">
+          <div className="flex flex-row-reverse gap-x-2 w-full">
+            <Image
+              src={`/icons/github.svg`}
+              alt="GitHub"
+              className={`hover:cursor-pointer`}
+              onClick={() => window.open("https://github.com/ftc8569")}
+              width={40}
+              height={40}
+            />
+            <Image
+              src={`/icons/linkedin.svg`}
+              alt="LinkedIn"
+              className={`hover:cursor-pointer`}
+              onClick={() =>
+                window.open("https://www.linkedin.com/company/ftc8569")
+              }
+              width={50}
+              height={50}
+            />
+            <Image
+              src={`/icons/instagram.svg`}
+              alt="Instagram"
+              className={`hover:cursor-pointer`}
+              onClick={() =>
+                window.open("https://www.instagram.com/roboknights8569/")
+              }
+              width={50}
+              height={50}
+            />
+            <h1 className="text-2xl lg:text-5xl mr-auto pl-2">8569</h1>
+          </div>
+          <h1 className="text-4xl lg:text-6xl font-semibold py-2 lg:py-2 rounded-2xl w-min mt-1 mb-4">
+            RoboKnights
+          </h1>
+          <h1 className="text-2xl">
+            Innovative, Creative, Competitive.
+            <br />
+            That's the RoboKnights.
+          </h1>
+          <div className="flex flex-row pt-4 gap-x-4">
+            {[
+              { text: "Contact Us", func: onContact }
+              // { text: "Blog", func: handleBlogClick }
+            ].map(({ text, func }, index) => (
+              <button key={index} onClick={func}>
+                <div className="flex flex-row p-2 border-1 border-roboHotPink rounded-xl gap-x-1 align-middle bg-transparent hover:bg-roboHotPink hover:bg-opacity-10 transition-colors">
+                  <h1 className="text-xl">{text}</h1>
+                  <Image
+                    src={`/icons/arrow-up-right.svg`}
+                    alt="Arrow"
+                    width={25}
+                    height={25}
+                  />
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
 export default function HomeContent({
   divRef,
   navbarRef
@@ -162,74 +230,6 @@ export default function HomeContent({
 
   //const handleBlogClick = () => (window.location.href = "/blog")
 
-  function IntroCard() {
-    return (
-      <div className="example-3 w-full mx-4 lg:w-[30rem] rounded-lg">
-        <div className="inner bg-stone-900">
-          <div className="flex flex-col p-4">
-            <div className="flex flex-row-reverse gap-x-2 w-full">
-              <Image
-                src={`/icons/github.svg`}
-                alt="GitHub"
-                className={`hover:cursor-pointer`}
-                onClick={() => window.open("https://github.com/ftc8569")}
-                width={40}
-                height={40}
-              />
-              <Image
-                src={`/icons/linkedin.svg`}
-                alt="LinkedIn"
-                className={`hover:cursor-pointer`}
-                onClick={() =>
-                  window.open("https://www.linkedin.com/company/ftc8569")
-                }
-                width={50}
-                height={50}
-              />
-              <Image
-                src={`/icons/instagram.svg`}
-                alt="Instagram"
-                className={`hover:cursor-pointer`}
-                onClick={() =>
-                  window.open("https://www.instagram.com/roboknights8569/")
-                }
-                width={50}
-                height={50}
-              />
-              <h1 className="text-2xl lg:text-5xl mr-auto pl-2">8569</h1>
-            </div>
-            <h1 className="text-4xl lg:text-6xl font-semibold py-2 lg:py-2 rounded-2xl w-min mt-1 mb-4">
-              RoboKnights
-            </h1>
-            <h1 className="text-2xl">
-              Innovative, Creative, Competitive.
-              <br />
-              That's the RoboKnights.
-            </h1>
-            <div className="flex flex-row pt-4 gap-x-4">
-              {[
-                { text: "Contact Us", func: handleContactUsClick }
-                // { text: "Blog", func: handleBlogClick }
-              ].map(({ text, func }, index) => (
-                <button key={index} onClick={func}>
-                  <div className="flex flex-row p-2 border-1 border-roboHotPink rounded-xl gap-x-1 align-middle bg-transparent hover:bg-roboHotPink hover:bg-opacity-10 transition-colors">
-                    <h1 className="text-xl">{text}</h1>
-                    <Image
-                      src={`/icons/arrow-up-right.svg`}
-                      alt="Arrow"
-                      width={25}
-                      height={25}
-                    />
-                  </div>
-                </button>
-              ))}
-            </div>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
   return (
     <>
       <div
@@ -240,7 +240,7 @@ export default function HomeContent({
       >
         <canvas className="w-full h-full" ref={canvasRef} />
         <div className="absolute z-[1] top-1/3 left-1/12 -translate-x-1/12 -translate-y-1/3 noselect">
-          <IntroCard />
+          <IntroCard onContact={handleContactUsClick} />
         </div>
       </div>
       <div className="h-[1px] w-full bg-white"></div>
@@ -260,7 +260,9 @@ export default function HomeContent({
             </div>
             <div className="flex gap-2 items-center basis-0">
               <FaCalendarAlt className="w-10 h-10" />
-              <span className="text-2xl font-semibold w-max">Founded 2015</span>
+              <span className="text-2xl font-semibold w-max">
+                FTC rookie year 2014
+              </span>
             </div>
           </div>
           <p className="text-sm lg:text-lg pl-2 mt-6">
