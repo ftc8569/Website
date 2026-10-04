@@ -376,6 +376,7 @@ html {
 }
 .launch-cta:hover,
 .team-link:hover {
+  color: var(--ink);
   background: var(--pink);
   border-color: var(--pink);
 }
@@ -2486,6 +2487,9 @@ html.reveal-ready [data-reveal].is-visible {
 .robot3d {
   position: relative;
   width: 100%;
+}
+.robot3d-viewport {
+  position: relative;
   aspect-ratio: 1 / 1;
 }
 .robot3d-poster,
@@ -2500,6 +2504,8 @@ html.reveal-ready [data-reveal].is-visible {
   transition: opacity 700ms ease;
 }
 .robot3d-stage {
+  z-index: 1;
+  pointer-events: none;
   opacity: 0;
   transition: opacity 900ms ease;
 }
@@ -2510,6 +2516,7 @@ html.reveal-ready [data-reveal].is-visible {
 }
 /* Crossfade only once a real frame has rendered. */
 .robot3d--live .robot3d-stage {
+  pointer-events: auto;
   opacity: 1;
 }
 .robot3d--live .robot3d-poster {
@@ -2536,16 +2543,16 @@ html.reveal-ready [data-reveal].is-visible {
   transform: translateY(-50%);
 }
 .hero-machine .robot3d-poster {
+  position: absolute;
+  z-index: 0;
+  height: 100%;
+  pointer-events: none;
   mix-blend-mode: normal;
   filter: none;
   animation: none;
 }
 .hero-machine .robot3d {
   filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.9));
-}
-/* Float the model, keeping its touch/keyboard controls stationary. */
-.hero-machine :is(.robot3d-stage, .robot3d-poster) {
-  animation: machineFloat 6s ease-in-out infinite;
 }
 
 @media (max-width: 900px) {
@@ -2850,4 +2857,38 @@ html.reveal-ready [data-reveal].is-visible {
 }
 :is(.materials-row p, .mentored-note) {
   color: var(--muted);
+}
+
+/* Keep the copy, CAD stage and its instruction in separate flow rows on tablets
+   and phones, so their heights determine the section instead of overlapping. */
+@media (max-width: 900px) {
+  .launch-hero {
+    min-height: auto;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+    padding-bottom: 48px;
+  }
+  .hero-machine:has(.robot3d) {
+    position: relative;
+    width: min(100%, 520px);
+    top: auto;
+    right: auto;
+    transform: none;
+    justify-self: center;
+    animation: none;
+  }
+  .manifesto {
+    min-height: auto;
+    gap: 48px;
+    padding-block: 64px;
+  }
+}
+
+/* Decorative layers never intercept CAD gestures; anchor sections keep their
+   scroll target steady while their contents fade into view. */
+.hero-machine :is(.machine-halo, .machine-scan) {
+  pointer-events: none;
+}
+html.reveal-ready section[id][data-reveal] {
+  transform: none;
 }

@@ -49,8 +49,11 @@ overflow. Anchors clear fixed navigation with a 112px scroll margin.
 - **Figures/technical cards**: responsive image, caption, prose. Preserve image
   aspect ratio, wrap long labels, and use real list semantics where appropriate.
 - **CAD viewer**: poster, WebGL stage, loading/error status and interactive
-  controls. Fit camera to container; support touch and keyboard; preserve page
-  scrolling; pause offscreen; bound zoom; handle unavailable WebGL/model errors.
+  gestures. Drag to rotate, wheel/pinch to zoom, and Shift/right-drag to pan;
+  retain keyboard alternatives without a button toolbar. Reserve space below
+  the stage for a plain instruction; stack the hero in document flow below
+  900px. Preserve touch page scrolling, pause offscreen, bound zoom/pan and
+  handle unavailable WebGL/model errors.
 - **Loader**: logo boot sequence retained with CSS failsafe dismissal, decorative
   progress, and skip control. Never block access indefinitely or announce every
   decorative percentage to screen readers.
@@ -71,7 +74,8 @@ feedback uses opacity/transform and is dismissed on actual route completion.
 No delayed navigation interception: native Next.js Link handles routing. Boot
 sequence remains about 2.5s with a skip action. Reduced motion disables animated
 travel and decorative loops and presents content immediately. Observer-driven
-reveals unobserve visible content and retain a no-JavaScript fallback.
+reveals unobserve visible content and retain a no-JavaScript fallback. Anchor
+sections fade without translation to keep hash scrolling offsets steady.
 
 ## 7. Depth & surface
 
@@ -84,9 +88,9 @@ new card shapes or aesthetic treatments unrelated to the current branch.
 
 Target WCAG 2.2 AA: visible focus, keyboard reachability, labelled controls,
 4.5:1 body contrast, 3:1 large text, reduced motion, and a skip-to-content link.
-Touch controls have at least 44px targets and remain stationary even when the
-CAD model floats. No horizontal document overflow at
-375px. Closed drawers contain no keyboard stops. Keep route/hash navigation,
+Touch controls have at least 44px targets. The CAD interaction surface remains
+stationary; automatic model motion stops after direct interaction. No horizontal
+document overflow at 375px. Closed drawers contain no keyboard stops. Keep route/hash navigation,
 back/forward, direct URLs and no-JavaScript content working.
 
 No new debt accepted. External mail, database-backed blog data, and remote

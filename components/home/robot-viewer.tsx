@@ -25,13 +25,15 @@ import "./robot-viewer.css"
  * the model, or the user's device cannot provide the interactive view.
  */
 const CAMERA = { x: 1.6805, y: 1.0581, z: 1.6805, fov: 36.24 }
-const MIN_ZOOM = 1
+const MIN_ZOOM = 0.65
+const DEFAULT_ZOOM = 1
 const MAX_ZOOM = 1.8
 const ZOOM_STEP = 0.15
 
 type ViewerControls = {
   rotate: (horizontal: number, vertical?: number) => void
-  zoom: (amount: number) => void
+  zoom: (amount: number) => boolean
+  pan: (horizontal: number, vertical: number) => void
   reset: () => void
 }
 
@@ -43,37 +45,7 @@ type DragState = {
   lastY: number
   dragging: boolean
   touch: boolean
-}
-
-function ControlIcon({
-  name
-}: {
-  name: "left" | "right" | "plus" | "minus" | "reset"
-}) {
-  if (name === "reset") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path d="M3 12a9 9 0 1 0 2.64-6.36L3 8" />
-        <path d="M3 3v5h5M12 7v5l3 2" />
-      </svg>
-    )
-  }
-
-  if (name === "plus" || name === "minus") {
-    return (
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <circle cx="11" cy="11" r="7" />
-        <path d="M8 11h6M16.5 16.5 21 21" />
-        {name === "plus" && <path d="M11 8v6" />}
-      </svg>
-    )
-  }
-
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true">
-      <path d={name === "left" ? "m14 5-7 7 7 7" : "m10 5 7 7-7 7"} />
-    </svg>
-  )
+  pan: boolean
 }
 
 export default function RobotViewer() {
@@ -91,12 +63,6 @@ export default function RobotViewer() {
     const motionPreference = window.matchMedia(
       "(prefers-reduced-motion: reduce)"
     )
-    if (motionPreference.matches) {
-      const statusFrame = window.requestAnimationFrame(() => {
-        setStatus("Static view · Reduced motion preference")
-      })
-      return () => window.cancelAnimationFrame(statusFrame)
-    }
 
     let disposed = false
     let onScreen = false
@@ -113,6 +79,7 @@ export default function RobotViewer() {
       let resizeObserver: ResizeObserver | undefined
       let intersectionObserver: IntersectionObserver | undefined
       let stopLoop: (() => void) | undefined
+      let onWheel: (event: WheelEvent) => void = () => {}
 
       try {
         const [THREE, { GLTFLoader }, { DRACOLoader }, { RoomEnvironment }] =
@@ -137,8 +104,8 @@ export default function RobotViewer() {
           intersectionObserver?.disconnect()
           resizeObserver?.disconnect()
           document.removeEventListener("visibilitychange", updateVisibility)
+          node.removeEventListener("wheel", onWheel)
           viewerControls.current = null
-          interactionRef.current = null
           renderer?.dispose()
           draco?.dispose()
           environment?.dispose()
@@ -258,39 +225,77 @@ export default function RobotViewer() {
 
         let userRotationY = 0
         let userRotationX = 0
-        let zoom = MIN_ZOOM
+        let zoom = DEFAULT_ZOOM
+        let panX = 0
+        let panY = 0
+        let time = 0
+        let interacting = motionPreference.matches
+        camera.updateMatrixWorld()
+        const cameraRight = new THREE.Vector3().setFromMatrixColumn(
+          camera.matrix,
+          0
+        )
+        const cameraUp = new THREE.Vector3().setFromMatrixColumn(
+          camera.matrix,
+          1
+        )
+        const takeControl = () => {
+          if (interacting) return
+          userRotationY = pivot.rotation.y
+          userRotationX = pivot.rotation.x
+          interacting = true
+        }
         viewerControls.current = {
           rotate: (horizontal, vertical = 0) => {
-            userRotationY = THREE.MathUtils.clamp(
-              userRotationY + horizontal,
-              -Math.PI,
-              Math.PI
-            )
+            takeControl()
+            userRotationY += horizontal
             userRotationX = THREE.MathUtils.clamp(
               userRotationX + vertical,
-              -0.45,
-              0.45
+              -0.65,
+              0.65
             )
           },
           zoom: (amount) => {
-            zoom = THREE.MathUtils.clamp(zoom + amount, MIN_ZOOM, MAX_ZOOM)
+            const next = THREE.MathUtils.clamp(
+              zoom + amount,
+              MIN_ZOOM,
+              MAX_ZOOM
+            )
+            if (next === zoom) return false
+            takeControl()
+            zoom = next
             camera.zoom = zoom
             camera.updateProjectionMatrix()
+            return true
+          },
+          pan: (horizontal, vertical) => {
+            takeControl()
+            panX = THREE.MathUtils.clamp(panX + horizontal / zoom, -0.5, 0.5)
+            panY = THREE.MathUtils.clamp(panY + vertical / zoom, -0.5, 0.5)
           },
           reset: () => {
-            userRotationY = 0
-            userRotationX = 0
-            zoom = MIN_ZOOM
+            interacting = true
+            userRotationY = userRotationX = panX = panY = 0
+            zoom = DEFAULT_ZOOM
             camera.zoom = zoom
             camera.updateProjectionMatrix()
           }
         }
+        // A native non-passive listener consumes wheel gestures only while zoom
+        // changes. At the limits, ordinary scrolling can continue down the page.
+        onWheel = (event: WheelEvent) => {
+          const pixels =
+            event.deltaY *
+            (event.deltaMode === 1
+              ? 16
+              : event.deltaMode === 2
+                ? node.clientHeight
+                : 1)
+          if (viewerControls.current?.zoom(-pixels * 0.002))
+            event.preventDefault()
+        }
+        node.addEventListener("wheel", onWheel, { passive: false })
 
-        let time = 0
-        let tiltX = 0
-        let tiltY = 0
-        let pointerX = 0
-        let pointerY = 0
         let previousFrame = performance.now()
         const animate = () => {
           raf = 0
@@ -298,12 +303,15 @@ export default function RobotViewer() {
           const now = performance.now()
           time += Math.min((now - previousFrame) / 1000, 0.05)
           previousFrame = now
-          tiltY += (pointerX * 0.2 - tiltY) * 0.045
-          tiltX += (pointerY * 0.1 - tiltX) * 0.045
-          pivot.rotation.y =
-            Math.sin(time * 0.32) * 0.42 + userRotationY + tiltY
-          pivot.rotation.x = userRotationX + tiltX
-          pivot.position.y = Math.sin(time * 0.55) * 0.012
+          pivot.rotation.y = interacting
+            ? userRotationY
+            : Math.sin(time * 0.32) * 0.42
+          pivot.rotation.x = userRotationX
+          pivot.position
+            .copy(cameraRight)
+            .multiplyScalar(panX)
+            .addScaledVector(cameraUp, panY)
+          if (!interacting) pivot.position.y += Math.sin(time * 0.55) * 0.012
           renderer.render(scene, camera)
           raf = requestAnimationFrame(animate)
         }
@@ -334,29 +342,9 @@ export default function RobotViewer() {
         }
         document.addEventListener("visibilitychange", updateVisibility)
 
-        const setPointerTarget = (x: number, y: number) => {
-          const bounds = node.getBoundingClientRect()
-          pointerX = THREE.MathUtils.clamp(
-            ((x - bounds.left) / bounds.width - 0.5) * 2,
-            -1,
-            1
-          )
-          pointerY = THREE.MathUtils.clamp(
-            ((y - bounds.top) / bounds.height - 0.5) * 2,
-            -1,
-            1
-          )
-        }
-        const interactions = {
-          pointerMove: setPointerTarget,
-          rotate: (horizontal: number, vertical: number) =>
-            viewerControls.current?.rotate(horizontal, vertical)
-        }
-        interactionRef.current = interactions
-
         startLoop()
         setFailed(false)
-        setStatus("Drag to rotate · Arrow keys to turn")
+        setStatus("Drag to rotate · Scroll to zoom · Shift + drag to move")
         requestAnimationFrame(() => {
           if (!disposed) setLive(true)
         })
@@ -394,13 +382,9 @@ export default function RobotViewer() {
     }
   }, [])
 
-  const interactionRef = useRef<{
-    pointerMove: (x: number, y: number) => void
-    rotate: (horizontal: number, vertical: number) => void
-  } | null>(null)
-
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
-    if (!live || event.button > 0) return
+    if (!live || (event.button !== 0 && event.button !== 2)) return
+    event.currentTarget.focus({ preventScroll: true })
     drag.current = {
       pointerId: event.pointerId,
       startX: event.clientX,
@@ -408,7 +392,8 @@ export default function RobotViewer() {
       lastX: event.clientX,
       lastY: event.clientY,
       dragging: false,
-      touch: event.pointerType === "touch"
+      touch: event.pointerType === "touch",
+      pan: event.shiftKey || event.button === 2
     }
   }
 
@@ -428,11 +413,14 @@ export default function RobotViewer() {
     }
 
     const width = event.currentTarget.clientWidth || 1
-    interactionRef.current?.rotate(
-      (dx / width) * Math.PI * 1.6,
-      (dy / width) * Math.PI * 1.1
-    )
-    interactionRef.current?.pointerMove(event.clientX, event.clientY)
+    if (current.pan) {
+      viewerControls.current?.pan((dx / width) * 2, (-dy / width) * 2)
+    } else {
+      viewerControls.current?.rotate(
+        (dx / width) * Math.PI * 1.6,
+        (dy / width) * Math.PI * 1.1
+      )
+    }
     current.lastX = event.clientX
     current.lastY = event.clientY
   }
@@ -446,6 +434,20 @@ export default function RobotViewer() {
   }
 
   const onKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
+    if (!live) return
+    if (event.shiftKey && event.key.startsWith("Arrow")) {
+      const horizontal =
+        event.key === "ArrowLeft"
+          ? -0.08
+          : event.key === "ArrowRight"
+            ? 0.08
+            : 0
+      const vertical =
+        event.key === "ArrowUp" ? 0.08 : event.key === "ArrowDown" ? -0.08 : 0
+      viewerControls.current?.pan(horizontal, vertical)
+      event.preventDefault()
+      return
+    }
     const rotate = Math.PI / 12
     if (event.key === "ArrowLeft") viewerControls.current?.rotate(-rotate)
     else if (event.key === "ArrowRight") viewerControls.current?.rotate(rotate)
@@ -462,27 +464,35 @@ export default function RobotViewer() {
 
   return (
     <div className={`robot3d ${live ? "robot3d--live" : ""}`}>
-      <Image
-        className="robot3d-poster"
-        src="/models/worlds-bot-poster.webp"
-        alt="The RoboKnights Worlds competition robot"
-        width={1600}
-        height={1600}
-        priority
-        sizes="(max-width: 900px) 100vw, 62vw"
-      />
-      <div
-        className="robot3d-stage"
-        ref={mount}
-        role="group"
-        aria-label="Interactive 3D robot model. Drag to rotate. Use arrow keys to turn, plus or minus to zoom, and Home to reset."
-        tabIndex={0}
-        onPointerDown={onPointerDown}
-        onPointerMove={onPointerMove}
-        onPointerUp={onPointerUp}
-        onPointerCancel={onPointerUp}
-        onKeyDown={onKeyDown}
-      />
+      <div className="robot3d-viewport">
+        <Image
+          className="robot3d-poster"
+          src="/models/worlds-bot-poster.webp"
+          alt="The RoboKnights Worlds competition robot"
+          width={1600}
+          height={1600}
+          priority
+          sizes="(max-width: 900px) 100vw, 62vw"
+        />
+        <div
+          className="robot3d-stage"
+          ref={mount}
+          role="group"
+          aria-label="Interactive 3D robot model. Drag to rotate, scroll to zoom, Shift or right-drag to move. Use arrow keys to turn, Shift and arrows to move, plus or minus to zoom, and Home to reset."
+          aria-hidden={!live}
+          tabIndex={live ? 0 : -1}
+          onPointerDown={onPointerDown}
+          onPointerMove={onPointerMove}
+          onPointerUp={onPointerUp}
+          onPointerCancel={onPointerUp}
+          onLostPointerCapture={onPointerUp}
+          onKeyDown={onKeyDown}
+          onDoubleClick={() => viewerControls.current?.reset()}
+          onContextMenu={(event) => {
+            if (live) event.preventDefault()
+          }}
+        />
+      </div>
       <div className="robot3d-interface">
         <p
           className="robot3d-status"
@@ -492,52 +502,6 @@ export default function RobotViewer() {
         >
           {status}
         </p>
-        <div
-          className="robot3d-controls"
-          role="group"
-          aria-label="Robot view controls"
-        >
-          <button
-            type="button"
-            aria-label="Rotate robot left"
-            onClick={() => viewerControls.current?.rotate(-Math.PI / 6)}
-            disabled={!live}
-          >
-            <ControlIcon name="left" />
-          </button>
-          <button
-            type="button"
-            aria-label="Zoom out"
-            onClick={() => viewerControls.current?.zoom(-ZOOM_STEP)}
-            disabled={!live}
-          >
-            <ControlIcon name="minus" />
-          </button>
-          <button
-            type="button"
-            aria-label="Reset robot view"
-            onClick={() => viewerControls.current?.reset()}
-            disabled={!live}
-          >
-            <ControlIcon name="reset" />
-          </button>
-          <button
-            type="button"
-            aria-label="Zoom in"
-            onClick={() => viewerControls.current?.zoom(ZOOM_STEP)}
-            disabled={!live}
-          >
-            <ControlIcon name="plus" />
-          </button>
-          <button
-            type="button"
-            aria-label="Rotate robot right"
-            onClick={() => viewerControls.current?.rotate(Math.PI / 6)}
-            disabled={!live}
-          >
-            <ControlIcon name="right" />
-          </button>
-        </div>
       </div>
     </div>
   )

@@ -34,8 +34,9 @@ The browser check uses installed Google Chrome via Playwright and runs the six
 public pages at 375, 768, and 1280 pixels. It checks route/history/hash navigation,
 mobile menus, horizontal overflow, MathML, reduced motion, no-JavaScript content,
 invalid contact requests, runtime exceptions, and axe accessibility rules.
-The CAD check exercises stationary controls, touch/keyboard/reset actions, and
-poster fallback when the model download fails.
+The CAD check exercises mouse rotation, wheel zoom, panning, keyboard/reset
+actions, touch page scrolling, spacing/accessibility at four widths, reduced
+motion and poster fallback when the model download fails.
 Screenshots and reports are written to ignored `output/playwright/`.
 Run it against the production server as well as the dev server.
 

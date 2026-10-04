@@ -91,12 +91,6 @@ export default function HomePage() {
           <div className="machine-halo" aria-hidden="true" />
           <div className="machine-scan" aria-hidden="true" />
           <RobotViewer />
-          <span className="machine-label machine-label--left">
-            8569 // MK.V
-          </span>
-          <span className="machine-label machine-label--right">
-            SYSTEM READY
-          </span>
         </div>
         <div className="hero-scroll" aria-hidden="true">
           <span>Scroll to initialize</span>
