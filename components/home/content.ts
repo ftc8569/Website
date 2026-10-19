@@ -139,7 +139,7 @@ export const iterationTracks: IterationTrack[] = [
       {
         version: "V1",
         title: "Stick transfer",
-        note: "Pushed the ball up mechanically. Reset too slowly to use the Geneva's full speed.",
+        note: "Carried over from our Robot in 5 Weeks bot. Pushed the ball up mechanically, but reset too slowly to use the Geneva's full speed.",
         image: "/cad/transfer-stick.jpg"
       },
       {
@@ -354,13 +354,13 @@ export const outreachPrograms = [
     title: "Triad Technos",
     subtitle: "FLL 71079 · Greensboro, NC",
     body: "We started an FLL team from nothing — found a coach, interviewed members, ran parent info nights, ordered sets, and mentored them from basic Spike code to competition-ready programs. They competed at the Cannon High School qualifier.",
-    image: "/outreach/event-members.jpg"
+    image: "/outreach/science-board.jpg"
   },
   {
     title: "Kids Knight Out",
     subtitle: "Museum of Life & Science",
     body: "We demonstrate the robot to classes of twenty young students, explain the mechanisms, and let them drive it through interactive games. The questions kept coming, so we now host monthly sessions.",
-    image: "/outreach/museum-demo.jpg"
+    image: "/outreach/library-kids.jpg"
   },
   {
     title: "GlobalKnights",
@@ -372,13 +372,13 @@ export const outreachPrograms = [
     title: "Open House",
     subtitle: "with the ZebraCorns, FRC 900",
     body: "On FRC Kickoff day we co-hosted an open house for students, prospective FIRST members, and families — we let people drive our robot and presented on how to get into FTC.",
-    image: "/outreach/library-kids.jpg"
+    image: "/outreach/museum-demo.jpg"
   },
   {
     title: "Durham Main Library",
     subtitle: "Family STEM event",
     body: "We presented the robot and our season to local families, connected students with FIRST sign-ups, and found heavy interest in a one-to-two week technical skills summer camp.",
-    image: "/outreach/science-board.jpg"
+    image: "/outreach/event-members.jpg"
   },
   {
     title: "Volunteering",
@@ -388,25 +388,34 @@ export const outreachPrograms = [
   }
 ]
 
-export const mentoredTeams = [
+/*
+ * Sustainability — how the team outlives its own roster. NCSSM is a two-year
+ * school, so half the team turns over every year.
+ */
+export const sustainability = [
   {
-    number: "71079",
-    name: "Triad Technos",
-    note: "FLL — founded and mentored"
+    title: "Open application",
+    body: "We recruit at the NCSSM club fair, then narrow down applicants and interview every candidate across mechanical, programming, and outreach, so each subteam is backfilled before its seniors graduate. This season that brought in ten new members."
   },
   {
-    number: "23303",
-    name: "Metallic@",
-    note: "Programming, mechanical, outreach"
+    title: "Robot in 5 Weeks",
+    body: "New members CAD, build, and program a fully functional robot in five weeks, with returning members mentoring every subsystem. Our last Ri5W bot placed 5th in qualification matches — and its stick transfer became V1 of our States robot."
   },
   {
-    number: "16328",
-    name: "Trial N' Error",
-    note: "Parametric CAD, swerve build"
+    title: "Structured training",
+    body: "50+ hours of training in CAD, programming, and outreach skills, plus certification in the NCSSM Fabrication Lab, take new members from first sketch to working on the competition robot."
   },
-  { number: "9789", name: "Platinum Ringleaders", note: "FRC design review" },
-  { number: "9302", name: "ParaTech", note: "Brazil — programming exchange" },
-  { number: "19141", name: "BraveBots", note: "Romania — design review" }
+  {
+    title: "Built in the open",
+    body: "Our code lives on GitHub with reviewed pull requests and readable commit history, and our engineering is written up publicly, so the next class inherits the reasoning — not just the result."
+  }
+]
+
+/* Instagram count as of October 2026. */
+export const socialStats: Stat[] = [
+  { value: "2.3K+", label: "Instagram followers" },
+  { value: "60K+", label: "Social media impacts" },
+  { value: "6", label: "Years posting" }
 ]
 
 /* ------------------------------------------------------------------ */
@@ -513,12 +522,6 @@ export const resourceLinks = [
     label: "GitHub",
     href: "https://github.com/ftc8569",
     detail: "Our robot code, in the open — Kotlin, command-based, PR reviewed."
-  },
-  {
-    label: "CTRL ALT FTC",
-    href: "https://www.ctrlaltftc.com/",
-    detail:
-      "The controls resource our programmers learn from and contribute to \u2014 it reaches FTC programmers worldwide."
   },
   {
     label: "Instagram",

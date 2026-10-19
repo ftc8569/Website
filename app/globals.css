@@ -1848,48 +1848,43 @@ html.reveal-ready [data-reveal].is-visible {
   line-height: 1.7;
 }
 
-.mentored {
-  margin: 10vh max(7vw, 28px) 0;
-  padding-top: 7vh;
+.sustain-section {
+  padding: 16vh 0 10vh;
   border-top: 1px solid rgba(255, 255, 255, 0.12);
 }
-.mentored h3 {
-  margin: 0 0 32px;
-  font: 700 clamp(22px, 2.2vw, 30px)/1.2 var(--font-sans);
-  text-transform: none;
-  letter-spacing: -0.02em;
-}
-.mentored ul {
+.sustain-grid {
   list-style: none;
-  margin: 0;
+  margin: 0 max(7vw, 28px);
   padding: 0;
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
   gap: 1px;
   background: rgba(255, 255, 255, 0.13);
   border: 1px solid rgba(255, 255, 255, 0.13);
 }
-.mentored li {
-  padding: 22px 24px;
+.sustain-item {
+  padding: 34px 28px;
   background: #050505;
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 4px 14px;
-  align-items: baseline;
 }
-.mentored-number {
-  grid-row: span 2;
+.sustain-index {
   color: var(--pink);
-  font: 700 20px/1 var(--font-sans);
+  font: 600 12px/1 var(--font-sans);
+  letter-spacing: 0.14em;
 }
-.mentored-name {
+.sustain-item h3 {
+  margin: 18px 0 12px;
+  font: 600 19px/1.3 var(--font-sans);
+  text-transform: none;
+  letter-spacing: -0.01em;
+}
+.sustain-item p {
+  color: var(--muted);
   font-size: 15px;
-  font-weight: 600;
+  line-height: 1.7;
 }
-.mentored-note {
-  grid-column: 2;
-  color: #6f6f6f;
-  font-size: 13px;
+
+.social-stats {
+  margin: 0 max(7vw, 28px) 24px;
 }
 
 /* ==================================================================
@@ -2252,9 +2247,6 @@ html.reveal-ready [data-reveal].is-visible {
   .ai-note {
     padding: 30px 24px;
   }
-  .mentored li {
-    grid-template-columns: auto 1fr;
-  }
 }
 
 @media (max-width: 520px) {
@@ -2521,6 +2513,13 @@ html.reveal-ready [data-reveal].is-visible {
 }
 .robot3d--live .robot3d-poster {
   opacity: 0;
+}
+/*
+ * The legacy `.hero-machine img` rule lifts the poster above the canvas, so an
+ * invisible poster would otherwise swallow every drag on the model.
+ */
+.robot3d-poster {
+  pointer-events: none;
 }
 
 /*
@@ -2891,4 +2890,21 @@ html.reveal-ready [data-reveal].is-visible {
 }
 html.reveal-ready section[id][data-reveal] {
   transform: none;
+}
+
+/*
+ * Everything layered over the model is decoration, so let clicks fall through
+ * to the 3D stage. The hero copy's box overlaps the robot on most widths; only
+ * its CTA needs to stay clickable.
+ */
+.hero-machine .machine-halo,
+.hero-machine .machine-scan,
+.hero-machine .machine-label,
+.hero-scroll,
+.hero-kicker,
+.hero-copy {
+  pointer-events: none;
+}
+.hero-copy .launch-cta {
+  pointer-events: auto;
 }
