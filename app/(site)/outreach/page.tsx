@@ -20,7 +20,7 @@ export default function OutreachPage() {
   return (
     <main>
       <PageHeader
-        image="/activity/outreach.jpg"
+        image="/activity/outreach-header.jpg"
         eyebrow="Outreach"
         title={
           <>
@@ -34,18 +34,20 @@ export default function OutreachPage() {
 
       {/* ------------------------------------------------------ Outreach */}
       <section id="outreach" className="outreach-section">
-        <div className="outreach-grid">
+        <div className="outreach-grid card-grid">
           {outreachPrograms.map((program) => (
             <article className="outreach-card" key={program.title} data-reveal>
-              <div className="outreach-figure">
-                <Image
-                  src={program.image}
-                  alt={program.title}
-                  fill
-                  sizes="(max-width: 900px) 100vw, 33vw"
-                  className="object-cover"
-                />
-              </div>
+              {program.image && (
+                <div className="outreach-figure">
+                  <Image
+                    src={program.image}
+                    alt={program.title}
+                    fill
+                    sizes="(max-width: 900px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                </div>
+              )}
               <div className="outreach-copy">
                 <h3>{program.title}</h3>
                 <p className="outreach-subtitle">{program.subtitle}</p>
@@ -70,7 +72,7 @@ export default function OutreachPage() {
             what we know from leaving with them.
           </p>
         </header>
-        <ol className="sustain-grid" data-reveal>
+        <ol className="sustain-grid card-grid" data-reveal>
           {sustainability.map((item, index) => (
             <li className="sustain-item" key={item.title}>
               <span className="sustain-index">
@@ -101,7 +103,7 @@ export default function OutreachPage() {
             </div>
           ))}
         </div>
-        <div className="resources" data-reveal>
+        <div className="resources card-grid card-grid--3" data-reveal>
           {resourceLinks.map((link) => (
             <a
               className="resource"

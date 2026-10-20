@@ -2,7 +2,7 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { type MouseEvent } from "react"
+import { type MouseEvent, useEffect, useRef } from "react"
 
 import PhotoMarquee from "@/components/home/photo-marquee"
 import RobotViewer from "@/components/home/robot-viewer"
@@ -20,7 +20,7 @@ const capabilities = [
     title: "Code that thinks\nbefore we do.",
     description:
       "Computer vision, motion planning, and control systems engineered for decisive performance.",
-    image: "/activity/programming.jpg",
+    image: "/activity/programming-card.jpg",
     href: "/software",
     className: "capability--code"
   },
@@ -40,24 +40,30 @@ const capabilities = [
     title: "Impact beyond\nthe arena.",
     description:
       "We build access, curiosity, and the next generation of people who refuse to think small.",
-    image: "/activity/outreach.jpg",
+    image: "/activity/outreach-card.jpg",
     href: "/outreach",
     className: "capability--outreach"
   }
 ]
 
 export default function HomePage() {
+  // The glow follows the cursor. Write the position onto the glow layer only,
+  // once per frame, so mouse moves never restyle the 3D robot's subtree.
+  const pointerFrame = useRef(0)
   const trackPointer = (event: MouseEvent<HTMLElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect()
-    event.currentTarget.style.setProperty(
-      "--pointer-x",
-      `${event.clientX - bounds.left}px`
-    )
-    event.currentTarget.style.setProperty(
-      "--pointer-y",
-      `${event.clientY - bounds.top}px`
-    )
+    const section = event.currentTarget
+    const { clientX, clientY } = event
+    if (pointerFrame.current) return
+    pointerFrame.current = requestAnimationFrame(() => {
+      pointerFrame.current = 0
+      const glow = section.querySelector<HTMLElement>(".hero-spotlight")
+      if (!glow) return
+      const bounds = section.getBoundingClientRect()
+      glow.style.setProperty("--pointer-x", `${clientX - bounds.left}px`)
+      glow.style.setProperty("--pointer-y", `${clientY - bounds.top}px`)
+    })
   }
+  useEffect(() => () => cancelAnimationFrame(pointerFrame.current), [])
 
   return (
     <main>
@@ -202,7 +208,7 @@ export default function HomePage() {
             write-ups behind it all.
           </p>
         </header>
-        <div className="resources" data-reveal>
+        <div className="resources card-grid card-grid--3" data-reveal>
           {resourceLinks.map((link) => (
             <a
               className="resource"

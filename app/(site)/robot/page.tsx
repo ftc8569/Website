@@ -24,7 +24,7 @@ export default function RobotPage() {
   return (
     <main>
       <PageHeader
-        image="/activity/mechanical.jpg"
+        image="/activity/robot-header.jpg"
         eyebrow="The machine"
         title={
           <>
@@ -52,10 +52,10 @@ export default function RobotPage() {
         <div className="machine-showcase" data-reveal>
           <div className="machine-render">
             <Image
-              src="/cad/cover-render.png"
+              src="/cad/cover-render.webp"
               alt="Full CAD render of Elite Ball Knowledge"
-              width={938}
-              height={810}
+              width={719}
+              height={718}
               sizes="(max-width: 900px) 100vw, 55vw"
             />
           </div>
@@ -69,7 +69,7 @@ export default function RobotPage() {
           </ul>
         </div>
 
-        <div className="subsystems" data-reveal>
+        <div className="subsystems card-grid" data-reveal>
           {subsystems.map((item) => (
             <article className="subsystem" key={item.name}>
               <div className="subsystem-figure">
@@ -148,11 +148,11 @@ export default function RobotPage() {
         <div className="worlds-hero" data-reveal>
           <div className="worlds-render">
             <Image
-              src="/worlds/bot-iso.jpg"
+              src="/worlds/bot-iso.webp"
               alt="The Worlds competition robot"
               fill
               sizes="(max-width: 900px) 100vw, 60vw"
-              className="object-cover"
+              className="object-contain"
             />
           </div>
           <ul className="worlds-stats">
@@ -165,7 +165,7 @@ export default function RobotPage() {
           </ul>
         </div>
 
-        <div className="worlds-grid">
+        <div className="worlds-grid card-grid">
           {worldsSystems.map((item) => (
             <article className="worlds-card" key={item.name} data-reveal>
               <div className="worlds-figure">
@@ -174,7 +174,7 @@ export default function RobotPage() {
                   alt={item.name}
                   fill
                   sizes="(max-width: 900px) 100vw, 33vw"
-                  className="object-cover"
+                  className="object-contain"
                 />
               </div>
               <div className="worlds-copy">

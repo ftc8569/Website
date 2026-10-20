@@ -139,9 +139,9 @@ export default function RobotViewer() {
           gltfScene = undefined
         }
         cleanup = release
-        renderer.setPixelRatio(
-          Math.min(window.devicePixelRatio, compact ? 1.35 : 1.75)
-        )
+        // Start sharp, then step down if frames run long (see `animate`).
+        let pixelRatio = Math.min(window.devicePixelRatio, compact ? 1.25 : 1.5)
+        renderer.setPixelRatio(pixelRatio)
         renderer.toneMapping = THREE.ACESFilmicToneMapping
         renderer.toneMappingExposure = 0.86
         renderer.shadowMap.enabled = true
@@ -160,7 +160,7 @@ export default function RobotViewer() {
         const key = new THREE.DirectionalLight(0xfff4e8, 2.35)
         key.position.set(2.6, 3.6, 2.2)
         key.castShadow = true
-        const shadowSize = compact ? 1024 : 2048
+        const shadowSize = compact ? 1024 : 1536
         key.shadow.mapSize.set(shadowSize, shadowSize)
         key.shadow.bias = -0.0009
         key.shadow.normalBias = 0.012
@@ -180,6 +180,9 @@ export default function RobotViewer() {
         rim.position.set(-2.2, 1.6, -3.2)
         scene.add(rim)
 
+        // Once the user takes control the model is static between inputs, so
+        // frames are only drawn when something marks the view dirty.
+        let dirty = true
         const resize = () => {
           const width = node.clientWidth
           const height = node.clientHeight
@@ -187,6 +190,7 @@ export default function RobotViewer() {
           renderer.setSize(width, height, false)
           camera.aspect = width / height
           camera.updateProjectionMatrix()
+          dirty = true
         }
         resizeObserver = new ResizeObserver(resize)
         resizeObserver.observe(node)
@@ -240,6 +244,7 @@ export default function RobotViewer() {
           1
         )
         const takeControl = () => {
+          dirty = true
           if (interacting) return
           userRotationY = pivot.rotation.y
           userRotationX = pivot.rotation.x
@@ -274,6 +279,7 @@ export default function RobotViewer() {
             panY = THREE.MathUtils.clamp(panY + vertical / zoom, -0.5, 0.5)
           },
           reset: () => {
+            dirty = true
             interacting = true
             userRotationY = userRotationX = panX = panY = 0
             zoom = DEFAULT_ZOOM
@@ -297,12 +303,25 @@ export default function RobotViewer() {
         node.addEventListener("wheel", onWheel, { passive: false })
 
         let previousFrame = performance.now()
+        let slowFrames = 0
         const animate = () => {
           raf = 0
           if (disposed || !onScreen || document.hidden || !renderer) return
           const now = performance.now()
-          time += Math.min((now - previousFrame) / 1000, 0.05)
+          const elapsed = now - previousFrame
+          time += Math.min(elapsed / 1000, 0.05)
           previousFrame = now
+          raf = requestAnimationFrame(animate)
+          if (interacting && !dirty) return
+          dirty = false
+          // Sustained frames slower than ~45fps: drop resolution a step.
+          slowFrames = elapsed > 22 && elapsed < 250 ? slowFrames + 1 : 0
+          if (slowFrames > 20 && pixelRatio > 0.85) {
+            pixelRatio = Math.max(0.85, pixelRatio - 0.2)
+            renderer.setPixelRatio(pixelRatio)
+            resize()
+            slowFrames = 0
+          }
           pivot.rotation.y = interacting
             ? userRotationY
             : Math.sin(time * 0.32) * 0.42
@@ -313,7 +332,6 @@ export default function RobotViewer() {
             .addScaledVector(cameraUp, panY)
           if (!interacting) pivot.position.y += Math.sin(time * 0.55) * 0.012
           renderer.render(scene, camera)
-          raf = requestAnimationFrame(animate)
         }
         const startLoop = () => {
           if (!raf && onScreen && !document.hidden) {

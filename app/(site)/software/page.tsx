@@ -34,7 +34,7 @@ export default function SoftwarePage() {
 
       {/* ------------------------------------------------------ Software */}
       <section id="software" className="software-section">
-        <div className="software-grid">
+        <div className="software-grid card-grid card-grid--3">
           {programmingCards.map((card) => (
             <article className="software-card" key={card.title} data-reveal>
               <div className="software-figure">
@@ -59,7 +59,7 @@ export default function SoftwarePage() {
             <p>
               For the post-States Worlds robot, we modeled its motion and
               mechanisms, then used those models to shape planning and feedback
-              control. The simplified objective below shows how a time-optimal
+              control. The simplified objective shown here is how a time-optimal
               trajectory can be written; it is an illustration, not a claim
               about the exact solver used on the robot.
             </p>
@@ -76,7 +76,7 @@ export default function SoftwarePage() {
               description="N is the positive number of control steps and Δt is the timestep duration in seconds. At each step, x is the robot state, u is a motor command, and f is the motion model. X and U represent the modeled state and command limits; the goal set contains acceptable final poses and speeds."
             />
           </div>
-          <div className="control-grid">
+          <div className="control-grid card-grid card-grid--3">
             {controlWork.map((item) => (
               <article className="control-card" key={item.name}>
                 <div className="control-figure">

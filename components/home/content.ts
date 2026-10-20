@@ -43,25 +43,25 @@ export const subsystems = [
     name: "Shooter",
     detail:
       "Adjustable hood, weighted flywheel, and a belt-driven turret for auto-aim.",
-    image: "/cad/shooter-hood.jpg"
+    image: "/cad/shooter-hood.webp"
   },
   {
     name: "Spice Rack",
     detail:
       "Sorts artifacts by colour using a Geneva mechanism with a powered stick transfer.",
-    image: "/cad/spicerack-v2.jpg"
+    image: "/cad/spicerack-v2.webp"
   },
   {
     name: "Intake",
     detail:
       "Two-layer compliant roller intake feeding a steep ramp straight into the rack.",
-    image: "/cad/intake-v3.jpg"
+    image: "/cad/intake-v3.webp"
   },
   {
     name: "Drivetrain",
     detail:
       "Mecanum belt drive, dual odometry pods, and a PTO that lifts the whole robot.",
-    image: "/cad/chassis-side.jpg"
+    image: "/cad/chassis-side.webp"
   }
 ]
 
@@ -94,19 +94,19 @@ export const iterationTracks: IterationTrack[] = [
         version: "V1",
         title: "Active intake",
         note: "Faster than a four-bar claw, but bootleg wheels caught on the artifact notches and the ramp slope pressed balls flat.",
-        image: "/cad/intake-v2.jpg"
+        image: "/cad/intake-v2.webp"
       },
       {
         version: "V2",
         title: "Compliant rollers",
         note: "Silicone rollers and a chain-driven compliant bar. Steeper, flatter ramp with guides to aim the ball at the slot.",
-        image: "/cad/intake-v1.jpg"
+        image: "/cad/intake-v1.webp"
       },
       {
         version: "V3",
         title: "Two-layer compliant",
         note: "A second powered row with surgical tubing closes the gap above the rollers, so artifacts stop slipping and breaking colour detection.",
-        image: "/cad/intake-v3.jpg"
+        image: "/cad/intake-v3.webp"
       }
     ]
   },
@@ -120,13 +120,13 @@ export const iterationTracks: IterationTrack[] = [
         version: "V1",
         title: "Simple spindexer",
         note: "Minimal artifact support. Hard to start and stop cleanly; ended up a centimetre or two out of position and bounced balls back.",
-        image: "/cad/spicerack-v1.jpg"
+        image: "/cad/spicerack-v1.webp"
       },
       {
         version: "V2",
         title: "Geneva mechanism",
         note: "A Geneva gear lets the motor run continuously while indexing to six fixed stops — under a millimetre of error, tuned to the intake and shooter.",
-        image: "/cad/geneva.jpg"
+        image: "/cad/geneva.webp"
       }
     ]
   },
@@ -140,19 +140,19 @@ export const iterationTracks: IterationTrack[] = [
         version: "V1",
         title: "Stick transfer",
         note: "Carried over from our Robot in 5 Weeks bot. Pushed the ball up mechanically, but reset too slowly to use the Geneva's full speed.",
-        image: "/cad/transfer-stick.jpg"
+        image: "/cad/transfer-stick.webp"
       },
       {
         version: "V2",
         title: "Servo wheel",
         note: "An Axon servo driving omni wheels. Right idea, not enough power — balls stalled in the dead space and stopped the rack.",
-        image: "/cad/transfer-rollers.jpg"
+        image: "/cad/transfer-rollers.webp"
       },
       {
         version: "V3",
         title: "6000 RPM roller",
         note: "Motor swap plus a third roller to cover the dead space. Sorted balls now shoot in tandem — 2–5 second cycles including sorting.",
-        image: "/cad/transfer-motor.jpg"
+        image: "/cad/transfer-motor.webp"
       }
     ]
   }
@@ -311,37 +311,37 @@ export const worldsSystems = [
     name: "Merged storage + transfer",
     detail:
       "We retired the spindexer entirely and rebuilt storage and transfer as one belted path. Four inner rollers hold a constant 8 mm of compression, four layers of gecko wheels hand off to the shooter, and the whole assembly runs on two 1150 RPM motors over GT2 belts — so the artifact path is identical every single cycle.",
-    image: "/worlds/transfer-path.jpg"
+    image: "/worlds/transfer-path.webp"
   },
   {
     name: "Flywheel shooter",
     detail:
       "Two 6000 RPM motors driving two steel flywheels, with a dynamically integrated hood through 36° of travel and 10 mm of compression. Steel over aluminium bought us RPM stability and sub-second recovery between shots.",
-    image: "/worlds/turret-shooter.jpg"
+    image: "/worlds/turret-shooter.webp"
   },
   {
     name: "Bearing stack turret",
     detail:
       "A bearing stack on the top plate lets the turret spin without friction from anything below it. We swapped the 435 RPM motor for two Axon servos and freed a motor for the rest of the robot.",
-    image: "/worlds/bearing-turret.jpg"
+    image: "/worlds/bearing-turret.webp"
   },
   {
     name: "Vectoring intake",
     detail:
       "Curved guides were jamming on multi-artifact pickups, so V3 replaced them with right-biased vectoring wheels, a shallower compliant ramp, and dead wheels at each end that release artifacts while the intake keeps running.",
-    image: "/worlds/intake-v3.jpg"
+    image: "/worlds/intake-v3.webp"
   },
   {
     name: "FEA-optimised chassis",
     detail:
       "Finite element analysis on the drivetrain plates showed us exactly where material was doing nothing. The 15.2″ × 14.5″ result is lighter and faster, with Gripforce wheels, pocketed sideplates, and the battery and four motors low in the base for stability.",
-    image: "/worlds/fea.jpg"
+    image: "/worlds/fea.webp"
   },
   {
     name: "Ranking-point strategy",
     detail:
       "We scored each ranking point against its mechanical cost and committed to the goal RP. That decision let us cut the lift and the brake outright — a lighter, less complex robot aimed squarely at winning matches.",
-    image: "/worlds/bot-full.jpg"
+    image: "/worlds/bot-full.webp"
   }
 ]
 
@@ -349,12 +349,20 @@ export const worldsSystems = [
 /* Outreach — RoboKnights' own programs only                           */
 /* ------------------------------------------------------------------ */
 
-export const outreachPrograms = [
+/* `image` is optional: the portfolio has no photo of every event. */
+export type OutreachProgram = {
+  title: string
+  subtitle: string
+  body: string
+  image?: string
+}
+
+export const outreachPrograms: OutreachProgram[] = [
   {
     title: "Triad Technos",
     subtitle: "FLL 71079 · Greensboro, NC",
     body: "We started an FLL team from nothing — found a coach, interviewed members, ran parent info nights, ordered sets, and mentored them from basic Spike code to competition-ready programs. They competed at the Cannon High School qualifier.",
-    image: "/outreach/science-board.jpg"
+    image: "/outreach/triad-technos.jpg"
   },
   {
     title: "Kids Knight Out",
@@ -366,7 +374,7 @@ export const outreachPrograms = [
     title: "GlobalKnights",
     subtitle: "Brazil · Romania",
     body: "We reached out to ParaTech (#9302) in Brazil and BraveBots (#19141) and Brute Force (#22491) in Romania over Instagram, then ran introductions, design reviews, and programming exchanges after the five-week scrimmage.",
-    image: "/outreach/field-demo.jpg"
+    image: "/outreach/globalknights.jpg"
   },
   {
     title: "Open House",
@@ -389,25 +397,25 @@ export const outreachPrograms = [
 ]
 
 /*
- * Sustainability — how the team outlives its own roster. NCSSM is a two-year
- * school, so half the team turns over every year.
+ * Sustainability — from the States portfolio's Sustainability page. NCSSM is
+ * a two-year school, so half the team turns over every year.
  */
 export const sustainability = [
   {
-    title: "Open application",
-    body: "We recruit at the NCSSM club fair, then narrow down applicants and interview every candidate across mechanical, programming, and outreach, so each subteam is backfilled before its seniors graduate. This season that brought in ten new members."
+    title: "Recruitment",
+    body: "We run a booth at the NCSSM club fair with live robot demos, recruit through Instagram and LinkedIn, collect interest through a sign-up form, and interview every applicant. Members of any experience level are welcome — this season brought in ten."
   },
   {
     title: "Robot in 5 Weeks",
-    body: "New members CAD, build, and program a fully functional robot in five weeks, with returning members mentoring every subsystem. Our last Ri5W bot placed 5th in qualification matches — and its stick transfer became V1 of our States robot."
+    body: "At the Ri5W scrimmage our seniors step back. New members design, build, and program a robot end to end while seniors mentor with guidance rather than answers. Our last Ri5W bot placed 5th in qualification matches, and its stick transfer became V1 of our States robot."
   },
   {
-    title: "Structured training",
-    body: "50+ hours of training in CAD, programming, and outreach skills, plus certification in the NCSSM Fabrication Lab, take new members from first sketch to working on the competition robot."
+    title: "Knowledge continuity",
+    body: "Detailed documentation carries what we know through each year's turnover. New members train in CAD, programming, and outreach, earn NCSSM Fabrication Lab certification, and get hands-on ownership of real decisions."
   },
   {
-    title: "Built in the open",
-    body: "Our code lives on GitHub with reviewed pull requests and readable commit history, and our engineering is written up publicly, so the next class inherits the reasoning — not just the result."
+    title: "Sustainable funding",
+    body: "Support from NCSSM, our mentors, and foundation grants, including the Gene Haas Foundation, funds the program. We spend it carefully so the team stays strong year after year."
   }
 ]
 
@@ -482,35 +490,42 @@ export const mentors: Mentor[] = [
 export const galleryImages = [
   { src: "/gallery/bot-full.jpg", alt: "The Worlds robot, fully assembled" },
   {
-    src: "/gallery/team-robots.jpg",
-    alt: "The team in front of a lit ROBOTS sign"
-  },
-  {
-    src: "/gallery/robot-field-1.jpg",
+    src: "/gallery/robot-on-field.jpg",
     alt: "Elite Ball Knowledge on the competition field"
   },
   {
-    src: "/gallery/competition-pit.jpg",
-    alt: "The team with the robot in the pits"
-  },
-  {
     src: "/gallery/field-demo.jpg",
-    alt: "Demonstrating the robot to students"
+    alt: "Demonstrating the robot to students in Hunt Lobby"
   },
-  { src: "/gallery/robot-field-2.jpg", alt: "Intake loading an artifact" },
-  { src: "/gallery/mechanical.jpg", alt: "Mechanical subteam at work" },
-  { src: "/gallery/volunteers.jpg", alt: "Volunteering at an FLL scrimmage" },
+  { src: "/gallery/robot-field-1.jpg", alt: "Intake loading an artifact" },
   {
-    src: "/gallery/museum-demo.jpg",
-    alt: "Robot demo at the Museum of Life & Science"
+    src: "/gallery/whiteboard.jpg",
+    alt: "Working through a design on the whiteboard"
   },
+  {
+    src: "/gallery/competition-pit.jpg",
+    alt: "Mentoring Trial N' Error, FTC 16328"
+  },
+  {
+    src: "/gallery/robot-field-2.jpg",
+    alt: "The robot collecting an artifact"
+  },
+  {
+    src: "/gallery/museum-team.jpg",
+    alt: "The team at the Museum of Life & Science"
+  },
+  { src: "/gallery/build-session.jpg", alt: "A build session in the lab" },
   { src: "/gallery/robot-field-3.jpg", alt: "The robot scoring an artifact" },
-  { src: "/gallery/club-fair.jpg", alt: "Recruiting at the NCSSM club fair" },
-  { src: "/gallery/programming.jpg", alt: "Programming subteam at work" },
+  {
+    src: "/gallery/robot-sign.jpg",
+    alt: "The robot under the ROBOTS sign at the museum"
+  },
   {
     src: "/gallery/competition-gym.jpg",
-    alt: "The team at a competition venue"
-  }
+    alt: "Mentoring Metallic@, FTC 23303"
+  },
+  { src: "/gallery/practice-field.jpg", alt: "Practice on our lab field" },
+  { src: "/gallery/robot-closeup.jpg", alt: "The 8569 robot up close" }
 ]
 
 /* ------------------------------------------------------------------ */
