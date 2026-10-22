@@ -10,16 +10,21 @@ export default function PageHeader({
   eyebrow,
   title,
   lede,
-  image
+  image,
+  tone
 }: {
   eyebrow: string
   title: ReactNode
   lede?: string
   image?: string
+  /* "bright" keeps the photo in colour with a lighter shade. */
+  tone?: "bright"
 }) {
   return (
     <header
-      className={`page-header${image ? " page-header--image" : ""}`}
+      className={`page-header${image ? " page-header--image" : ""}${
+        tone ? ` page-header--${tone}` : ""
+      }`}
       data-reveal
     >
       {image && (

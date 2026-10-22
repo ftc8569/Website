@@ -236,7 +236,7 @@ export default function HomePage() {
           <br />
           something <em>impossible?</em>
         </h2>
-        <a className="finale-button" href="mailto:roboknights@ncssm.edu">
+        <a className="finale-button" href="mailto:ftcteam8569@roboknights.net">
           <span>Start a conversation</span>
           <ArrowIcon />
         </a>
