@@ -35,10 +35,10 @@ export const seasonName = "2026–27 · BIOBUZZ"
 export const seasonEvents: SeasonEvent[] = [
   {
     id: "kickoff",
-    date: "Kickoff",
-    kind: "Presentation",
-    title: "Digital Alliance at kickoff",
-    body: "A joint talk with teams 22377 and 5795 on reaching sponsors and mentors online.",
+    date: "Sep 13",
+    kind: "NCFTC kickoff talk",
+    title: "Digital Alliance",
+    body: "Our robotics networking talk at the 2026 NCFTC kickoff: how FTC teams can reach sponsors and mentors online.",
     image: {
       src: "/season/kickoff-digital-alliance.jpg",
       alt: "Two RoboKnights members presenting the Digital Alliance slide 'Match the platform' at kickoff"
@@ -47,6 +47,28 @@ export const seasonEvents: SeasonEvent[] = [
       "LinkedIn — fastest replies",
       "Instagram — best for local",
       "Email — lowest reply rate"
+    ]
+  },
+  {
+    id: "kickoff-mechanical",
+    date: "Sep 13",
+    kind: "NCFTC kickoff talk",
+    title: "Mechanical Optimization",
+    body: "Our second kickoff talk: iterating a robot sideplate with stress analysis, from early versions to the final design.",
+    photos: [
+      {
+        src: "/season/kickoff-mech-sideplate.jpg",
+        alt: "A RoboKnights presenter pointing to sideplate stress, displacement, and safety factor results",
+        span: "big"
+      },
+      {
+        src: "/season/kickoff-mech-presenters.jpg",
+        alt: "Two RoboKnights presenters at the podium during the Mechanical Optimization talk"
+      },
+      {
+        src: "/season/kickoff-mech-final.jpg",
+        alt: "A RoboKnights presenter comparing the final sideplate version with version 2"
+      }
     ]
   },
   {
