@@ -1,16 +1,8 @@
 {
   "compilerOptions": {
-    "typeRoots": [
-      "./types"
-    ],
-    "types": [
-      "node"
-    ],
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "typeRoots": ["./types", "./node_modules/@types"],
+    "types": ["node"],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -28,9 +20,7 @@
       }
     ],
     "paths": {
-      "@/*": [
-        "./*"
-      ]
+      "@/*": ["./*"]
     },
     "target": "ES2017"
   },
@@ -42,7 +32,5 @@
     "scripts/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

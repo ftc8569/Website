@@ -1,0 +1,39 @@
+.figure {
+  margin: 1.25rem 0 0;
+  min-width: 0;
+}
+
+.viewport {
+  max-width: 100%;
+  overflow-x: auto;
+  overscroll-behavior-inline: contain;
+  padding: 1rem 1.25rem;
+  border: 1px solid rgb(255 255 255 / 14%);
+  border-radius: 0.5rem;
+  background: var(--ink, #050505);
+  color: #f7f7f4;
+  scrollbar-color: #ff2b87 rgb(255 255 255 / 8%);
+  scrollbar-width: thin;
+}
+
+.viewport :global(.katex-display) {
+  margin: 0;
+  min-width: max-content;
+  text-align: left;
+}
+
+.viewport :global(.katex) {
+  font-size: 1.05em;
+}
+
+.caption {
+  margin-top: 0.65rem;
+  color: #b9b9b9;
+  font-size: 0.8125rem;
+  line-height: 1.6;
+}
+
+.viewport:focus-visible {
+  outline: 2px solid var(--soft-pink, #ff8dbc);
+  outline-offset: 4px;
+}

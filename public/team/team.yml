@@ -1,52 +1,60 @@
+# 2026/27 season roster.
+# Source: the @roboknights8569 "Returning Seniors" and "New Members" posts.
+# Adding someone is an entry here plus a photo dropped in this folder.
 programmers:
-  - src: trevor.png
-    name: Trevor Bedson
-    role: Captain and Programming Lead
   - src: nicholas.png
     name: Nicholas Fasching
-    role: Programmer 
-  - src: blake.png
-    name: Blake Smith
-    role: Programmer
+    role: Captain
   - src: tanay.png
     name: Tanay Vinaykya
     role: Programmer
+  - src: blake.png
+    name: Blake Smith
+    role: Programmer
+  - src: shreyas.jpg
+    name: Shreyas Josyula
+    role: Programmer
+  - src: yatish.jpg
+    name: Yatish Grandhe
+    role: Programmer
+  - src: anirud.jpg
+    name: Anirud Senthil
+    role: Programmer
 mechanical:
-  - src: tanush.jpg
-    name: Tanush Sai
-    role: Captain and Mechanical Lead
+  - src: abhinav.png
+    name: Abhinav Karthikeyan
+    role: Captain
   - src: christian.png
     name: Christian Burnett
     role: Mechanical Member
-  - src: abhinav.png
-    name: Abhinav Karthikeyan
-    role: Mechanical Member 
   - src: yug.png
     name: Yug Gokharu
     role: Mechanical Member
-  - src: peyton.jpg
-    name: Peyton Harrell
+  - src: sohum.jpg
+    name: Sohum Vajaria
     role: Mechanical Member
-  # - src: andy.jpg
-  #   name: Andy Lin
-  #   role: Mechanical Member
-  # - src: billy.jpg
-  #   name: Billy Dyer
-  #   role: Mechanical Member
-  # - src: prana.jpg
-  #   name: Prana Bernstein
-  #   role: Mechanical Member
+  - src: sanmay.jpg
+    name: Sanmay Ruthi
+    role: Mechanical Member
+  - src: makhiah.jpg
+    name: Makhiah Leathers
+    role: Mechanical Member
+  - src: blake-kurta.jpg
+    name: Blake Kurta
+    role: Mechanical Member
 outreach:
   - src: ishaan.png
     name: Ishaan Luthra
     role: Outreach Lead
-  - src: rishika.png
-    name: Rishika Subudhi
-    role: Outreach Member
   - src: alaina.png
     name: Alaina Roberts
     role: Outreach Member
-mentors:
-  - src: sid.jpg
-    name: Sid Gupta
-    role: CAD Mentor
+  - src: laya.jpg
+    name: Laya Alugupalli
+    role: Outreach Member
+  - src: ritika.jpg
+    name: Ritika Rajagopal
+    role: Outreach Member
+  - src: ayden.jpg
+    name: Ayden Forstner
+    role: Outreach Member

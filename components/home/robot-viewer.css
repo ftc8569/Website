@@ -1,0 +1,35 @@
+.robot3d-stage {
+  touch-action: pan-y;
+  cursor: grab;
+  outline: none;
+}
+.robot3d-stage:active {
+  cursor: grabbing;
+}
+.robot3d-stage:focus-visible {
+  outline: 2px solid var(--pink, #ff2b87);
+  outline-offset: -6px;
+}
+.robot3d-interface {
+  position: relative;
+  margin-top: 12px;
+  padding-inline: 12px;
+  pointer-events: none;
+}
+.robot3d-status {
+  margin: 0;
+  color: #9d9d9d;
+  font: 500 12px/1.6 var(--font-sans, Poppins, system-ui, sans-serif);
+  text-align: center;
+  text-wrap: balance;
+  min-height: 20px;
+}
+.robot3d-status[data-state="error"] {
+  color: #ff8dbc;
+}
+@media (prefers-reduced-motion: reduce) {
+  .robot3d-poster,
+  .robot3d-stage {
+    transition: none;
+  }
+}

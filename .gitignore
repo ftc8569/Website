@@ -41,3 +41,7 @@ next-env.d.ts
 
 # stupid github
 robot.blend
+# Local browser verification artifacts
+/output/
+/.playwright-cli/
+/react-doctor-report.json

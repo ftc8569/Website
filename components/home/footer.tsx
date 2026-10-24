@@ -18,7 +18,7 @@ export default function Footer({
   }, [navbarRef, downOffset])
 
   return (
-    <div
+    <footer
       className="bg-[#151515] w-full"
       style={{ paddingBottom: `${downOffset * 2}px` }}
     >
@@ -40,36 +40,32 @@ export default function Footer({
         </div>
         <div className="flex-1 w-0 lg:w-full"></div>
         <div className="flex-1 flex flex-row gap-x-2 justify-end">
-          <Image
-            src={`/icons/github.svg`}
-            alt="GitHub"
-            className={`hover:cursor-pointer`}
-            onClick={() => window.open("https://github.com/ftc8569")}
-            width={40}
-            height={40}
-          />
-          <Image
-            src={`/icons/linkedin.svg`}
-            alt="LinkedIn"
-            className={`hover:cursor-pointer`}
-            onClick={() =>
-              window.open("https://www.linkedin.com/company/ftc8569")
-            }
-            width={50}
-            height={50}
-          />
-          <Image
-            src={`/icons/instagram.svg`}
-            alt="Instagram"
-            className={`hover:cursor-pointer`}
-            onClick={() =>
-              window.open("https://www.instagram.com/roboknights8569/")
-            }
-            width={50}
-            height={50}
-          />
+          <a
+            href="https://github.com/ftc8569"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="RoboKnights on GitHub"
+          >
+            <Image src="/icons/github.svg" alt="" width={40} height={40} />
+          </a>
+          <a
+            href="https://www.linkedin.com/company/ftc8569"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="RoboKnights on LinkedIn"
+          >
+            <Image src="/icons/linkedin.svg" alt="" width={50} height={50} />
+          </a>
+          <a
+            href="https://www.instagram.com/roboknights8569/"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="RoboKnights on Instagram"
+          >
+            <Image src="/icons/instagram.svg" alt="" width={50} height={50} />
+          </a>
         </div>
       </div>
-    </div>
+    </footer>
   )
 }
