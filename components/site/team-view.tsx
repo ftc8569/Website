@@ -9,35 +9,19 @@ import {
   sponsors,
   type Mentor
 } from "@/components/home/content"
+import Marquee from "@/components/site/marquee"
+import Tape from "@/components/site/tape"
 import { PageHero, SectionHead, Silhouette } from "@/components/site/ui"
-
-/*
- * Organisation homepages. Entries without a URL are ones we couldn't confirm;
- * they render without a link until someone adds the right address.
- * TODO: confirm URLs for Shelby Dental Care Center and WarmHub.
- */
-const ORG_URL: Record<string, string> = {
-  "Gene Haas Foundation": "https://ghaasfoundation.org",
-  "NCSSM Foundation": "https://www.ncssm.edu",
-  "monday.com": "https://monday.com",
-  goBILDA: "https://www.gobilda.com",
-  Rubrik: "https://www.rubrik.com",
-  Google: "https://www.google.com",
-  Intel: "https://www.intel.com",
-  IBM: "https://www.ibm.com",
-  MIT: "https://www.mit.edu",
-  "Duke University": "https://duke.edu",
-  "UNC Chapel Hill": "https://www.unc.edu",
-  "NC State": "https://www.ncsu.edu"
-}
 
 function Logo({
   name,
   src,
+  href,
   size
 }: {
   name: string
   src: string
+  href?: string
   size: "large" | "small"
 }) {
   const image = (
@@ -49,7 +33,7 @@ function Logo({
       sizes={size === "large" ? "240px" : "140px"}
     />
   )
-  const url = ORG_URL[name]
+  const url = href
   const className = `tile logo-tile logo-tile--${size}`
   return url ? (
     <a className={className} href={url} target="_blank" rel="noreferrer">
@@ -63,7 +47,7 @@ function Logo({
 function MentorCard({ mentor, lead }: { mentor: Mentor; lead?: boolean }) {
   return (
     <figure className="person">
-      <div className="media media--square">
+      <div className="media media--square" data-sharpen>
         {mentor.src ? (
           <Image
             src={mentor.src}
@@ -104,6 +88,16 @@ export default function TeamView({ team }: { team: TeamData }) {
         </div>
       </section>
 
+      <div className="band media" data-parallax aria-hidden="true">
+        <Image
+          src="/team.jpg"
+          alt=""
+          fill
+          sizes="100vw"
+          style={{ objectPosition: "50% 30%" }}
+        />
+      </div>
+
       <section id="support" className="section section--surface">
         <div className="wrap--media">
           <SectionHead
@@ -111,6 +105,10 @@ export default function TeamView({ team }: { team: TeamData }) {
             sub="Sponsors and grants pay for the program. These are the organisations behind it."
           />
           <div className="grid grid--3 logo-grid" data-reveal>
+            <Tape
+              color="white"
+              style={{ top: -14, left: 24, ["--tape-r" as string]: "-4deg" }}
+            />
             {sponsors.map((logo) => (
               <Logo key={logo.name} {...logo} size="large" />
             ))}
@@ -118,11 +116,7 @@ export default function TeamView({ team }: { team: TeamData }) {
           <p className="logo-note body">Also supported by the Ryden family.</p>
 
           <h3 className="sub-title">Companies and schools we work with</h3>
-          <div className="logo-row" data-reveal>
-            {collaborators.map((logo) => (
-              <Logo key={logo.name} {...logo} size="small" />
-            ))}
-          </div>
+          <Marquee logos={collaborators} />
         </div>
       </section>
 

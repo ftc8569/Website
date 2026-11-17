@@ -63,6 +63,9 @@ export function categoryFor(
  * the page always renders the last good list instead of an error.
  */
 export async function getPosts(): Promise<PostList> {
+  // No database configured (local development): use the snapshot quietly.
+  if (!process.env.DATABASE_URL)
+    return { source: "snapshot", posts: snapshot as PostSummary[] }
   try {
     const rows = await prisma.blogPost.findMany({
       where: { published: true },
@@ -90,7 +93,7 @@ export async function getPosts(): Promise<PostList> {
       }))
     }
   } catch (error) {
-    console.error("Blog: database unavailable, using snapshot.", error)
+    console.warn("Blog: database unavailable, using snapshot.", error)
     return { source: "snapshot", posts: snapshot as PostSummary[] }
   }
 }

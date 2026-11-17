@@ -33,7 +33,7 @@ export default function SeasonPage() {
           { href: "#next", label: "Next" }
         ]}
       />
-      <section className="section">
+      <section className="section tex-field-section">
         <div className="wrap">
           <SeasonTimeline events={seasonEvents} next={nextEvent} />
         </div>

@@ -36,7 +36,8 @@ export default function BlogWrapper({
             src={`/api/blog/image/${blog.id}`}
             alt=""
             fill
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="(max-width: 1028px) 100vw, 980px"
           />
         </div>

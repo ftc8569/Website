@@ -1,7 +1,10 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
+import CodeTile from "@/components/site/code-tile"
 import MathEquation from "@/components/site/math-equation"
+import StateMachine from "@/components/site/state-machine"
+import Tape from "@/components/site/tape"
 import {
   aiPractice,
   codePractice,
@@ -103,6 +106,29 @@ const features: Feature[] = [
   }
 ]
 
+/* Verbatim excerpt (trimmed) from our 2025–26 robot code. */
+const SHOOTER_FILE =
+  "https://github.com/ftc8569/2025-Decode/blob/main/TeamCode/src/main/java/org/firstinspires/ftc/teamcode/common/subsystems/Shooter.kt"
+const SHOOTER_LINES = [
+  "// Shooter RPM = 102.14973x^2 + 81.22682x + 2739.19625 (x is distance from goal in meters)",
+  "val actualRPM = hardware.shooterRPM() * Constants.ShooterConstants.gearRatio",
+  "",
+  "val output = pidController.calculate(actualRPM, if (isRunning) { targetRPM } else if (idleMode) { Constants.ShooterConstants.idleRPM } else { 0.0 }).coerceIn(-1.0, 1.0)",
+  "",
+  "// less than 3% RPM Error",
+  "isUpToSpeed = (actualRPM - targetRPM).absoluteValue / targetRPM > 0.03",
+  "",
+  "if (!idleMode) {",
+  "    // adjust hood based on shooter testing data",
+  "    val rpmDifference = actualRPM - targetRPM",
+  "    val hoodOffset = rpmDifference * -0.0004",
+  "    hardware.hood = (targetHood + hoodOffset).clamp(",
+  "        Constants.ShooterConstants.hoodFullUp,",
+  "        Constants.ShooterConstants.hoodFullDown",
+  "    )",
+  "}"
+]
+
 const RESEARCH = [
   "Model Predictive Control",
   "Factor-graph localization",
@@ -140,8 +166,12 @@ export default function SoftwarePage() {
         action={{ href: GITHUB, label: "GitHub", external: true }}
       />
 
-      <section className="section">
+      <section className="section tex-cad">
         <div className="wrap--media features">
+          <Tape
+            color="white"
+            style={{ top: -14, left: "8%", ["--tape-r" as string]: "-3deg" }}
+          />
           {features.map((feature, index) => (
             <article
               className={`feature${index % 2 ? " feature--flip" : ""}`}
@@ -149,16 +179,20 @@ export default function SoftwarePage() {
               key={feature.id}
               data-reveal
             >
-              <div
-                className={`media media--4x3${feature.light ? " media--light" : ""}`}
-              >
-                <Image
-                  src={feature.image}
-                  alt={feature.alt}
-                  fill
-                  sizes="(max-width: 834px) 100vw, 640px"
-                />
-              </div>
+              {feature.id === "automation" ? (
+                <StateMachine />
+              ) : (
+                <div
+                  className={`media media--4x3 ${feature.light ? "media--light" : "media--render"}`}
+                >
+                  <Image
+                    src={feature.image}
+                    alt={feature.alt}
+                    fill
+                    sizes="(max-width: 834px) 100vw, 640px"
+                  />
+                </div>
+              )}
               <div className="feature-copy">
                 <p className="eyebrow">{feature.label}</p>
                 <h2>{feature.title}</h2>
@@ -188,7 +222,7 @@ export default function SoftwarePage() {
             title="Writing the fastest path as a problem a solver can answer"
             sub="This is how a time-optimal trajectory can be written. It's an illustration, not the exact solver on the robot."
           />
-          <div data-reveal>
+          <div data-reveal data-terms>
             <MathEquation
               label="Simplified time-optimal trajectory objective"
               formula={String.raw`\begin{aligned}
@@ -236,7 +270,24 @@ export default function SoftwarePage() {
         </div>
       </section>
 
-      <section className="section">
+      <section className="section tex-cad">
+        <div className="wrap">
+          <SectionHead
+            eyebrow="From the code"
+            title="How the shooter picks its speed"
+            sub="A trimmed excerpt from Shooter.kt in last season's robot code. Distance to the goal sets the target RPM from a curve we fitted to test shots, and the hood corrects for any RPM error."
+          />
+          <div data-reveal>
+            <CodeTile
+              file="Shooter.kt · 2025-Decode"
+              href={SHOOTER_FILE}
+              lines={SHOOTER_LINES}
+            />
+          </div>
+        </div>
+      </section>
+
+      <section className="section section--surface">
         <div className="wrap--media grid grid--2">
           <article className="tile" data-reveal>
             <h3>How we write code</h3>

@@ -434,23 +434,45 @@ export const socialStats: Stat[] = [
 /* Partners — condensed                                                */
 /* ------------------------------------------------------------------ */
 
-export const sponsors = [
-  { name: "Gene Haas Foundation", src: "/logos/genehaas.png" },
-  { name: "NCSSM Foundation", src: "/logos/ncssm-foundation.png" },
-  { name: "monday.com", src: "/logos/monday.png" },
-  { name: "goBILDA", src: "/logos/gobilda.png" },
-  { name: "Rubrik", src: "/logos/rubrik.png" },
+/*
+ * Organisation homepages. Shelby Dental Care Center and WarmHub have no link
+ * because we couldn't confirm the right address. TODO: add them.
+ */
+export type Org = { name: string; src: string; href?: string }
+
+export const sponsors: Org[] = [
+  {
+    name: "Gene Haas Foundation",
+    src: "/logos/genehaas.png",
+    href: "https://ghaasfoundation.org"
+  },
+  {
+    name: "NCSSM Foundation",
+    src: "/logos/ncssm-foundation.png",
+    href: "https://www.ncssm.edu"
+  },
+  { name: "monday.com", src: "/logos/monday.png", href: "https://monday.com" },
+  {
+    name: "goBILDA",
+    src: "/logos/gobilda.png",
+    href: "https://www.gobilda.com"
+  },
+  { name: "Rubrik", src: "/logos/rubrik.png", href: "https://www.rubrik.com" },
   { name: "Shelby Dental Care Center", src: "/logos/shelbydental.png" }
 ]
 
-export const collaborators = [
-  { name: "Google", src: "/logos/google.png" },
-  { name: "Intel", src: "/logos/intel.png" },
-  { name: "IBM", src: "/logos/ibm.png" },
-  { name: "MIT", src: "/logos/mit.png" },
-  { name: "Duke University", src: "/logos/duke.png" },
-  { name: "UNC Chapel Hill", src: "/logos/unc.png" },
-  { name: "NC State", src: "/logos/ncstate.png" },
+export const collaborators: Org[] = [
+  { name: "Google", src: "/logos/google.png", href: "https://www.google.com" },
+  { name: "Intel", src: "/logos/intel.png", href: "https://www.intel.com" },
+  { name: "IBM", src: "/logos/ibm.png", href: "https://www.ibm.com" },
+  { name: "MIT", src: "/logos/mit.png", href: "https://www.mit.edu" },
+  { name: "Duke University", src: "/logos/duke.png", href: "https://duke.edu" },
+  {
+    name: "UNC Chapel Hill",
+    src: "/logos/unc.png",
+    href: "https://www.unc.edu"
+  },
+  { name: "NC State", src: "/logos/ncstate.png", href: "https://www.ncsu.edu" },
   { name: "WarmHub", src: "/logos/warmhub.png" }
 ]
 

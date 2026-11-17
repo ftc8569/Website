@@ -14,6 +14,8 @@
   --card: #141416;
   --card-hover: #1b1b1e;
   --hairline: rgba(255, 255, 255, 0.08);
+  /* Inset behind CAD renders and data visuals. */
+  --inset: #1a1a1d;
 
   /* Text */
   --text: #f5f5f7;
@@ -477,18 +479,20 @@ a.tile:hover {
 
 /* CAD renders and plots sit on an inset rather than being cropped. */
 .media--render {
-  background: #1d1d20;
+  background: var(--inset);
 }
 .media--render img {
   object-fit: contain;
   padding: 24px;
 }
+/* Bright plots sit inside a #1a1a1d inset so they never touch the page. */
 .media--light {
-  background: #f5f5f7;
+  background: var(--inset);
 }
 .media--light img {
   object-fit: contain;
-  padding: 16px;
+  padding: 24px;
+  border-radius: 28px;
 }
 
 /* --------------------------------------------------------------- stats */
@@ -893,12 +897,16 @@ main {
   position: absolute;
   inset: 0;
   z-index: -1;
-  background: linear-gradient(
-    to bottom,
-    rgba(0, 0, 0, 0) 0%,
-    rgba(0, 0, 0, 0) 35%,
-    rgba(0, 0, 0, 0.7) 100%
-  );
+  /* Directional scrims from the corner the text sits in (bottom left),
+     never a flat overlay across the whole photo. */
+  background:
+    linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0.9) 0%,
+      rgba(0, 0, 0, 0.8) 50%,
+      rgba(0, 0, 0, 0) 92%
+    ),
+    linear-gradient(to right, rgba(0, 0, 0, 0.8) 0%, rgba(0, 0, 0, 0) 70%);
 }
 .page-hero h1 {
   font-size: var(--fs-hero);
@@ -1952,4 +1960,997 @@ main {
 .wrap--media > *,
 .wrap > * {
   min-width: 0;
+}
+
+/* =====================================================================
+ * Shop texture kit. Everything here is decorative, static and subtle.
+ * ===================================================================== */
+
+:root {
+  /* Static film grain: SVG fractal noise, never animated. */
+  --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 1 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  /* Fine horizontal noise for brushed aluminium. */
+  --brush: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='60'%3E%3Cfilter id='b'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.002 .9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .5 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23b)'/%3E%3C/svg%3E");
+  /* Foam field tile with interlocking (dovetail) edges, 120px square. */
+  --field: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cpath d='M0 .5h20l4 6h12l4-6h40l4 6h12l4-6h20M.5 0v20l6 4v12l-6 4v40l6 4v12l-6 4v20' fill='none' stroke='%23fff' stroke-opacity='.05'/%3E%3C/svg%3E");
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Grain over the whole page. Sits above content, below the nav. */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  pointer-events: none;
+  background-image: var(--grain);
+  background-size: 180px;
+  /* Normal blend: overlay/soft-light leave pure black untouched. */
+  opacity: 0.04;
+}
+
+/* Tiles read as physical plates: lit top edge and a soft shadow. */
+.tile {
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 1px 2px rgba(0, 0, 0, 0.4),
+    0 12px 32px -12px rgba(0, 0, 0, 0.6);
+}
+
+/* Photos: light vignette on top of the image. */
+.media:not(.media--render):not(.media--light):not(.media--fea)::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  border-radius: inherit;
+  background: radial-gradient(
+    ellipse at center,
+    rgba(0, 0, 0, 0) 55%,
+    rgba(0, 0, 0, 0.28) 100%
+  );
+}
+
+/* Brushed aluminium for stat tiles and the spec grid. */
+.tex-alu {
+  background-color: #141416;
+  background-image:
+    linear-gradient(
+      100deg,
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0.035) 48%,
+      rgba(255, 255, 255, 0) 66%
+    ),
+    var(--brush), linear-gradient(180deg, #1a1a1d, #141416);
+  background-size:
+    100% 100%,
+    300px 60px,
+    100% 100%;
+  background-blend-mode: normal, soft-light, normal;
+}
+
+/* Blueprint grid with a radial fade, behind Robot and Software sections. */
+.tex-cad {
+  position: relative;
+  isolation: isolate;
+}
+.tex-cad::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.06) 1px, transparent 1px),
+    linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size:
+    40px 40px,
+    40px 40px,
+    8px 8px,
+    8px 8px;
+  background-position: center;
+  -webkit-mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 45%,
+    #000 30%,
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse 70% 60% at 50% 45%,
+    #000 30%,
+    transparent 100%
+  );
+}
+
+/* Foam field tiles, very faint, for the Season page. */
+.tex-field {
+  background-color: var(--bg);
+  background-image: var(--field);
+  background-size: 120px 120px;
+}
+
+/* Perforated aluminium channel: rows of holes on a grid. */
+.perf-band {
+  height: 28px;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.06) 3.5px,
+    transparent 4px
+  );
+  background-size: 24px 24px;
+  background-position: 12px 2px;
+}
+.footer {
+  position: relative;
+  background-image: radial-gradient(
+    circle,
+    rgba(255, 255, 255, 0.035) 3.5px,
+    transparent 4px
+  );
+  background-size: 24px 24px;
+}
+
+/* Gaffer tape strips with torn ends. One per page. */
+.tape {
+  position: absolute;
+  z-index: 3;
+  width: var(--tape-w, 132px);
+  height: 30px;
+  pointer-events: none;
+  transform: rotate(var(--tape-r, -4deg));
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.35));
+}
+.tape svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* ===================================================== motion helpers */
+
+/* Line-by-line headline reveal (JS splits lines; no-JS shows text). */
+.line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.08em;
+  margin-bottom: -0.08em;
+}
+.line-inner {
+  display: block;
+}
+
+/* Odometer digits. */
+.odo {
+  display: inline-flex;
+  overflow: hidden;
+  vertical-align: top;
+  line-height: 1.1;
+}
+.odo-col {
+  display: inline-block;
+  height: 1.1em;
+  overflow: hidden;
+}
+.odo-col > span {
+  display: block;
+  transition: transform 900ms var(--ease-out);
+}
+.odo-col > span > span {
+  display: block;
+  height: 1.1em;
+}
+
+/* Parallax photo frames: the image is slightly larger than its frame. */
+[data-parallax] {
+  overflow: hidden;
+}
+[data-parallax] > img,
+[data-parallax] > .parallax-inner {
+  will-change: transform;
+}
+
+/* Spotlight + tilt on desktop hover. */
+@media (hover: hover) and (pointer: fine) {
+  .spot {
+    transform: perspective(900px) rotateX(var(--tilt-x, 0deg))
+      rotateY(var(--tilt-y, 0deg));
+    transition:
+      transform 500ms var(--ease-out),
+      background-color 200ms ease;
+  }
+  .spot::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    border-radius: inherit;
+    background: radial-gradient(
+      420px circle at var(--mx, 50%) var(--my, 50%),
+      rgba(255, 255, 255, 0.07),
+      transparent 60%
+    );
+    opacity: 0;
+    transition: opacity 300ms ease;
+  }
+  .spot:hover::before {
+    opacity: 1;
+  }
+}
+
+/* Magnetic primary buttons. */
+.btn {
+  transition:
+    background-color 200ms ease,
+    transform 400ms var(--ease-out);
+}
+
+/* Section progress inside the local nav. */
+.localnav-progress {
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  height: 2px;
+  width: 100%;
+  background: var(--accent);
+  transform: scaleX(var(--progress, 0));
+  transform-origin: left;
+}
+
+/* Page transitions: crossfade, with the page title morphing. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 400ms;
+  animation-timing-function: var(--ease-out);
+}
+::view-transition-group(.title) {
+  animation-duration: 500ms;
+  animation-timing-function: var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::after {
+    display: none;
+  }
+  .spot {
+    transform: none !important;
+  }
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
+
+/* =====================================================================
+ * Shared photo grade: highlights down ~10%, slightly warmer, a touch more
+ * midtone contrast. Blacks are lifted to #0b0b0c by the overlay below so
+ * photos sit into the page instead of crushing to pure black.
+ * ===================================================================== */
+.media:not(.media--render):not(.media--light):not(.media--fea) img,
+.page-hero-media img,
+.section-bg img,
+.strip-item img {
+  filter: brightness(0.92) contrast(1.05) sepia(0.06) saturate(1.04);
+}
+.media:not(.media--render):not(.media--light):not(.media--fea)::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  background: #0b0b0c;
+  mix-blend-mode: lighten;
+}
+
+/* ---------------------------------------------------------- Home hero */
+/* Sticky instead of a JS pin: the extra 120vh exists from first paint. */
+/* A real spacer, not padding: a sticky child can only travel through its
+   parent's content box. */
+.explode-track::after {
+  content: "";
+  display: block;
+  height: 120vh;
+}
+.explode {
+  position: sticky;
+  top: 56px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .explode-track::after {
+    display: none;
+  }
+  .explode {
+    position: relative;
+    top: auto;
+  }
+}
+.explode .hero-model {
+  transform-origin: center;
+}
+.explode-box {
+  position: relative;
+}
+/* Layers start stacked and invisible behind the model, so switching motion
+   on never moves anything. Reduced motion gets a plain row instead. */
+.explode-layers {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+.explode-layer {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  width: clamp(130px, 20vw, 230px);
+  margin: calc(clamp(130px, 20vw, 230px) * -0.4) 0 0
+    calc(clamp(130px, 20vw, 230px) * -0.5);
+  padding: 12px;
+  border-radius: var(--radius-photo);
+  background: rgba(26, 26, 29, 0.92);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 16px 40px -16px rgba(0, 0, 0, 0.8);
+  opacity: 0;
+}
+.explode-layer img {
+  width: 100%;
+  height: auto;
+  max-height: 140px;
+  object-fit: contain;
+}
+.explode-label {
+  position: relative;
+  padding-top: 4px;
+  color: var(--text);
+  font-size: 13px;
+  font-weight: 600;
+}
+@media (prefers-reduced-motion: reduce) {
+  .explode-layers {
+    position: static;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 12px;
+    max-width: 900px;
+    margin: 24px auto 0;
+  }
+  .explode-layer {
+    position: static;
+    width: auto;
+    margin: 0;
+    opacity: 1;
+  }
+}
+@media (prefers-reduced-motion: reduce) and (max-width: 734px) {
+  .explode-layers {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.explode-label::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  width: 1px;
+  height: 8px;
+  background: var(--accent);
+}
+
+.hero-stats.tex-alu {
+  padding: 28px 24px 24px;
+  border-radius: var(--radius-tile);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+.hero-stats .stats--strip {
+  padding-top: 0;
+  border-top: 0;
+}
+
+/* --------------------------------------------- Latest: fanned photo stack */
+.latest {
+  overflow: visible;
+}
+.stack {
+  position: relative;
+  min-height: 360px;
+  margin: 32px;
+}
+.stack-card {
+  position: absolute;
+  inset: 8% 14%;
+  border-radius: var(--radius-photo);
+  box-shadow: 0 18px 40px -14px rgba(0, 0, 0, 0.8);
+  transition: transform 700ms var(--ease-out);
+}
+.stack-card:nth-child(1) {
+  z-index: 3;
+  transform: rotate(-2deg);
+}
+.stack-card:nth-child(2) {
+  z-index: 2;
+  transform: rotate(4deg) translate(10px, -6px);
+}
+.stack-card:nth-child(3) {
+  z-index: 1;
+  transform: rotate(-7deg) translate(-12px, 8px);
+}
+@media (hover: hover) {
+  .latest:hover .stack-card:nth-child(1) {
+    transform: rotate(-1deg) translate(0, 6px);
+  }
+  .latest:hover .stack-card:nth-child(2) {
+    transform: rotate(9deg) translate(34%, -6%);
+  }
+  .latest:hover .stack-card:nth-child(3) {
+    transform: rotate(-11deg) translate(-34%, 4%);
+  }
+}
+@media (max-width: 834px) {
+  .stack {
+    min-height: 300px;
+    margin: 8px 24px 32px;
+  }
+}
+
+/* ---------------------------------------------------- Crossfade frames */
+.fade img {
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.fade img.is-active {
+  opacity: 1;
+}
+.fade-toggle,
+.marquee-toggle {
+  position: absolute;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 999px;
+  background: rgba(20, 20, 22, 0.78);
+  color: var(--text);
+  cursor: pointer;
+}
+.fade-toggle {
+  right: 10px;
+  bottom: 10px;
+  width: 32px;
+  height: 32px;
+  opacity: 0;
+  transition: opacity 200ms ease;
+}
+.fade-toggle svg {
+  width: 12px;
+  height: 12px;
+}
+.fade:hover .fade-toggle,
+.fade-toggle:focus-visible {
+  opacity: 1;
+}
+@media (hover: none) {
+  .fade-toggle {
+    opacity: 1;
+  }
+}
+
+/* ------------------------------------------------------ Pinned gallery */
+.section--gallery {
+  overflow: hidden;
+}
+.strip {
+  position: relative;
+}
+.strip-track {
+  display: flex;
+  gap: 16px;
+  margin: 0;
+  padding: 0 max(var(--gutter), calc((100vw - var(--w-media)) / 2));
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  list-style: none;
+}
+.strip-track::-webkit-scrollbar {
+  display: none;
+}
+.strip-item {
+  flex: 0 0 min(80vw, 480px);
+  scroll-snap-align: center;
+}
+.strip--pinned .strip-track {
+  overflow: visible;
+  width: max-content;
+}
+.strip-progress {
+  width: min(100% - 2 * var(--gutter), 320px);
+  height: 2px;
+  margin: 28px auto 0;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.12);
+}
+.strip-progress i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  transform: scaleX(0);
+  transform-origin: left;
+}
+.strip:not(.strip--pinned) .strip-progress {
+  display: none;
+}
+
+/* ------------------------------------------- Section with photo behind */
+.section--photo-bg {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+}
+.section-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.15;
+}
+.section-bg img {
+  object-fit: cover;
+}
+
+/* -------------------------------------------------------- Marquee */
+.sponsors-band {
+  padding-bottom: 72px;
+}
+.marquee {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+  mask-image: linear-gradient(
+    90deg,
+    transparent,
+    #000 10%,
+    #000 90%,
+    transparent
+  );
+}
+.marquee-track {
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  width: max-content;
+  margin: 0;
+  padding: 16px 0;
+  list-style: none;
+  animation: marquee 40s linear infinite;
+}
+.marquee:hover .marquee-track,
+.marquee[data-paused] .marquee-track {
+  animation-play-state: paused;
+}
+.marquee-track img {
+  display: block;
+  width: 190px;
+  height: 80px;
+  max-width: none;
+  object-fit: contain;
+  filter: brightness(0) invert(1);
+  opacity: 0.85;
+}
+.marquee {
+  padding-bottom: 44px;
+}
+.marquee-toggle {
+  right: 12%;
+  bottom: 4px;
+  position: absolute;
+  width: auto;
+  height: 32px;
+  padding: 0 14px;
+  font: inherit;
+  font-size: 12px;
+}
+@keyframes marquee {
+  to {
+    transform: translateX(calc(-50% - 20px));
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    flex-wrap: wrap;
+    justify-content: center;
+    width: auto;
+    animation: none;
+  }
+  .marquee-track li[aria-hidden="true"],
+  .marquee-toggle {
+    display: none;
+  }
+}
+
+/* --------------------------------------------------- Season additions */
+.tex-field-section {
+  background-color: var(--bg);
+  background-image: var(--field);
+  background-size: 120px 120px;
+}
+.timeline-tile {
+  overflow: visible;
+}
+.timeline-lead {
+  margin-top: 24px;
+}
+[data-parallax] img {
+  height: 116% !important;
+  top: -8% !important;
+}
+.timeline-highlight {
+  position: relative;
+  isolation: isolate;
+  padding: 24px;
+  margin-left: -24px;
+  margin-right: -24px;
+  overflow: hidden;
+  border-radius: var(--radius-photo);
+}
+.timeline-scoreboard {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.18;
+  transform: scale(1.35);
+}
+.timeline-scoreboard img {
+  object-fit: cover;
+  filter: blur(1px) brightness(0.9);
+}
+.timeline-scoreboard::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to right, rgba(20, 20, 22, 0.2), #141416 80%);
+}
+
+/* ------------------------------------------------- Robot: pairs, turn */
+.pair {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 2px;
+}
+.pair .media {
+  aspect-ratio: 2 / 3;
+  border-radius: 0;
+}
+.pair .media--render img {
+  padding: 12px;
+}
+@media (hover: hover) {
+  .turn img {
+    transition: transform 700ms var(--ease-out);
+  }
+  .tile:hover .turn img {
+    transform: rotate(-3deg) scale(1.04);
+  }
+}
+
+/* FEA before/after slider */
+.fea {
+  position: relative;
+}
+.fea-frame {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  overflow: hidden;
+  background: #fff;
+}
+.fea-frame img {
+  object-fit: contain;
+  padding: 12px;
+}
+.fea-plain {
+  clip-path: inset(0 calc(100% - var(--split)) 0 0);
+  filter: grayscale(1) brightness(1.5) contrast(0.7);
+  background: #fff;
+}
+.fea-handle {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: var(--split);
+  width: 2px;
+  margin-left: -1px;
+  background: var(--accent);
+  pointer-events: none;
+}
+.fea-handle::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 22px;
+  height: 22px;
+  border: 2px solid #fff;
+  border-radius: 50%;
+  background: var(--accent);
+  transform: translate(-50%, -50%);
+}
+.fea-tag {
+  position: absolute;
+  bottom: 8px;
+  padding: 2px 8px;
+  border-radius: 999px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #f5f5f7;
+  font-size: 12px;
+  font-weight: 600;
+}
+.fea-tag--left {
+  left: 8px;
+}
+.fea-tag--right {
+  right: 8px;
+}
+.fea-range {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: ew-resize;
+}
+.fea-range:focus-visible + * {
+  outline: none;
+}
+.fea:focus-within .fea-handle {
+  box-shadow: 0 0 0 3px rgba(255, 45, 122, 0.4);
+}
+
+/* ------------------------------------------------- Software additions */
+.features {
+  position: relative;
+}
+.media--diagram {
+  background: var(--inset);
+}
+.media--diagram svg {
+  position: absolute;
+  inset: 24px;
+  width: calc(100% - 48px);
+  height: calc(100% - 48px);
+}
+.code-tile {
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: var(--inset);
+}
+.code-head {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px;
+  border-bottom: 1px solid var(--hairline);
+  font-size: 13px;
+}
+.code-head a {
+  color: var(--text-2);
+}
+.code-dots {
+  display: inline-flex;
+  gap: 6px;
+}
+.code-dots i {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #3a3a3e;
+}
+.code-body {
+  margin: 0;
+  padding: 18px 0;
+  overflow-x: auto;
+  color: #d2d2d7;
+  font:
+    14px/1.7 ui-monospace,
+    "SF Mono",
+    Menlo,
+    Consolas,
+    monospace;
+}
+.code-line {
+  display: block;
+  padding: 0 20px;
+  border-left: 2px solid transparent;
+  white-space: pre;
+  transition:
+    background-color 300ms ease,
+    border-color 300ms ease;
+}
+.code-line[data-active] {
+  border-left-color: var(--accent);
+  background: rgba(255, 255, 255, 0.05);
+}
+.tok-key {
+  color: #ff7ab2;
+}
+.tok-fn {
+  color: #6bdfff;
+}
+.tok-num {
+  color: #d9c97c;
+}
+.tok-str {
+  color: #fc8a6a;
+}
+.tok-com {
+  color: #8f9399;
+}
+
+/* ------------------------------------------------- Outreach additions */
+.collage-hero {
+  padding: 72px 0 32px;
+}
+.collage-hero-inner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  gap: 48px;
+}
+.collage-copy h1 {
+  font-size: var(--fs-hero);
+  line-height: 1.05;
+}
+.collage {
+  position: relative;
+  min-height: 460px;
+}
+.collage-photo {
+  position: absolute;
+  box-shadow: 0 24px 48px -20px rgba(0, 0, 0, 0.85);
+}
+.collage-photo--0 {
+  z-index: 2;
+  top: 12%;
+  left: 8%;
+  width: 72%;
+  aspect-ratio: 4 / 3;
+  transform: rotate(-3deg);
+}
+.collage-photo--1 {
+  z-index: 1;
+  top: 0;
+  right: 0;
+  width: 46%;
+  aspect-ratio: 4 / 3;
+  transform: rotate(5deg);
+}
+.collage-photo--2 {
+  z-index: 3;
+  right: 4%;
+  bottom: 0;
+  width: 44%;
+  aspect-ratio: 4 / 3;
+  transform: rotate(-6deg);
+}
+@media (max-width: 834px) {
+  .collage-hero-inner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .collage {
+    min-height: 0;
+    aspect-ratio: 4 / 3.3;
+  }
+}
+
+.nc-map {
+  margin: 0;
+}
+.nc-map svg {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+.nc-legend {
+  display: grid;
+  gap: 8px;
+  margin: 24px 0 0;
+  padding: 0;
+  color: var(--text-2);
+  font-size: 15px;
+  list-style: none;
+}
+.nc-legend strong {
+  margin-right: 6px;
+  color: var(--text);
+}
+
+/* -------------------------------------------------- Team group band */
+.band {
+  position: relative;
+  height: clamp(240px, 40vw, 460px);
+  border-radius: 0;
+}
+
+/* ------------------------------------------------------------ Blog */
+.blog-feature-media {
+  position: relative;
+  overflow: hidden;
+  min-height: 360px;
+}
+.blog-feature-media .media {
+  position: absolute;
+  inset: 0;
+  aspect-ratio: auto;
+  border-radius: 0;
+}
+
+/* ---------------------------------------------------------- Contact */
+.form-stage {
+  position: relative;
+  isolation: isolate;
+  padding: 72px 0;
+}
+.form-stage-bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.2;
+}
+.form-stage-bg img {
+  object-fit: cover;
+  filter: brightness(0.92) contrast(1.05) sepia(0.06);
+}
+.form-stage-bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    to bottom,
+    #000,
+    transparent 20%,
+    transparent 80%,
+    #000
+  );
+}
+.form-tile {
+  overflow: visible;
+}
+
+/* On phones the hero text sits below the photo, on solid black, so it never
+   depends on what's in the picture. */
+@media (max-width: 734px) {
+  .page-hero {
+    display: block;
+    min-height: 0;
+    padding: 0 0 40px;
+  }
+  .page-hero-media {
+    position: relative;
+    inset: auto;
+    z-index: 0;
+    aspect-ratio: 4 / 3;
+    margin-bottom: 24px;
+  }
+  .page-hero::after {
+    display: none;
+  }
+  .page-hero .eyebrow,
+  .page-hero .subhead {
+    text-shadow: none;
+  }
 }

@@ -4,6 +4,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useEffect, type ReactNode } from "react"
 
+import MotionRoot from "@/components/motion/motion-root"
 import SiteNavigation, { NAV_LINKS } from "@/components/site/navigation"
 import { CONTACT_EMAIL, SOCIAL_LINKS } from "@/components/site/ui"
 
@@ -55,6 +56,7 @@ export default function SiteShell({ children }: { children: ReactNode }) {
   return (
     <>
       <SiteNavigation />
+      <MotionRoot />
       {children}
       <footer className="footer">
         <div className="wrap--media">

@@ -3,15 +3,16 @@ import type { IterationTrack } from "./content"
 
 /*
  * Each subsystem is a left-to-right row of version tiles joined by thin
- * arrows, so V1 sits next to V3. On narrow screens the row scrolls sideways
- * inside its own container (scroll-snap), never the page.
+ * arrows, so V1 sits next to V3. The row animates in order and each arrow
+ * draws itself. On narrow screens the row scrolls sideways inside its own
+ * container (scroll-snap), never the page.
  */
 export default function Iteration({ tracks }: { tracks: IterationTrack[] }) {
   return (
     <div className="iterations">
       {tracks.map((track) => (
-        <article className="iteration" key={track.id} data-reveal>
-          <header className="iteration-head">
+        <article className="iteration" key={track.id}>
+          <header className="iteration-head" data-reveal>
             <h3>{track.subsystem}</h3>
             <p className="body">{track.problem}</p>
           </header>
@@ -21,14 +22,22 @@ export default function Iteration({ tracks }: { tracks: IterationTrack[] }) {
             aria-label={`${track.subsystem} versions`}
             tabIndex={0}
           >
-            <ol className="iteration-steps">
+            <ol className="iteration-steps" data-seq>
               {track.versions.map((version, index) => (
-                <li className="iteration-step" key={version.version}>
+                <li
+                  className="iteration-step"
+                  key={version.version}
+                  data-seq-item
+                >
                   {index > 0 && (
-                    <span className="iteration-arrow" aria-hidden="true" />
+                    <span
+                      className="iteration-arrow"
+                      aria-hidden="true"
+                      data-arrow
+                    />
                   )}
                   <div className="tile iteration-tile">
-                    <div className="media media--4x3 media--render">
+                    <div className="media media--4x3 media--render turn">
                       <Image
                         src={version.image}
                         alt={`${track.subsystem} ${version.version}: ${version.title}`}

@@ -98,7 +98,9 @@ export default async function BlogPage({
             <>
               {latest && (
                 <article className="tile tile--split blog-feature">
-                  <Cover post={latest} live={live} priority />
+                  <div data-zoom className="blog-feature-media">
+                    <Cover post={latest} live={live} priority />
+                  </div>
                   <div className="tile-copy">
                     <PostMeta post={latest} />
                     <h2>
@@ -217,7 +219,8 @@ function Cover({
           src={`/api/blog/image/${post.id}`}
           alt=""
           fill
-          priority={priority}
+          loading={priority ? "eager" : undefined}
+          fetchPriority={priority ? "high" : undefined}
           sizes="(max-width: 734px) 100vw, (max-width: 1200px) 50vw, 640px"
         />
       )}

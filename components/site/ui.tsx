@@ -1,6 +1,9 @@
 import Image from "next/image"
+
+import Odometer from "@/components/motion/odometer"
+import SplitHeading from "@/components/motion/split-heading"
 import Link from "next/link"
-import type { ReactNode } from "react"
+import { ViewTransition, type ReactNode } from "react"
 
 /*
  * Shared building blocks for the dark design system. Every page composes
@@ -31,12 +34,35 @@ export function SectionHead({
   return (
     <header
       className={`section-head${align === "left" ? " section-head--left" : ""}`}
-      data-reveal
     >
-      {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-      <Heading className="headline">{title}</Heading>
-      {sub && <p className="subhead">{sub}</p>}
+      {eyebrow && (
+        <p className="eyebrow" data-reveal>
+          {eyebrow}
+        </p>
+      )}
+      {typeof title === "string" ? (
+        <SplitHeading as={Heading} className="headline" text={title} />
+      ) : (
+        <Heading className="headline">{title}</Heading>
+      )}
+      {sub && (
+        <p className="subhead" data-reveal>
+          {sub}
+        </p>
+      )}
     </header>
+  )
+}
+
+/*
+ * Every page's h1. Sharing a view-transition name means the old title morphs
+ * into the new one when you navigate between pages.
+ */
+export function PageTitle({ children }: { children: ReactNode }) {
+  return (
+    <ViewTransition name="page-title" share="title">
+      <h1>{children}</h1>
+    </ViewTransition>
   )
 }
 
@@ -60,19 +86,20 @@ export function PageHero({
 }) {
   return (
     <header className={`page-hero${tall ? " page-hero--tall" : ""}`}>
-      <div className="page-hero-media" aria-hidden="true">
+      <div className="page-hero-media" aria-hidden="true" data-parallax>
         <Image
           src={image}
           alt=""
           fill
-          priority
+          loading="eager"
+          fetchPriority="high"
           sizes="100vw"
           style={{ objectPosition: imagePosition }}
         />
       </div>
       <div className="wrap">
         <p className="eyebrow">{eyebrow}</p>
-        <h1>{title}</h1>
+        <PageTitle>{title}</PageTitle>
         {sub && <p className="subhead">{sub}</p>}
         {children}
       </div>
@@ -94,7 +121,7 @@ export function PageHead({
     <header className="page-head">
       <div className="wrap">
         {eyebrow && <p className="eyebrow">{eyebrow}</p>}
-        <h1>{title}</h1>
+        <PageTitle>{title}</PageTitle>
         {sub && <p className="subhead">{sub}</p>}
       </div>
     </header>
@@ -162,7 +189,9 @@ export function Stats({
       {items.map((item) => (
         <div key={item.label}>
           <dt>{item.label}</dt>
-          <dd className="num">{item.value}</dd>
+          <dd className="num">
+            <Odometer value={item.value} />
+          </dd>
         </div>
       ))}
     </dl>

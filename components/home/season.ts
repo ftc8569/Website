@@ -19,6 +19,8 @@ export type SeasonEvent = {
   title: string
   body: string
   image?: SeasonPhoto
+  /* Large photo shown above the grid. */
+  lead?: SeasonPhoto
   /* Small comparison table: what each channel was good for. */
   findings?: { channel: string; result: string }[]
   /* A headline number. Rendered as its final value; never animated from 0. */
@@ -26,6 +28,8 @@ export type SeasonEvent = {
   stats?: SeasonStat[]
   photos?: SeasonPhoto[]
   credit?: string
+  /* Photo shown faintly behind the headline number. */
+  scoreboard?: string
 }
 
 export const seasonName = "BioBuzz"
@@ -57,15 +61,41 @@ export const seasonEvents: SeasonEvent[] = [
     kind: "NCFTC kickoff talk",
     title: "Mechanical Optimization",
     body: "Our second kickoff talk walked through a robot sideplate we iterated with stress analysis, from the early versions to the final design.",
+    lead: {
+      src: "/season/kickoff-mech-title.webp",
+      alt: "Two RoboKnights presenters beside the title slide, Mechanical Optimization for FTC Design",
+      position: "50% 40%"
+    },
     photos: [
+      {
+        src: "/season/kickoff-mech-results.webp",
+        alt: "A presenter pointing at the stress plots for the final sideplate version",
+        position: "50% 40%"
+      },
+      {
+        src: "/season/kickoff-mech-bracket.webp",
+        alt: "A presenter pointing at a simulated bracket coloured by stress",
+        position: "50% 35%"
+      },
+      {
+        src: "/season/kickoff-mech-safety.webp",
+        alt: "A presenter pointing at the sideplate safety-factor results",
+        position: "50% 40%"
+      },
+      {
+        src: "/season/kickoff-mech-deformation.webp",
+        alt: "A presenter explaining the sideplate deformation scale",
+        position: "50% 35%"
+      },
       {
         src: "/season/kickoff-mech-sideplate.jpg",
         alt: "A presenter pointing at the sideplate stress, displacement and safety-factor plots",
         position: "50% 25%"
       },
       {
-        src: "/season/kickoff-mech-presenters.jpg",
-        alt: "Two RoboKnights presenters at the podium during the Mechanical Optimization talk"
+        src: "/season/kickoff-mech-assembly.webp",
+        alt: "Our two presenters explaining assembly mates in CAD",
+        position: "40% 45%"
       },
       {
         src: "/season/kickoff-mech-final.jpg",
@@ -90,16 +120,17 @@ export const seasonEvents: SeasonEvent[] = [
       { value: "76.67", label: "average points, event best" },
       { value: "80", label: "hive points in one match" }
     ],
+    lead: {
+      src: "/season/ri5w-robot-red.jpg",
+      alt: "Our robot with its red number plate on the field at the scrimmage",
+      position: "50% 62%"
+    },
+    scoreboard: "/season/ri5w-high-score.jpg",
     photos: [
       {
         src: "/season/ri5w-high-score.jpg",
         alt: "Field scoreboard: red alliance 8569 and 5064 win 106 to 39, flagged as the event high score",
         position: "50% 40%"
-      },
-      {
-        src: "/season/ri5w-robot-red.jpg",
-        alt: "Our robot on the field with its red number plate",
-        position: "50% 60%"
       },
       {
         src: "/season/ri5w-rankings.jpg",

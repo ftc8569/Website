@@ -77,7 +77,7 @@ function MemberCard({ member }: { member: Member }) {
 
   return (
     <figure className="person">
-      <div className="media media--square">
+      <div className="media media--square" data-sharpen>
         {failed ? (
           <Silhouette />
         ) : (

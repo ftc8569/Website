@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 
+import Image from "next/image"
+
 import ContactForm from "@/components/site/contact-form"
+import Tape from "@/components/site/tape"
 import { PageHead } from "@/components/site/ui"
 
 export const metadata: Metadata = {
@@ -47,13 +50,28 @@ export default function ContactPage() {
             ))}
           </div>
         </div>
-        <div className="wrap" style={{ marginTop: 72 }}>
-          <div className="tile form-tile" data-reveal>
-            <h2 style={{ fontSize: "var(--fs-h3)" }}>Send us a message</h2>
-            <p className="body" style={{ marginTop: 8, marginBottom: 32 }}>
-              It goes straight to the team inbox. We reply within a few days.
-            </p>
-            <ContactForm />
+        <div className="form-stage" style={{ marginTop: 72 }}>
+          <div className="form-stage-bg" aria-hidden="true">
+            <Image
+              src="/team-hero.jpg"
+              alt=""
+              fill
+              sizes="100vw"
+              style={{ objectPosition: "50% 35%" }}
+            />
+          </div>
+          <div className="wrap">
+            <div className="tile form-tile" data-reveal>
+              <Tape
+                color="pink"
+                style={{ top: -12, right: 48, ["--tape-r" as string]: "4deg" }}
+              />
+              <h2 style={{ fontSize: "var(--fs-h3)" }}>Send us a message</h2>
+              <p className="body" style={{ marginTop: 8, marginBottom: 32 }}>
+                It goes straight to the team inbox. We reply within a few days.
+              </p>
+              <ContactForm />
+            </div>
           </div>
         </div>
       </section>

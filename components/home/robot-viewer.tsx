@@ -48,7 +48,15 @@ type DragState = {
   pan: boolean
 }
 
-export default function RobotViewer() {
+/*
+ * `spin` lets a parent drive extra rotation from scroll: 0 is the resting
+ * angle and 1 is a half turn.
+ */
+export default function RobotViewer({
+  spin
+}: {
+  spin?: { current: number }
+} = {}) {
   const mount = useRef<HTMLDivElement>(null)
   const viewerControls = useRef<ViewerControls | null>(null)
   const drag = useRef<DragState | null>(null)
@@ -248,6 +256,7 @@ export default function RobotViewer() {
         let panX = 0
         let panY = 0
         let time = 0
+        let lastSpin = 0
         let interacting = false
         camera.updateMatrixWorld()
         const cameraRight = new THREE.Vector3().setFromMatrixColumn(
@@ -313,6 +322,11 @@ export default function RobotViewer() {
           time += Math.min(elapsed / 1000, 0.05)
           previousFrame = now
           raf = requestAnimationFrame(animate)
+          const spinNow = spin?.current ?? 0
+          if (spinNow !== lastSpin) {
+            lastSpin = spinNow
+            dirty = true
+          }
           if (interacting && !dirty) return
           dirty = false
           // Sustained frames slower than ~45fps: drop resolution a step.
@@ -323,7 +337,8 @@ export default function RobotViewer() {
             resize()
             slowFrames = 0
           }
-          pivot.rotation.y = interacting ? userRotationY : time * 0.18
+          pivot.rotation.y =
+            (interacting ? userRotationY : time * 0.18) + spinNow * Math.PI
           pivot.rotation.x = userRotationX
           pivot.position
             .copy(cameraRight)
@@ -417,7 +432,7 @@ export default function RobotViewer() {
       inputs.forEach((name) => window.removeEventListener(name, onInput))
       cleanup?.()
     }
-  }, [])
+  }, [spin])
 
   const pinchSpan = () => {
     const [a, b] = [...pointers.current.values()]
@@ -536,7 +551,8 @@ export default function RobotViewer() {
           alt="The RoboKnights Worlds competition robot"
           width={1600}
           height={1600}
-          priority
+          loading="eager"
+          fetchPriority="high"
           sizes="(max-width: 960px) 100vw, 900px"
         />
         <div

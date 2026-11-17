@@ -1,10 +1,15 @@
 import Image from "next/image"
 import Link from "next/link"
 
-import RobotViewer from "@/components/home/robot-viewer"
-import { impactStats, resourceLinks } from "@/components/home/content"
-import PhotoGrid, { type GridPhoto } from "@/components/site/photo-grid"
-import { MoreLink, SectionHead, Stats } from "@/components/site/ui"
+import HeroExplode from "@/components/home/hero-explode"
+import PinnedGallery, {
+  type GalleryPhoto
+} from "@/components/home/pinned-gallery"
+import { impactStats, resourceLinks, sponsors } from "@/components/home/content"
+import Crossfade, { type FadePhoto } from "@/components/site/crossfade"
+import Marquee from "@/components/site/marquee"
+import Tape from "@/components/site/tape"
+import { MoreLink, PageTitle, SectionHead, Stats } from "@/components/site/ui"
 
 const heroStats = [
   { value: "106", label: "Top score at our Oct scrimmage" },
@@ -12,61 +17,148 @@ const heroStats = [
   { value: "16", label: "CNC-machined parts on our last robot" }
 ]
 
-const subteams = [
+const subteams: {
+  title: string
+  body: string
+  href: string
+  link: string
+  photos: FadePhoto[]
+}[] = [
   {
     title: "Robot",
     body: "We design every part in CAD, then cut it ourselves on the FabLab waterjet, CNC and laser.",
     href: "/robot",
     link: "How it's built",
-    image: "/activity/mechanical.jpg",
-    alt: "Students around a table assembling a robot mechanism",
-    position: "center"
+    photos: [
+      {
+        src: "/activity/mechanical.jpg",
+        alt: "Students around a table assembling a robot mechanism"
+      },
+      {
+        src: "/gallery/robot-closeup.jpg",
+        alt: "Close-up of our robot's orange shooter hood and intake"
+      },
+      {
+        src: "/gallery/robot-field-3.jpg",
+        alt: "The intake fingers holding a purple artifact"
+      }
+    ]
   },
   {
     title: "Software",
     body: "Kotlin, command-based, and tested in simulation before it touches the robot.",
     href: "/software",
     link: "Read the code notes",
-    image: "/activity/programming-card.jpg",
-    alt: "Programmers working on laptops in the lab",
-    position: "center"
+    photos: [
+      {
+        src: "/activity/programming-card.jpg",
+        alt: "Programmers working on laptops in the lab"
+      },
+      {
+        src: "/figures/simulation-usd.jpg",
+        alt: "Our robot simulation running on a model of the field"
+      },
+      {
+        src: "/figures/pedropathing.jpg",
+        alt: "An autonomous path plotted in the Pedro Pathing visualizer"
+      }
+    ]
   },
   {
     title: "Outreach",
     body: "We started an FLL team in Greensboro and mentor teams across North Carolina.",
     href: "/outreach",
     link: "What we've done",
-    image: "/outreach/triad-technos.jpg",
-    alt: "The Triad Technos FLL team beside their HydraTech project board",
-    position: "center 35%"
+    photos: [
+      {
+        src: "/outreach/triad-technos.jpg",
+        alt: "The Triad Technos FLL team beside their HydraTech project board",
+        position: "center 35%"
+      },
+      {
+        src: "/season/kickoff-mech-presenters-close.webp",
+        alt: "Two team members presenting our Mechanical Optimization talk to other FTC teams",
+        position: "center 30%"
+      },
+      {
+        src: "/outreach/club-fair.jpg",
+        alt: "Team members talking with students at the NCSSM club fair"
+      }
+    ]
   }
 ]
 
-const gallery: GridPhoto[] = [
+const gallery: GalleryPhoto[] = [
   {
     src: "/activity/robot-header.jpg",
-    alt: "The 8569 robot on the field beside other teams' robots at a competition"
+    alt: "Our robot on the field beside other teams' robots at a competition"
   },
   {
     src: "/season/ri5w-huddle.jpg",
-    alt: "Team members checking a robot number card at the October scrimmage"
+    alt: "Team members checking a robot number card at the October scrimmage",
+    position: "center 35%"
   },
   {
-    src: "/activity/programming.jpg",
-    alt: "Team members with laptops around a whiteboard, robot on the floor beside them"
+    src: "/gallery/robot-field-1.jpg",
+    alt: "A green artifact at the pink intake rollers"
   },
   {
-    src: "/gallery/practice-field.jpg",
-    alt: "Students gathered around the practice field in our lab"
+    src: "/season/kickoff-mech-results.webp",
+    alt: "Presenting sideplate stress results at the kickoff Mechanical Optimization talk"
   },
   {
     src: "/gallery/competition-pit.jpg",
     alt: "Mentoring Trial N' Error, FTC 16328, in the pits"
   },
   {
+    src: "/season/ri5w-high-score.jpg",
+    alt: "The field scoreboard after our 106 to 39 win",
+    position: "center 40%"
+  },
+  {
+    src: "/gallery/field-demo.jpg",
+    alt: "Demonstrating the robot to students at the practice field"
+  },
+  {
+    src: "/season/kickoff-digital-alliance.jpg",
+    alt: "Presenting the Digital Alliance talk at the NCFTC kickoff",
+    position: "center 35%"
+  },
+  {
+    src: "/gallery/robot-field-3.jpg",
+    alt: "The intake fingers holding a purple artifact"
+  },
+  {
+    src: "/outreach/club-fair.jpg",
+    alt: "Team members talking with students at the NCSSM club fair"
+  },
+  {
+    src: "/season/kickoff-questions.webp",
+    alt: "A team member taking questions in front of our closing slide at the NCFTC kickoff",
+    position: "center 30%"
+  },
+  {
     src: "/activity/outreach-header.jpg",
     alt: "The team in front of the lit ROBOTS wall with the robot on the carpet",
     position: "center 45%"
+  }
+]
+
+const latestStack = [
+  {
+    src: "/season/ri5w-robot-red.jpg",
+    alt: "Our robot with its red number plate on the field at the October scrimmage",
+    position: "50% 60%"
+  },
+  {
+    src: "/season/ri5w-match.jpg",
+    alt: "Drive teams behind the glass during a match, our robot at lower right",
+    position: "70% 80%"
+  },
+  {
+    src: "/season/ri5w-high-score.jpg",
+    alt: "The scoreboard showing our alliance's 106 to 39 win",
+    position: "50% 40%"
   }
 ]
 
@@ -77,7 +169,7 @@ export default function HomePage() {
       <section className="hero-home">
         <div className="wrap">
           <p className="eyebrow">FTC Team 8569 · NCSSM, Durham NC</p>
-          <h1>RoboKnights</h1>
+          <PageTitle>RoboKnights</PageTitle>
           <p className="subhead">
             Eighteen students at NCSSM designing, machining and coding a
             competition robot from scratch.
@@ -90,19 +182,24 @@ export default function HomePage() {
           </div>
         </div>
         <div className="wrap--media">
-          <div className="hero-model">
-            <RobotViewer />
-          </div>
-          <div className="hero-stats">
-            <Stats items={heroStats} strip />
-          </div>
+          <HeroExplode>
+            <div className="hero-stats tex-alu">
+              <Stats items={heroStats} strip />
+            </div>
+          </HeroExplode>
         </div>
       </section>
 
+      <div className="perf-band" aria-hidden="true" />
+
       {/* -------------------------------------------------------- Latest */}
-      <section className="section section--tight">
+      <section className="section">
         <div className="wrap--media">
-          <article className="tile tile--split" data-reveal>
+          <article className="tile tile--split latest" data-reveal>
+            <Tape
+              color="white"
+              style={{ top: -12, left: 56, ["--tape-r" as string]: "-5deg" }}
+            />
             <div className="tile-copy">
               <p className="eyebrow">Latest</p>
               <h2>This season: BioBuzz</h2>
@@ -112,14 +209,18 @@ export default function HomePage() {
               </p>
               <MoreLink href="/season">See every event</MoreLink>
             </div>
-            <div className="media">
-              <Image
-                src="/season/ri5w-robot-red.jpg"
-                alt="Our robot with its red number plate on the field at the October scrimmage"
-                fill
-                sizes="(max-width: 834px) 100vw, 640px"
-                style={{ objectPosition: "50% 60%" }}
-              />
+            <div className="stack">
+              {latestStack.map((photo) => (
+                <div className="media stack-card" key={photo.src}>
+                  <Image
+                    src={photo.src}
+                    alt={photo.alt}
+                    fill
+                    sizes="(max-width: 834px) 70vw, 360px"
+                    style={{ objectPosition: photo.position }}
+                  />
+                </div>
+              ))}
             </div>
           </article>
         </div>
@@ -139,15 +240,10 @@ export default function HomePage() {
                 key={team.title}
                 data-reveal
               >
-                <div className="media media--4x3">
-                  <Image
-                    src={team.image}
-                    alt={team.alt}
-                    fill
-                    sizes="(max-width: 734px) 100vw, (max-width: 900px) 50vw, 400px"
-                    style={{ objectPosition: team.position }}
-                  />
-                </div>
+                <Crossfade
+                  photos={team.photos}
+                  sizes="(max-width: 734px) 100vw, 400px"
+                />
                 <div className="tile-copy">
                   <h3>{team.title}</h3>
                   <p className="body">{team.body}</p>
@@ -160,28 +256,45 @@ export default function HomePage() {
       </section>
 
       {/* -------------------------------------------------------- Photos */}
-      <section className="section">
+      <section className="section section--gallery">
         <div className="wrap--media">
           <SectionHead
             title="From the lab and the field"
-            sub="Tap a photo to see it larger."
+            sub="Twelve photos from this season and last."
           />
-          <div data-reveal>
-            <PhotoGrid photos={gallery} />
-          </div>
         </div>
+        <PinnedGallery photos={gallery} />
       </section>
 
       {/* ------------------------------------------------------ Outreach */}
-      <section className="section section--surface">
+      <section className="section section--surface section--photo-bg">
+        <div className="section-bg" aria-hidden="true">
+          <Image
+            src="/team-hero.jpg"
+            alt=""
+            fill
+            sizes="100vw"
+            style={{ objectPosition: "50% 30%" }}
+          />
+        </div>
         <div className="wrap">
           <SectionHead
             title="Outreach, by the numbers"
             sub="Counts we can back up, with the date we took them."
           />
-          <div data-reveal>
+          <div data-odometer>
             <Stats items={impactStats} strip />
           </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ Sponsors */}
+      <section className="section section--tight sponsors-band">
+        <div className="wrap--media">
+          <p className="eyebrow" style={{ textAlign: "center" }}>
+            Backed by
+          </p>
+          <Marquee logos={sponsors} />
         </div>
       </section>
 
@@ -210,6 +323,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <div className="perf-band" aria-hidden="true" />
 
       {/* ------------------------------------------------------- Contact */}
       <section className="section section--surface">
