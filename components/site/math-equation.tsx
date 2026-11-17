@@ -22,9 +22,9 @@ export default function MathEquation({
   })
 
   return (
-    <figure className={styles.figure} aria-label={label}>
+    <figure className={styles.figure}>
       <div
-        className={styles.viewport}
+        className={styles.tile}
         tabIndex={0}
         role="math"
         aria-label={`${label}: ${description}`}

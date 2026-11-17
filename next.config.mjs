@@ -2,7 +2,7 @@
 const nextConfig = {
   output: "standalone",
   images: {
-    formats: ["image/webp"]
+    formats: ["image/avif", "image/webp"]
   }
 }
 

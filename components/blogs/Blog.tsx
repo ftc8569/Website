@@ -3,7 +3,6 @@ import Link from "next/link"
 import type { ReactNode } from "react"
 
 import type { BlogPost } from "@/components/blogs/types"
-import styles from "@/components/blogs/blog.module.css"
 
 const dateFormatter = new Intl.DateTimeFormat("en-US", {
   dateStyle: "long",
@@ -12,33 +11,47 @@ const dateFormatter = new Intl.DateTimeFormat("en-US", {
 
 export default function BlogWrapper({
   children,
-  blog
-}: Readonly<{ children: ReactNode; blog: BlogPost }>) {
+  blog,
+  next
+}: Readonly<{
+  children: ReactNode
+  blog: BlogPost
+  next?: { id: number; title: string } | null
+}>) {
   return (
     <main>
-      <article className={styles.post}>
-        <div className={styles.postCover}>
+      <article className="post">
+        <header className="post-head">
+          <p className="eyebrow">
+            <Link href="/blog">Blog</Link>
+          </p>
+          <h1>{blog.title}</h1>
+          <p className="caption post-meta">
+            By {blog.author} · {formatDate(blog.date)} · {blog.readTime}
+          </p>
+          <p className="subhead">{blog.description}</p>
+        </header>
+        <div className="post-cover media media--16x9">
           <Image
             src={`/api/blog/image/${blog.id}`}
             alt=""
             fill
             priority
-            sizes="(max-width: 940px) 100vw, 900px"
+            sizes="(max-width: 1028px) 100vw, 980px"
           />
         </div>
-        <header className={styles.postHeader}>
-          <p className="section-index">
-            <Link href="/blog">06 / Field notes</Link>
-          </p>
-          <h1>{blog.title}</h1>
-          <p className={styles.postMeta}>
-            By {blog.author} <span aria-hidden="true">·</span>{" "}
-            {formatDate(blog.date)} <span aria-hidden="true">·</span>{" "}
-            {blog.readTime}
-          </p>
-          <p className={styles.postDescription}>{blog.description}</p>
-        </header>
         {children}
+        <footer className="post-foot">
+          {next ? (
+            <Link className="more" href={`/blog/${next.id}`}>
+              Next post: {next.title}
+            </Link>
+          ) : (
+            <Link className="more" href="/blog">
+              All build notes
+            </Link>
+          )}
+        </footer>
       </article>
     </main>
   )

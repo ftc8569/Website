@@ -1,254 +1,250 @@
-"use client"
-
 import Image from "next/image"
 import Link from "next/link"
-import { type MouseEvent, useEffect, useRef } from "react"
 
-import PhotoMarquee from "@/components/home/photo-marquee"
 import RobotViewer from "@/components/home/robot-viewer"
-import { ArrowIcon } from "@/components/site/shell"
-import {
-  galleryImages,
-  impactStats,
-  resourceLinks
-} from "@/components/home/content"
+import { impactStats, resourceLinks } from "@/components/home/content"
+import PhotoGrid, { type GridPhoto } from "@/components/site/photo-grid"
+import { MoreLink, SectionHead, Stats } from "@/components/site/ui"
 
-const capabilities = [
+const heroStats = [
+  { value: "106", label: "Top score at our Oct scrimmage" },
+  { value: "18", label: "Students" },
+  { value: "16", label: "CNC-machined parts on our last robot" }
+]
+
+const subteams = [
   {
-    number: "01",
-    eyebrow: "Programming",
-    title: "Code that thinks\nbefore we do.",
-    description:
-      "Computer vision, motion planning, and control systems engineered for decisive performance.",
-    image: "/activity/programming-card.jpg",
-    href: "/software",
-    className: "capability--code"
-  },
-  {
-    number: "02",
-    eyebrow: "Mechanical",
-    title: "Built for the\npoint of impact.",
-    description:
-      "Every gram, gear, and geometry choice is designed to survive the match—and dominate it.",
-    image: "/activity/mechanical.jpg",
+    title: "Robot",
+    body: "We design every part in CAD, then cut it ourselves on the FabLab waterjet, CNC and laser.",
     href: "/robot",
-    className: "capability--mechanical"
+    link: "How it's built",
+    image: "/activity/mechanical.jpg",
+    alt: "Students around a table assembling a robot mechanism",
+    position: "center"
   },
   {
-    number: "03",
-    eyebrow: "Outreach",
-    title: "Impact beyond\nthe arena.",
-    description:
-      "We build access, curiosity, and the next generation of people who refuse to think small.",
-    image: "/activity/outreach-card.jpg",
+    title: "Software",
+    body: "Kotlin, command-based, and tested in simulation before it touches the robot.",
+    href: "/software",
+    link: "Read the code notes",
+    image: "/activity/programming-card.jpg",
+    alt: "Programmers working on laptops in the lab",
+    position: "center"
+  },
+  {
+    title: "Outreach",
+    body: "We started an FLL team in Greensboro and mentor teams across North Carolina.",
     href: "/outreach",
-    className: "capability--outreach"
+    link: "What we've done",
+    image: "/outreach/triad-technos.jpg",
+    alt: "The Triad Technos FLL team beside their HydraTech project board",
+    position: "center 35%"
+  }
+]
+
+const gallery: GridPhoto[] = [
+  {
+    src: "/activity/robot-header.jpg",
+    alt: "The 8569 robot on the field beside other teams' robots at a competition"
+  },
+  {
+    src: "/season/ri5w-huddle.jpg",
+    alt: "Team members checking a robot number card at the October scrimmage"
+  },
+  {
+    src: "/activity/programming.jpg",
+    alt: "Team members with laptops around a whiteboard, robot on the floor beside them"
+  },
+  {
+    src: "/gallery/practice-field.jpg",
+    alt: "Students gathered around the practice field in our lab"
+  },
+  {
+    src: "/gallery/competition-pit.jpg",
+    alt: "Mentoring Trial N' Error, FTC 16328, in the pits"
+  },
+  {
+    src: "/activity/outreach-header.jpg",
+    alt: "The team in front of the lit ROBOTS wall with the robot on the carpet",
+    position: "center 45%"
   }
 ]
 
 export default function HomePage() {
-  // The glow follows the cursor. Write the position onto the glow layer only,
-  // once per frame, so mouse moves never restyle the 3D robot's subtree.
-  const pointerFrame = useRef(0)
-  const trackPointer = (event: MouseEvent<HTMLElement>) => {
-    const section = event.currentTarget
-    const { clientX, clientY } = event
-    if (pointerFrame.current) return
-    pointerFrame.current = requestAnimationFrame(() => {
-      pointerFrame.current = 0
-      const glow = section.querySelector<HTMLElement>(".hero-spotlight")
-      if (!glow) return
-      const bounds = section.getBoundingClientRect()
-      glow.style.setProperty("--pointer-x", `${clientX - bounds.left}px`)
-      glow.style.setProperty("--pointer-y", `${clientY - bounds.top}px`)
-    })
-  }
-  useEffect(() => () => cancelAnimationFrame(pointerFrame.current), [])
-
   return (
     <main>
       {/* ---------------------------------------------------------- Hero */}
-      <section id="top" className="launch-hero" onMouseMove={trackPointer}>
-        <div className="hero-grid" aria-hidden="true" />
-        <div className="hero-spotlight" aria-hidden="true" />
-        <div className="hero-orbit hero-orbit--one" aria-hidden="true" />
-        <div className="hero-orbit hero-orbit--two" aria-hidden="true" />
-        <div className="hero-kicker">
-          <span className="status-dot" />
-          FTC Team 8569 · NCSSM
-        </div>
-        <div className="hero-copy">
-          <p className="hero-overline">Engineering, weaponized.</p>
-          <h1>
-            <span>Build the</span>
-            <span className="hero-title-accent">impossible.</span>
-          </h1>
-          <p className="hero-subtitle">
-            We don&apos;t enter the arena to participate.
+      <section className="hero-home">
+        <div className="wrap">
+          <p className="eyebrow">FTC Team 8569 · NCSSM, Durham NC</p>
+          <h1>RoboKnights</h1>
+          <p className="subhead">
+            Eighteen students at NCSSM designing, machining and coding a
+            competition robot from scratch.
           </p>
-          <a className="launch-cta" href="#systems">
-            Explore the machine <ArrowIcon />
-          </a>
+          <div className="actions">
+            <Link className="btn" href="/robot">
+              See the robot
+            </Link>
+            <MoreLink href="/season">Follow the season</MoreLink>
+          </div>
         </div>
-        <div
-          className="hero-machine"
-          aria-label="RoboKnights competition robot render"
-        >
-          <div className="machine-halo" aria-hidden="true" />
-          <div className="machine-scan" aria-hidden="true" />
-          <RobotViewer />
-        </div>
-        <div className="hero-scroll" aria-hidden="true">
-          <span>Scroll to initialize</span>
-          <i />
+        <div className="wrap--media">
+          <div className="hero-model">
+            <RobotViewer />
+          </div>
+          <div className="hero-stats">
+            <Stats items={heroStats} strip />
+          </div>
         </div>
       </section>
 
-      {/* ----------------------------------------------------- Manifesto */}
-      <section className="manifesto" data-reveal>
-        <p className="section-index">00 / Mission</p>
-        <h2>
-          Precision is not a detail.
-          <br />
-          <em>It is the whole machine.</em>
-        </h2>
-        <div className="manifesto-meta">
-          <p>Durham, North Carolina</p>
-          <p>Student engineered</p>
-          <p>Competition proven</p>
-        </div>
-      </section>
-      <div className="signal-strip" aria-hidden="true">
-        <div>
-          <span>SPEED</span>
-          <i />
-          <span>SLIME</span>
-          <i />
-          <span>SCORE</span>
-          <i />
-          <span>SPEED</span>
-          <i />
-          <span>SLIME</span>
-          <i />
-          <span>SCORE</span>
-          <i />
-        </div>
-      </div>
-
-      <section id="gallery" className="gallery-section" data-reveal>
-        <header className="gallery-header">
-          <p className="section-index">01 / In the field</p>
-          <h2>The season, as it happened.</h2>
-        </header>
-        <PhotoMarquee images={galleryImages} />
-      </section>
-
-      <section id="systems" className="systems-section">
-        <header className="systems-header" data-reveal>
-          <p className="section-index">02 / Systems</p>
-          <h2>
-            Three disciplines.
-            <br />
-            One machine.
-          </h2>
-        </header>
-        {capabilities.map((capability) => (
-          <Link
-            className={`capability ${capability.className}`}
-            key={capability.title}
-            href={capability.href}
-            data-reveal
-          >
-            <div className="capability-image">
+      {/* -------------------------------------------------------- Latest */}
+      <section className="section section--tight">
+        <div className="wrap--media">
+          <article className="tile tile--split" data-reveal>
+            <div className="tile-copy">
+              <p className="eyebrow">Latest</p>
+              <h2>This season: BioBuzz</h2>
+              <p className="body">
+                Our new robot played its first matches at the October scrimmage
+                and posted the top score of the day.
+              </p>
+              <MoreLink href="/season">See every event</MoreLink>
+            </div>
+            <div className="media">
               <Image
-                src={capability.image}
-                alt=""
+                src="/season/ri5w-robot-red.jpg"
+                alt="Our robot with its red number plate on the field at the October scrimmage"
                 fill
-                sizes="(max-width: 900px) 100vw, 58vw"
+                sizes="(max-width: 834px) 100vw, 640px"
+                style={{ objectPosition: "50% 60%" }}
               />
-              <div className="capability-image-shade" />
             </div>
-            <div className="capability-copy">
-              <p className="capability-number">{capability.number}</p>
-              <p className="capability-eyebrow">{capability.eyebrow}</p>
-              <h3>
-                {capability.title.split("\n").map((line) => (
-                  <span key={line}>{line}</span>
-                ))}
-              </h3>
-              <p className="capability-description">{capability.description}</p>
-              <span className="capability-cta">
-                Explore <ArrowIcon />
-              </span>
-            </div>
-          </Link>
-        ))}
-      </section>
-
-      {/* -------------------------------------------------------- Impact */}
-      <section id="impact" className="impact" data-reveal>
-        <p className="section-index">03 / Impact</p>
-        <div className="impact-grid">
-          {impactStats.map((stat) => (
-            <div className="impact-cell" key={stat.label}>
-              <p className="impact-value">{stat.value}</p>
-              <p className="impact-label">{stat.label}</p>
-            </div>
-          ))}
+          </article>
         </div>
       </section>
 
-      {/* -------------------------------------------------------- Social */}
-      <section id="social" className="social-section">
-        <header className="systems-header" data-reveal>
-          <p className="section-index">04 / Follow along</p>
-          <h2>Find us online.</h2>
-          <p className="section-lede">
-            Build updates, competition days, our code, and the engineering
-            write-ups behind it all.
-          </p>
-        </header>
-        <div className="resources card-grid card-grid--3" data-reveal>
-          {resourceLinks.map((link) => (
-            <a
-              className="resource"
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="resource-label">
-                {link.label}
-                <ArrowIcon />
-              </span>
-              <span className="resource-detail">{link.detail}</span>
-            </a>
-          ))}
+      {/* --------------------------------------------------- What we do */}
+      <section className="section section--surface">
+        <div className="wrap--media">
+          <SectionHead
+            title="What we do"
+            sub="Three subteams, one robot. Here's where each one spends its hours."
+          />
+          <div className="grid grid--3">
+            {subteams.map((team) => (
+              <article
+                className="tile tile--media"
+                key={team.title}
+                data-reveal
+              >
+                <div className="media media--4x3">
+                  <Image
+                    src={team.image}
+                    alt={team.alt}
+                    fill
+                    sizes="(max-width: 734px) 100vw, (max-width: 900px) 50vw, 400px"
+                    style={{ objectPosition: team.position }}
+                  />
+                </div>
+                <div className="tile-copy">
+                  <h3>{team.title}</h3>
+                  <p className="body">{team.body}</p>
+                  <MoreLink href={team.href}>{team.link}</MoreLink>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- Photos */}
+      <section className="section">
+        <div className="wrap--media">
+          <SectionHead
+            title="From the lab and the field"
+            sub="Tap a photo to see it larger."
+          />
+          <div data-reveal>
+            <PhotoGrid photos={gallery} />
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------ Outreach */}
+      <section className="section section--surface">
+        <div className="wrap">
+          <SectionHead
+            title="Outreach, by the numbers"
+            sub="Counts we can back up, with the date we took them."
+          />
+          <div data-reveal>
+            <Stats items={impactStats} strip />
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- Follow */}
+      <section className="section">
+        <div className="wrap--media">
+          <SectionHead title="Follow along" />
+          <div className="grid grid--3">
+            {resourceLinks.map((link) => (
+              <a
+                className="tile"
+                key={link.label}
+                href={link.href}
+                target="_blank"
+                rel="noreferrer"
+                data-reveal
+              >
+                <SocialIcon name={link.label} />
+                <h3 style={{ marginTop: 20 }}>{link.label}</h3>
+                <p className="body" style={{ marginTop: 10 }}>
+                  {link.detail}
+                </p>
+                <span className="more">Open {link.label}</span>
+              </a>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* ------------------------------------------------------- Contact */}
-      <section id="contact" className="finale" data-reveal>
-        <div className="finale-glow" aria-hidden="true" />
-        <p className="section-index">05 / Contact</p>
-        <h2>
-          Ready to build
-          <br />
-          something <em>impossible?</em>
-        </h2>
-        <a className="finale-button" href="mailto:ftcteam8569@roboknights.net">
-          <span>Start a conversation</span>
-          <ArrowIcon />
-        </a>
-        <footer>
-          <span>© {new Date().getFullYear()} RoboKnights 8569</span>
-          <div>
-            <a href="https://www.instagram.com/roboknights8569/">Instagram</a>
-            <a href="https://github.com/ftc8569">GitHub</a>
-            <a href="https://www.linkedin.com/company/ftc8569">LinkedIn</a>
+      <section className="section section--surface">
+        <div className="wrap" style={{ textAlign: "center" }} data-reveal>
+          <h2 className="headline">Want to sponsor, mentor or visit?</h2>
+          <p className="subhead">We reply within a few days.</p>
+          <div className="actions">
+            <Link className="btn" href="/contact">
+              Contact us
+            </Link>
           </div>
-        </footer>
+        </div>
       </section>
     </main>
+  )
+}
+
+function SocialIcon({ name }: { name: string }) {
+  const paths: Record<string, string> = {
+    GitHub:
+      "M12 .5a11.5 11.5 0 0 0-3.64 22.41c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.71.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.69 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.77 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.42-2.7 5.4-5.26 5.68.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5Z",
+    Instagram:
+      "M12 2.2c3.2 0 3.58 0 4.85.07 3.25.15 4.77 1.69 4.92 4.92.06 1.27.07 1.65.07 4.85s0 3.58-.07 4.85c-.15 3.23-1.66 4.77-4.92 4.92-1.27.06-1.64.07-4.85.07s-3.58 0-4.85-.07c-3.26-.15-4.77-1.7-4.92-4.92C2.17 15.58 2.16 15.2 2.16 12s0-3.58.07-4.85C2.38 3.92 3.9 2.38 7.15 2.23 8.42 2.17 8.8 2.16 12 2.16Zm0 4.66a5.14 5.14 0 1 0 0 10.28 5.14 5.14 0 0 0 0-10.28Zm0 8.48a3.34 3.34 0 1 1 0-6.68 3.34 3.34 0 0 1 0 6.68Zm5.34-9.89a1.2 1.2 0 1 0 0 2.4 1.2 1.2 0 0 0 0-2.4Z",
+    LinkedIn:
+      "M20.45 20.45h-3.55v-5.57c0-1.33-.03-3.04-1.85-3.04-1.86 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28ZM5.34 7.43a2.06 2.06 0 1 1 0-4.12 2.06 2.06 0 0 1 0 4.12ZM7.12 20.45H3.56V9h3.56v11.45ZM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0Z"
+  }
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width="32"
+      height="32"
+      aria-hidden="true"
+      fill="currentColor"
+    >
+      <path d={paths[name] ?? ""} />
+    </svg>
   )
 }

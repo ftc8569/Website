@@ -53,8 +53,11 @@ export default function RobotViewer() {
   const viewerControls = useRef<ViewerControls | null>(null)
   const drag = useRef<DragState | null>(null)
   const [live, setLive] = useState(false)
-  const [status, setStatus] = useState("Loading 3D robot…")
+  const [status, setStatus] = useState("")
   const [failed, setFailed] = useState(false)
+  const [touched, setTouched] = useState(false)
+  const pointers = useRef(new Map<number, { x: number; y: number }>())
+  const pinchDistance = useRef(0)
 
   useEffect(() => {
     const node = mount.current
@@ -70,6 +73,20 @@ export default function RobotViewer() {
     let cleanup: (() => void) | undefined
     let updateVisibility = () => {}
 
+    // Keep the still image on reduced motion and on slow or data-saving
+    // connections: the 3D model is a 1.6 MB download plus the Draco decoder.
+    const connection = (
+      navigator as Navigator & {
+        connection?: { saveData?: boolean; effectiveType?: string }
+      }
+    ).connection
+    if (
+      motionPreference.matches ||
+      connection?.saveData ||
+      /(^|-)(2g|3g)$/.test(connection?.effectiveType ?? "")
+    )
+      return
+
     const start = async () => {
       let renderer: WebGLRenderer | undefined
       let draco: DRACOLoaderInstance | undefined
@@ -79,7 +96,6 @@ export default function RobotViewer() {
       let resizeObserver: ResizeObserver | undefined
       let intersectionObserver: IntersectionObserver | undefined
       let stopLoop: (() => void) | undefined
-      let onWheel: (event: WheelEvent) => void = () => {}
 
       try {
         const [THREE, { GLTFLoader }, { DRACOLoader }, { RoomEnvironment }] =
@@ -104,7 +120,6 @@ export default function RobotViewer() {
           intersectionObserver?.disconnect()
           resizeObserver?.disconnect()
           document.removeEventListener("visibilitychange", updateVisibility)
-          node.removeEventListener("wheel", onWheel)
           viewerControls.current = null
           renderer?.dispose()
           draco?.dispose()
@@ -233,7 +248,7 @@ export default function RobotViewer() {
         let panX = 0
         let panY = 0
         let time = 0
-        let interacting = motionPreference.matches
+        let interacting = false
         camera.updateMatrixWorld()
         const cameraRight = new THREE.Vector3().setFromMatrixColumn(
           camera.matrix,
@@ -287,20 +302,6 @@ export default function RobotViewer() {
             camera.updateProjectionMatrix()
           }
         }
-        // A native non-passive listener consumes wheel gestures only while zoom
-        // changes. At the limits, ordinary scrolling can continue down the page.
-        onWheel = (event: WheelEvent) => {
-          const pixels =
-            event.deltaY *
-            (event.deltaMode === 1
-              ? 16
-              : event.deltaMode === 2
-                ? node.clientHeight
-                : 1)
-          if (viewerControls.current?.zoom(-pixels * 0.002))
-            event.preventDefault()
-        }
-        node.addEventListener("wheel", onWheel, { passive: false })
 
         let previousFrame = performance.now()
         let slowFrames = 0
@@ -322,15 +323,12 @@ export default function RobotViewer() {
             resize()
             slowFrames = 0
           }
-          pivot.rotation.y = interacting
-            ? userRotationY
-            : Math.sin(time * 0.32) * 0.42
+          pivot.rotation.y = interacting ? userRotationY : time * 0.18
           pivot.rotation.x = userRotationX
           pivot.position
             .copy(cameraRight)
             .multiplyScalar(panX)
             .addScaledVector(cameraUp, panY)
-          if (!interacting) pivot.position.y += Math.sin(time * 0.55) * 0.012
           renderer.render(scene, camera)
         }
         const startLoop = () => {
@@ -362,7 +360,7 @@ export default function RobotViewer() {
 
         startLoop()
         setFailed(false)
-        setStatus("Drag to rotate · Scroll to zoom · Shift + drag to move")
+        setStatus("3D model loaded")
         requestAnimationFrame(() => {
           if (!disposed) setLive(true)
         })
@@ -370,38 +368,74 @@ export default function RobotViewer() {
         cleanup?.()
         if (!disposed) {
           setFailed(true)
-          setStatus("3D view unavailable · Showing poster")
+          setStatus("3D view unavailable. Showing a still image.")
         }
       }
     }
 
-    // Defer Three.js and the compressed model until after the hero's first paint.
-    const idleWindow = window as Window & {
-      requestIdleCallback?: (
-        callback: () => void,
-        options?: { timeout: number }
-      ) => number
-      cancelIdleCallback?: (handle: number) => void
+    // Three.js, the Draco decoder and the 1.6 MB model are heavy, so they wait
+    // for two things: the viewer being near the viewport, and the visitor's
+    // first input (pointer, touch, key or scroll). Until then the poster shows,
+    // which keeps the main thread free while the page loads.
+    let nearViewport = false
+    let interacted = false
+    let started = false
+    const maybeStart = () => {
+      if (started || !nearViewport || !interacted) return
+      started = true
+      void start()
     }
-    const idle = idleWindow.requestIdleCallback
-      ? {
-          kind: "idle" as const,
-          handle: idleWindow.requestIdleCallback(() => start(), {
-            timeout: 2200
-          })
-        }
-      : { kind: "timeout" as const, handle: globalThis.setTimeout(start, 600) }
+    const inputs = [
+      "pointermove",
+      "pointerdown",
+      "touchstart",
+      "keydown",
+      "wheel",
+      "scroll"
+    ] as const
+    const onInput = () => {
+      interacted = true
+      inputs.forEach((name) => window.removeEventListener(name, onInput))
+      maybeStart()
+    }
+    inputs.forEach((name) =>
+      window.addEventListener(name, onInput, { passive: true })
+    )
+    const lazy = new IntersectionObserver(
+      ([entry]) => {
+        nearViewport = entry.isIntersecting
+        if (nearViewport) maybeStart()
+        if (started) lazy.disconnect()
+      },
+      { rootMargin: "300px" }
+    )
+    lazy.observe(node)
 
     return () => {
       disposed = true
-      if (idle.kind === "idle") idleWindow.cancelIdleCallback?.(idle.handle)
-      else globalThis.clearTimeout(idle.handle)
+      lazy.disconnect()
+      inputs.forEach((name) => window.removeEventListener(name, onInput))
       cleanup?.()
     }
   }, [])
 
+  const pinchSpan = () => {
+    const [a, b] = [...pointers.current.values()]
+    return Math.hypot(a.x - b.x, a.y - b.y)
+  }
+
   const onPointerDown = (event: PointerEvent<HTMLDivElement>) => {
     if (!live || (event.button !== 0 && event.button !== 2)) return
+    setTouched(true)
+    pointers.current.set(event.pointerId, {
+      x: event.clientX,
+      y: event.clientY
+    })
+    if (pointers.current.size === 2) {
+      pinchDistance.current = pinchSpan()
+      drag.current = null
+      return
+    }
     event.currentTarget.focus({ preventScroll: true })
     drag.current = {
       pointerId: event.pointerId,
@@ -416,6 +450,18 @@ export default function RobotViewer() {
   }
 
   const onPointerMove = (event: PointerEvent<HTMLDivElement>) => {
+    if (pointers.current.has(event.pointerId)) {
+      pointers.current.set(event.pointerId, {
+        x: event.clientX,
+        y: event.clientY
+      })
+      if (pointers.current.size === 2) {
+        const span = pinchSpan()
+        viewerControls.current?.zoom((span - pinchDistance.current) * 0.004)
+        pinchDistance.current = span
+        return
+      }
+    }
     const current = drag.current
     if (!current || current.pointerId !== event.pointerId || !live) return
 
@@ -444,6 +490,7 @@ export default function RobotViewer() {
   }
 
   const onPointerUp = (event: PointerEvent<HTMLDivElement>) => {
+    pointers.current.delete(event.pointerId)
     if (drag.current?.pointerId !== event.pointerId) return
     if (event.currentTarget.hasPointerCapture(event.pointerId)) {
       event.currentTarget.releasePointerCapture(event.pointerId)
@@ -490,13 +537,13 @@ export default function RobotViewer() {
           width={1600}
           height={1600}
           priority
-          sizes="(max-width: 900px) 100vw, 62vw"
+          sizes="(max-width: 960px) 100vw, 900px"
         />
         <div
           className="robot3d-stage"
           ref={mount}
           role="group"
-          aria-label="Interactive 3D robot model. Drag to rotate, scroll to zoom, Shift or right-drag to move. Use arrow keys to turn, Shift and arrows to move, plus or minus to zoom, and Home to reset."
+          aria-label="Interactive 3D robot model. Drag to rotate, pinch or use the zoom buttons to zoom, Shift or right-drag to move. Arrow keys turn it, Shift and arrows move it, plus or minus zoom, and Home resets the view."
           aria-hidden={!live}
           tabIndex={live ? 0 : -1}
           onPointerDown={onPointerDown}
@@ -504,23 +551,57 @@ export default function RobotViewer() {
           onPointerUp={onPointerUp}
           onPointerCancel={onPointerUp}
           onLostPointerCapture={onPointerUp}
-          onKeyDown={onKeyDown}
+          onKeyDown={(event) => {
+            setTouched(true)
+            onKeyDown(event)
+          }}
           onDoubleClick={() => viewerControls.current?.reset()}
           onContextMenu={(event) => {
             if (live) event.preventDefault()
           }}
         />
       </div>
-      <div className="robot3d-interface">
-        <p
-          className="robot3d-status"
-          data-state={failed ? "error" : undefined}
-          role="status"
-          aria-live="polite"
-        >
-          {status}
-        </p>
-      </div>
+      {live && (
+        <>
+          <span
+            className="robot3d-chip"
+            data-hidden={touched || undefined}
+            aria-hidden="true"
+          >
+            Drag to rotate
+          </span>
+          <div className="robot3d-zoom">
+            <button
+              type="button"
+              aria-label="Zoom in"
+              onClick={() => {
+                setTouched(true)
+                viewerControls.current?.zoom(ZOOM_STEP)
+              }}
+            >
+              +
+            </button>
+            <button
+              type="button"
+              aria-label="Zoom out"
+              onClick={() => {
+                setTouched(true)
+                viewerControls.current?.zoom(-ZOOM_STEP)
+              }}
+            >
+              −
+            </button>
+          </div>
+        </>
+      )}
+      <p
+        className={failed ? "robot3d-status" : "sr-only"}
+        data-state={failed ? "error" : undefined}
+        role="status"
+        aria-live="polite"
+      >
+        {status}
+      </p>
     </div>
   )
 }

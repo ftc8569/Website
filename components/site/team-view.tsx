@@ -1,7 +1,5 @@
-"use client"
-
 import Image from "next/image"
-import { type MouseEvent } from "react"
+import Link from "next/link"
 
 import Roster, { type TeamData } from "@/components/home/roster"
 import {
@@ -11,142 +9,154 @@ import {
   sponsors,
   type Mentor
 } from "@/components/home/content"
+import { PageHero, SectionHead, Silhouette } from "@/components/site/ui"
 
-function mentorInitials(name: string) {
-  return name
-    .split(" ")
-    .map((part) => part[0])
-    .slice(0, 2)
-    .join("")
+/*
+ * Organisation homepages. Entries without a URL are ones we couldn't confirm;
+ * they render without a link until someone adds the right address.
+ * TODO: confirm URLs for Shelby Dental Care Center and WarmHub.
+ */
+const ORG_URL: Record<string, string> = {
+  "Gene Haas Foundation": "https://ghaasfoundation.org",
+  "NCSSM Foundation": "https://www.ncssm.edu",
+  "monday.com": "https://monday.com",
+  goBILDA: "https://www.gobilda.com",
+  Rubrik: "https://www.rubrik.com",
+  Google: "https://www.google.com",
+  Intel: "https://www.intel.com",
+  IBM: "https://www.ibm.com",
+  MIT: "https://www.mit.edu",
+  "Duke University": "https://duke.edu",
+  "UNC Chapel Hill": "https://www.unc.edu",
+  "NC State": "https://www.ncsu.edu"
 }
 
-/* Photo when we have one, initials otherwise. */
-function MentorPhoto({ mentor, size }: { mentor: Mentor; size: number }) {
-  return mentor.src ? (
+function Logo({
+  name,
+  src,
+  size
+}: {
+  name: string
+  src: string
+  size: "large" | "small"
+}) {
+  const image = (
     <Image
-      src={mentor.src}
-      alt=""
-      width={size * 2}
-      height={size * 2}
-      sizes={`${size}px`}
+      src={src}
+      alt={name}
+      width={480}
+      height={200}
+      sizes={size === "large" ? "240px" : "140px"}
     />
+  )
+  const url = ORG_URL[name]
+  const className = `tile logo-tile logo-tile--${size}`
+  return url ? (
+    <a className={className} href={url} target="_blank" rel="noreferrer">
+      {image}
+    </a>
   ) : (
-    <span className="mentor-initials">{mentorInitials(mentor.name)}</span>
+    <div className={className}>{image}</div>
+  )
+}
+
+function MentorCard({ mentor, lead }: { mentor: Mentor; lead?: boolean }) {
+  return (
+    <figure className="person">
+      <div className="media media--square">
+        {mentor.src ? (
+          <Image
+            src={mentor.src}
+            alt={mentor.name}
+            fill
+            sizes="(max-width: 734px) 50vw, 280px"
+            style={{ objectPosition: "50% 35%" }}
+          />
+        ) : (
+          <Silhouette />
+        )}
+      </div>
+      <figcaption>
+        {lead && <span className="chip chip--accent">Lead mentor</span>}
+        <p className="person-name">{mentor.name}</p>
+        {mentor.org && <p className="person-role">{mentor.org}</p>}
+      </figcaption>
+    </figure>
   )
 }
 
 export default function TeamView({ team }: { team: TeamData }) {
-  const trackPointer = (event: MouseEvent<HTMLElement>) => {
-    const bounds = event.currentTarget.getBoundingClientRect()
-    event.currentTarget.style.setProperty(
-      "--pointer-x",
-      `${event.clientX - bounds.left}px`
-    )
-    event.currentTarget.style.setProperty(
-      "--pointer-y",
-      `${event.clientY - bounds.top}px`
-    )
-  }
-
   return (
     <main>
-      {/* ---------------------------------------------------------- Team */}
-      <section className="team-reveal" data-reveal onMouseMove={trackPointer}>
-        <div className="team-image">
-          <Image
-            src="/team-hero.jpg"
-            alt="The RoboKnights working together in their robotics lab"
-            fill
-            sizes="100vw"
+      <PageHero
+        tall
+        image="/team-hero.jpg"
+        imagePosition="50% 20%"
+        eyebrow="Team"
+        title="Eighteen students, three subteams."
+        sub="Mechanical designs and builds, programming makes it move, outreach takes it into the community."
+      />
+
+      <section id="roster" className="section">
+        <div className="wrap--media">
+          <SectionHead title="Meet the RoboKnights" />
+          <Roster team={team} />
+        </div>
+      </section>
+
+      <section id="support" className="section section--surface">
+        <div className="wrap--media">
+          <SectionHead
+            title="Who backs us"
+            sub="Sponsors and grants pay for the program. These are the organisations behind it."
           />
-        </div>
-        <div className="team-overlay" />
-        <div className="team-copy">
-          <p className="section-index">01 / The team</p>
-          <h1>
-            Small team.
-            <br />
-            <em>Heavy impact.</em>
-          </h1>
-          <p>Different disciplines. One standard.</p>
+          <div className="grid grid--3 logo-grid" data-reveal>
+            {sponsors.map((logo) => (
+              <Logo key={logo.name} {...logo} size="large" />
+            ))}
+          </div>
+          <p className="logo-note body">Also supported by the Ryden family.</p>
+
+          <h3 className="sub-title">Companies and schools we work with</h3>
+          <div className="logo-row" data-reveal>
+            {collaborators.map((logo) => (
+              <Logo key={logo.name} {...logo} size="small" />
+            ))}
+          </div>
         </div>
       </section>
 
-      <section id="team" className="roster-section">
-        <header className="systems-header" data-reveal>
-          <p className="section-index">02 / Roster</p>
-          <h2>Meet the RoboKnights.</h2>
-        </header>
-        <Roster team={team} />
-      </section>
+      <section id="mentors" className="section">
+        <div className="wrap--media">
+          <SectionHead
+            title="Mentors"
+            sub="Engineers, NCSSM staff and FIRST alumni who work with us through the season."
+          />
+          <div className="grid grid--4 roster-grid" data-reveal>
+            {leadMentors.map((mentor) => (
+              <MentorCard key={mentor.name} mentor={mentor} lead />
+            ))}
+            {mentors.map((mentor) => (
+              <MentorCard key={mentor.name} mentor={mentor} />
+            ))}
+          </div>
 
-      {/* ------------------------------------------------------ Partners */}
-      <section id="partners" className="partners" data-reveal>
-        <p className="section-index">03 / Support</p>
-        <h2>Who backs us.</h2>
-
-        <p className="partners-label">Sponsors</p>
-        <div className="logo-wall">
-          {sponsors.map((logo) => (
-            <div className="logo" key={logo.name} title={logo.name}>
-              <Image
-                src={logo.src}
-                alt={logo.name}
-                width={480}
-                height={200}
-                sizes="180px"
-              />
+          <div
+            className="tile"
+            style={{ marginTop: 56, textAlign: "center", alignItems: "center" }}
+            data-reveal
+          >
+            <h3>Want to mentor or sponsor us?</h3>
+            <p className="body" style={{ marginTop: 10 }}>
+              Tell us what you'd like to help with and we'll get back to you.
+            </p>
+            <div className="actions" style={{ marginTop: 24 }}>
+              <Link className="btn" href="/contact">
+                Get in touch
+              </Link>
             </div>
-          ))}
-          <div className="logo logo--text">Ryden Family</div>
+          </div>
         </div>
-
-        <p className="partners-label">
-          Companies &amp; institutions we work with
-        </p>
-        <div className="logo-wall">
-          {collaborators.map((logo) => (
-            <div className="logo" key={logo.name} title={logo.name}>
-              <Image
-                src={logo.src}
-                alt={logo.name}
-                width={480}
-                height={200}
-                sizes="180px"
-              />
-            </div>
-          ))}
-        </div>
-
-        <p className="partners-label">Lead mentors</p>
-        <ul className="lead-mentors">
-          {leadMentors.map((mentor) => (
-            <li key={mentor.name}>
-              <span className="lead-mentor-photo">
-                <MentorPhoto mentor={mentor} size={96} />
-              </span>
-              <span className="mentor-text">
-                <span className="lead-mentor-name">{mentor.name}</span>
-                {mentor.org && <span className="mentor-org">{mentor.org}</span>}
-              </span>
-            </li>
-          ))}
-        </ul>
-
-        <p className="partners-label">Mentors</p>
-        <ul className="mentor-strip">
-          {mentors.map((mentor) => (
-            <li key={mentor.name}>
-              <span className="mentor-avatar">
-                <MentorPhoto mentor={mentor} size={48} />
-              </span>
-              <span className="mentor-text">
-                <span className="mentor-name">{mentor.name}</span>
-                {mentor.org && <span className="mentor-org">{mentor.org}</span>}
-              </span>
-            </li>
-          ))}
-        </ul>
       </section>
     </main>
   )

@@ -15,17 +15,16 @@ try {
   const errors = []
   page.on("pageerror", (error) => errors.push(error.message))
   await page.goto(baseURL, { waitUntil: "domcontentloaded" })
-  await page.locator(".boot").waitFor({ state: "hidden" })
   const stage = page.locator(".robot3d-stage")
   await page
     .getByRole("status")
-    .filter({ hasText: "Scroll to zoom" })
+    .filter({ hasText: "3D model loaded" })
     .waitFor({ timeout: 30000 })
   await page.waitForTimeout(1600)
   assert.equal(
-    await page.locator(".robot3d button, .machine-label").count(),
-    0,
-    "No CAD toolbar or overlapping labels"
+    await page.locator(".robot3d-zoom button").count(),
+    2,
+    "Zoom in and zoom out buttons replace wheel zoom"
   )
   await stage.focus()
   await page.keyboard.press("Home")
@@ -34,8 +33,7 @@ try {
   // Isolate model pixels from the decorative animated backdrop for image
   // comparisons; restore the normal presentation for layout screenshots.
   const backdrop = await page.addStyleTag({
-    content:
-      ".hero-spotlight,.machine-halo,.machine-scan,.hero-orbit,.hero-grid { visibility: hidden !important; }"
+    content: ".robot3d-chip,.robot3d-zoom { visibility: hidden !important; }"
   })
   const capture = async () => {
     const screenshot = await canvas.screenshot()
@@ -54,23 +52,27 @@ try {
     y: bounds.y + bounds.height / 2
   }
 
-  await page.mouse.move(center.x, center.y)
-  const scroll = await page.evaluate(() => window.scrollY)
-  await page.mouse.wheel(0, -150)
+  await page.getByRole("button", { name: "Zoom in" }).click()
   await page.waitForTimeout(200)
   const zoomed = await capture()
   await writeFile("output/playwright/cad-initial.png", initial)
   await writeFile("output/playwright/cad-zoomed.png", zoomed)
-  assert(!initial.equals(zoomed), "Wheel zoom visibly changes the model")
-  assert.equal(
-    await page.evaluate(() => window.scrollY),
-    scroll,
-    "Zoom gesture stays within viewer"
-  )
-  await page.mouse.wheel(0, 150)
+  assert(!initial.equals(zoomed), "Zoom button visibly changes the model")
+  await page.getByRole("button", { name: "Zoom out" }).click()
   await page.waitForTimeout(200)
   const zoomedOut = await capture()
-  assert(!zoomed.equals(zoomedOut), "Wheel zooms back out")
+  assert(!zoomed.equals(zoomedOut), "Zoom out button zooms back out")
+  // The wheel scrolls the page even over the model; it never zooms.
+  await page.mouse.move(center.x, center.y)
+  const scroll = await page.evaluate(() => window.scrollY)
+  await page.mouse.wheel(0, 200)
+  await page.waitForTimeout(200)
+  assert(
+    (await page.evaluate(() => window.scrollY)) > scroll,
+    "Wheel over the viewer scrolls the page"
+  )
+  await page.evaluate((y) => scrollTo(0, y), scroll)
+  await page.waitForTimeout(100)
   await page.mouse.down()
   await page.mouse.move(center.x + 100, center.y + 30, { steps: 8 })
   await page.mouse.up()
@@ -109,13 +111,6 @@ try {
   await page.keyboard.press("+")
   await page.keyboard.press("Shift+ArrowRight")
   await page.keyboard.press("Home")
-  await page.mouse.move(40, 400)
-  await page.mouse.wheel(0, 300)
-  await page.waitForTimeout(200)
-  assert(
-    (await page.evaluate(() => window.scrollY)) > scroll,
-    "Page scroll remains available outside viewer"
-  )
 
   await backdrop.evaluate((el) => el.remove())
   for (const width of [375, 768, 900, 1280]) {
@@ -172,7 +167,7 @@ try {
   }
   assert.deepEqual(errors, [], "No CAD runtime errors")
   console.log(
-    "PASS: mouse rotation, wheel zoom both ways, pan, reset, keyboard, page scroll, spacing and accessibility at four widths"
+    "PASS: mouse rotation, button zoom both ways, wheel scrolls page, pan, reset, keyboard, page scroll, spacing and accessibility at four widths"
   )
   await context.close()
 
@@ -185,7 +180,7 @@ try {
   await mobile.goto(baseURL, { waitUntil: "domcontentloaded" })
   await mobile
     .getByRole("status")
-    .filter({ hasText: "Scroll to zoom" })
+    .filter({ hasText: "3D model loaded" })
     .waitFor({ timeout: 30000 })
   await mobile.locator(".robot3d-stage").scrollIntoViewIfNeeded()
   const mobileBounds = await mobile.locator(".robot3d-stage").boundingBox()
@@ -219,7 +214,7 @@ try {
   await quiet.goto(baseURL, { waitUntil: "domcontentloaded" })
   await quiet
     .getByRole("status")
-    .filter({ hasText: "Scroll to zoom" })
+    .filter({ hasText: "3D model loaded" })
     .waitFor({ timeout: 30000 })
   assert.equal(
     await quiet.locator(".robot3d-stage canvas").count(),

@@ -14,13 +14,17 @@
 
 export type Stat = { value: string; label: string }
 
+/*
+ * Only numbers with a stated source and timeframe are published. The
+ * Instagram figures are the team's count as of October 2026; the recruit
+ * count is the 2026–27 intake. Face-to-face connections (2.5K+), teams
+ * reached (13), teams mentored (4) and training hours (50+) were removed
+ * until someone can point to where they came from.
+ */
 export const impactStats: Stat[] = [
-  { value: "60K+", label: "Social media impacts" },
-  { value: "2.5K+", label: "Face-to-face connections" },
-  { value: "13", label: "Teams reached" },
-  { value: "4", label: "Teams mentored" },
-  { value: "50+", label: "Hours of training" },
-  { value: "10", label: "Members recruited" }
+  { value: "60K+", label: "Social media views, as of Oct 2026" },
+  { value: "2.3K+", label: "Instagram followers, as of Oct 2026" },
+  { value: "10", label: "New members in the 2026–27 season" }
 ]
 
 /* ------------------------------------------------------------------ */
@@ -42,7 +46,7 @@ export const subsystems = [
   {
     name: "Shooter",
     detail:
-      "Adjustable hood, weighted flywheel, and a belt-driven turret for auto-aim.",
+      "Adjustable hood and weighted flywheel on a belt-driven turret that aims itself.",
     image: "/cad/shooter-hood.webp"
   },
   {
@@ -60,7 +64,7 @@ export const subsystems = [
   {
     name: "Drivetrain",
     detail:
-      "Mecanum belt drive, dual odometry pods, and a PTO that lifts the whole robot.",
+      "Mecanum belt drive with dual odometry pods and a PTO that lifts the robot.",
     image: "/cad/chassis-side.webp"
   }
 ]
@@ -88,7 +92,7 @@ export const iterationTracks: IterationTrack[] = [
     id: "intake",
     subsystem: "Intake",
     problem:
-      "Getting an artifact off the floor and into a sorting slot without stalling, deforming, or jamming it.",
+      "Getting an artifact off the floor and into a sorting slot without stalling or squashing it.",
     versions: [
       {
         version: "V1",
@@ -99,7 +103,7 @@ export const iterationTracks: IterationTrack[] = [
       {
         version: "V2",
         title: "Compliant rollers",
-        note: "Silicone rollers and a chain-driven compliant bar. Steeper, flatter ramp with guides to aim the ball at the slot.",
+        note: "Silicone rollers and a chain-driven compliant bar. A steeper ramp with guides aims the artifact at the slot.",
         image: "/cad/intake-v1.webp"
       },
       {
@@ -297,7 +301,7 @@ export const aiPractice =
 /* ------------------------------------------------------------------ */
 
 export const worldsIntro =
-  "After the State Championship we stopped iterating and started over. Built jointly with our sister team SigmaCorns #22377, the Worlds robot trades the spindexer and the lift for a single straight-shoot path — lighter, simpler, and built around one question: how fast can one artifact get from the floor to the goal?"
+  "After the State Championship we stopped iterating and started over. We built the Worlds robot with our sister team SigmaCorns #22377, and it trades the spindexer and the lift for a single straight-shoot path. Cycle time dropped from 8 seconds to 2.5."
 
 export const worldsHeadline: Stat[] = [
   { value: "2.5s", label: "Cycle time, down from 8s" },
@@ -328,19 +332,19 @@ export const worldsSystems = [
   {
     name: "Vectoring intake",
     detail:
-      "Curved guides were jamming on multi-artifact pickups, so V3 replaced them with right-biased vectoring wheels, a shallower compliant ramp, and dead wheels at each end that release artifacts while the intake keeps running.",
+      "Curved guides jammed on multi-artifact pickups. V3 uses right-biased vectoring wheels and a shallower compliant ramp, with dead wheels at each end that let artifacts go while the intake keeps running.",
     image: "/worlds/intake-v3.webp"
   },
   {
     name: "FEA-optimised chassis",
     detail:
-      "Finite element analysis on the drivetrain plates showed us exactly where material was doing nothing. The 15.2″ × 14.5″ result is lighter and faster, with Gripforce wheels, pocketed sideplates, and the battery and four motors low in the base for stability.",
+      "Finite element analysis on the drivetrain plates showed us where material was doing nothing, so we pocketed it out. The chassis is 15.2″ × 14.5″, with the battery and four motors low in the base.",
     image: "/worlds/fea.webp"
   },
   {
     name: "Ranking-point strategy",
     detail:
-      "We scored each ranking point against its mechanical cost and committed to the goal RP. That decision let us cut the lift and the brake outright — a lighter, less complex robot aimed squarely at winning matches.",
+      "We scored each ranking point against its mechanical cost and committed to the goal RP. That let us cut the lift and the brake from the robot.",
     image: "/worlds/bot-full.webp"
   }
 ]
@@ -361,37 +365,37 @@ export const outreachPrograms: OutreachProgram[] = [
   {
     title: "Triad Technos",
     subtitle: "FLL 71079 · Greensboro, NC",
-    body: "We started an FLL team from nothing — found a coach, interviewed members, ran parent info nights, ordered sets, and mentored them from basic Spike code to competition-ready programs. They competed at the Cannon High School qualifier.",
+    body: "We started this FLL team from nothing. We found a coach, interviewed members, ran parent info nights and ordered the sets, then mentored them from basic Spike code to competition-ready programs. They competed at the Cannon High School qualifier.",
     image: "/outreach/triad-technos.jpg"
   },
   {
     title: "Kids Knight Out",
     subtitle: "Museum of Life & Science",
-    body: "We demonstrate the robot to classes of twenty young students, explain the mechanisms, and let them drive it through interactive games. The questions kept coming, so we now host monthly sessions.",
+    body: "We show the robot to classes of twenty young students and let them drive it in games. The questions kept coming, so we now host monthly sessions.",
     image: "/outreach/library-kids.jpg"
   },
   {
     title: "GlobalKnights",
     subtitle: "Brazil · Romania",
-    body: "We reached out to ParaTech (#9302) in Brazil and BraveBots (#19141) and Brute Force (#22491) in Romania over Instagram, then ran introductions, design reviews, and programming exchanges after the five-week scrimmage.",
+    body: "We messaged ParaTech (#9302) in Brazil and BraveBots (#19141) and Brute Force (#22491) in Romania on Instagram. After the five-week scrimmage we started design reviews and programming exchanges with them.",
     image: "/outreach/globalknights.jpg"
   },
   {
     title: "Open House",
     subtitle: "with the ZebraCorns, FRC 900",
-    body: "On FRC Kickoff day we co-hosted an open house for students, prospective FIRST members, and families — we let people drive our robot and presented on how to get into FTC.",
+    body: "On FRC Kickoff day we co-hosted an open house for students and families. Visitors drove our robot, and we presented on how to get into FTC.",
     image: "/outreach/museum-demo.jpg"
   },
   {
     title: "Durham Main Library",
     subtitle: "Family STEM event",
-    body: "We presented the robot and our season to local families, connected students with FIRST sign-ups, and found heavy interest in a one-to-two week technical skills summer camp.",
+    body: "We showed the robot and our season to local families and pointed students to FIRST sign-ups. A lot of parents asked about a one-to-two week technical skills summer camp.",
     image: "/outreach/event-members.jpg"
   },
   {
     title: "Volunteering",
     subtitle: "Bull City FLL · Raleigh Qualifier",
-    body: "We judged at the Bull City FLL Scrimmage and worked the 3rd Southeast Raleigh qualifier as pit runners, judging queuers, field attendants, and field resetters.",
+    body: "We judged at the Bull City FLL Scrimmage. At the 3rd Southeast Raleigh qualifier we ran the pits, queued teams for judging and reset the field.",
     image: "/outreach/volunteers.jpg"
   }
 ]
@@ -403,19 +407,19 @@ export const outreachPrograms: OutreachProgram[] = [
 export const sustainability = [
   {
     title: "Recruitment",
-    body: "We run a booth at the NCSSM club fair with live robot demos, recruit through Instagram and LinkedIn, collect interest through a sign-up form, and interview every applicant. Members of any experience level are welcome — this season brought in ten."
+    body: "We run a booth at the NCSSM club fair with live robot demos and interview every applicant. Any experience level is welcome, and this season brought in ten new members."
   },
   {
     title: "Robot in 5 Weeks",
-    body: "At the Ri5W scrimmage our seniors step back. New members design, build, and program a robot end to end while seniors mentor with guidance rather than answers. Our last Ri5W bot placed 5th in qualification matches, and its stick transfer became V1 of our States robot."
+    body: "At the Robot in 5 Weeks scrimmage our seniors step back and new members build a robot end to end. Our last Ri5W bot placed 5th in qualification matches, and its stick transfer became V1 of our States robot."
   },
   {
     title: "Knowledge continuity",
-    body: "Detailed documentation carries what we know through each year's turnover. New members train in CAD, programming, and outreach, earn NCSSM Fabrication Lab certification, and get hands-on ownership of real decisions."
+    body: "Our documentation carries what we know through each year's turnover. New members earn NCSSM Fabrication Lab certification and own real design decisions in their first season."
   },
   {
     title: "Sustainable funding",
-    body: "Support from NCSSM, our mentors, and foundation grants, including the Gene Haas Foundation, funds the program. We spend it carefully so the team stays strong year after year."
+    body: "NCSSM, our mentors and foundation grants, including one from the Gene Haas Foundation, fund the program."
   }
 ]
 

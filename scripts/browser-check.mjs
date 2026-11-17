@@ -8,7 +8,16 @@ const artifactDir = `output/playwright/${new URL(baseURL).port}`
 await mkdir(artifactDir, { recursive: true })
 const browser = await chromium.launch({ channel: "chrome", headless: true })
 const results = []
-const routes = ["/", "/robot", "/software", "/outreach", "/team", "/blog"]
+const routes = [
+  "/",
+  "/season",
+  "/robot",
+  "/software",
+  "/outreach",
+  "/team",
+  "/blog",
+  "/contact"
+]
 
 try {
   for (const width of [375, 768, 1280]) {
@@ -23,7 +32,6 @@ try {
         waitUntil: "domcontentloaded"
       })
       assert.equal(response.status(), 200, `${route} HTTP status`)
-      await page.locator(".boot").waitFor({ state: "hidden", timeout: 15000 })
       await page.locator("main h1").waitFor()
       await page.waitForFunction(
         () => document.documentElement.classList.contains("reveal-ready"),
@@ -34,23 +42,20 @@ try {
         1,
         `${route} has one h1`
       )
-      const nav = page.getByRole("navigation", { name: "Primary navigation" })
+      const nav = page.getByRole("navigation", { name: "Primary" })
       assert.equal(await nav.count(), 1, `${route} has one primary navigation`)
-      if (width <= 900) {
-        const toggle = page.getByRole("button", { name: "Open navigation" })
+      if (width <= 833) {
+        const toggle = page.getByRole("button", { name: "Open menu" })
         await toggle.click()
-        await page.getByRole("button", { name: "Close navigation" }).waitFor()
+        await page.getByRole("button", { name: "Close menu" }).waitFor()
         await page.keyboard.press("Escape")
         assert.equal(await toggle.getAttribute("aria-expanded"), "false")
         assert(
           await toggle.evaluate((el) => el === document.activeElement),
           "Escape restores toggle focus"
         )
-        await nav
-          .getByRole("link", { name: "Robot", exact: true })
-          .waitFor({ state: "hidden" })
       }
-      if (routes.indexOf(route) > 0 && route !== "/blog") {
+      if (routes.indexOf(route) > 0) {
         assert.equal(
           await nav.locator('[aria-current="page"]').getAttribute("href"),
           route
@@ -68,7 +73,7 @@ try {
         `${route} overflows ${width}px viewport by ${overflow}px`
       )
       const axe = await new AxeBuilder({ page })
-        .include(".launch-site")
+        .include("body")
         .withTags(["wcag2a", "wcag2aa", "wcag21aa", "wcag22aa"])
         .analyze()
       const violations = axe.violations.map((v) => ({
@@ -96,21 +101,13 @@ try {
         `${width}px ${route}: ${violations.length} accessibility issues`
       )
     }
-    // Real client navigation, persistent intro, browser history, and contact hash.
+    // Real client navigation, browser history, and the contact page.
     await page.goto(`${baseURL}/`)
-    await page.locator(".boot").waitFor({ state: "hidden" })
-    if (width <= 900)
-      await page.getByRole("button", { name: "Open navigation" }).click()
-    await page
-      .getByRole("navigation", { name: "Primary navigation" })
-      .getByRole("link", { name: "Software", exact: true })
-      .click()
+    const menu = width <= 833 ? page.locator("#nav-menu") : page.locator(".nav")
+    if (width <= 833)
+      await page.getByRole("button", { name: "Open menu" }).click()
+    await menu.getByRole("link", { name: "Software", exact: true }).click()
     await page.waitForURL("**/software")
-    assert.equal(
-      await page.locator(".boot").count(),
-      0,
-      "intro does not replay during navigation"
-    )
     assert.equal(
       await page.locator(".katex-error").count(),
       0,
@@ -122,20 +119,18 @@ try {
     )
     await page.goBack()
     await page.waitForURL(`${baseURL}/`)
-    if (width <= 900)
-      await page.getByRole("button", { name: "Open navigation" }).click()
+    if (width <= 833)
+      await page.getByRole("button", { name: "Open menu" }).click()
     await page
-      .getByRole("navigation", { name: "Primary navigation" })
-      .getByRole("link", { name: "Contact", exact: true })
+      .getByRole("link", { name: /^Contact( us)?$/ })
+      .filter({ visible: true })
+      .first()
       .click()
-    await page.waitForURL("**/#contact")
-    await page.waitForTimeout(1000)
-    const anchorTop = await page
-      .locator("#contact")
-      .evaluate((el) => el.getBoundingClientRect().top)
-    assert(
-      anchorTop >= 68 && anchorTop < 750,
-      `contact clears fixed nav: ${anchorTop}`
+    await page.waitForURL("**/contact")
+    assert.equal(
+      await page.locator("form #website").isVisible(),
+      false,
+      "contact honeypot stays hidden"
     )
     assert.deepEqual(errors, [], "no browser runtime errors")
     await context.close()
@@ -157,15 +152,9 @@ try {
   const reducedPage = await reduced.newPage()
   await reducedPage.goto(baseURL)
   assert.equal(
-    await reducedPage.locator(".boot").isVisible(),
-    false,
-    "reduced motion skips intro"
-  )
-  assert.equal(
-    await reducedPage
-      .locator(".route-content")
-      .evaluate((el) => getComputedStyle(el).animationName),
-    "none"
+    await reducedPage.locator(".reveal-ready").count(),
+    0,
+    "reduced motion never arms fade-up reveals"
   )
   await reduced.close()
   const request = await browser.newContext()
@@ -194,5 +183,5 @@ assert.equal(
   `See ${artifactDir}/browser-results.json for accessibility failures`
 )
 console.log(
-  `PASS: routes, navigation/history/hash, responsiveness, math, motion, no-JS, and invalid contact at ${baseURL}`
+  `PASS: routes, navigation/history/contact, responsiveness, math, motion, no-JS, and invalid contact at ${baseURL}`
 )

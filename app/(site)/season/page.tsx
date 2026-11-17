@@ -1,33 +1,42 @@
 import type { Metadata } from "next"
 
-import { seasonEvents, seasonName } from "@/components/home/season"
-import PageHeader from "@/components/site/page-header"
+import {
+  nextEvent,
+  seasonEvents,
+  seasonName,
+  seasonYears
+} from "@/components/home/season"
 import SeasonTimeline from "@/components/site/season-timeline"
+import { LocalNav, PageHero } from "@/components/site/ui"
 
 export const metadata: Metadata = {
   title: "Season",
   description:
-    "Team 8569's season so far, event by event — from kickoff to the Robot in 5 Weeks scrimmage."
+    "Team 8569's 2026–27 BioBuzz season, event by event, from our kickoff talks to the Robot in 5 Weeks scrimmage."
 }
 
 export default function SeasonPage() {
   return (
     <main>
-      <PageHeader
+      <PageHero
         image="/season/ri5w-huddle.jpg"
-        tone="bright"
-        eyebrow={`Season · ${seasonName}`}
-        title={
-          <>
-            The season,
-            <br />
-            so far.
-          </>
-        }
-        lede="Every event this season, in order."
+        imagePosition="center 35%"
+        eyebrow={`${seasonYears} season · ${seasonName}`}
+        title="This season so far"
+        sub="Every event, in order, with what happened."
       />
-      <section className="season-section">
-        <SeasonTimeline events={seasonEvents} />
+      <LocalNav
+        title="Season"
+        links={[
+          { href: "#kickoff", label: "Sep 13" },
+          { href: "#ri5w", label: "Oct 18" },
+          { href: "#next", label: "Next" }
+        ]}
+      />
+      <section className="section">
+        <div className="wrap">
+          <SeasonTimeline events={seasonEvents} next={nextEvent} />
+        </div>
       </section>
     </main>
   )

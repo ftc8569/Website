@@ -2,6 +2,16 @@ import nodemailer from "nodemailer"
 
 const SENDER = "RoboKnights Contact <ftcteam8569@roboknights.net>"
 const MAX_MESSAGE_LENGTH = 5_000
+const MAX_BODY_BYTES = 16_000
+/* Anything faster than this from page load to submit is a script. */
+const MIN_FILL_MS = 3_000
+const REASONS = new Set([
+  "Sponsorship",
+  "Mentoring",
+  "School or event visit",
+  "Another FTC or FLL team",
+  "Something else"
+])
 
 type ContactUsData = {
   email: string
@@ -9,7 +19,22 @@ type ContactUsData = {
   name: string
   subject: string
   token: string
+  organisation?: string
+  reason?: string
+  /* Honeypot: real visitors never see or fill this field. */
+  website?: string
+  startedAt?: number
 }
+
+const singleLine = (value: string, max: number) =>
+  value
+    .trim()
+    .replace(/[\r\n\u0000-\u001f]/g, " ")
+    .slice(0, max)
+
+/* Pretend success so bots get no signal about what tripped them. */
+const silentOk = () =>
+  Response.json({ message: "Your message was sent." }, { status: 200 })
 
 function jsonError(message: string, status: number) {
   return Response.json({ error: message }, { status })
@@ -36,11 +61,19 @@ function isContactUsData(value: unknown): value is ContactUsData {
     typeof data.entry === "string" &&
     typeof data.token === "string" &&
     (data.name === undefined || typeof data.name === "string") &&
-    (data.subject === undefined || typeof data.subject === "string")
+    (data.subject === undefined || typeof data.subject === "string") &&
+    (data.organisation === undefined ||
+      typeof data.organisation === "string") &&
+    (data.reason === undefined || typeof data.reason === "string") &&
+    (data.website === undefined || typeof data.website === "string") &&
+    (data.startedAt === undefined || typeof data.startedAt === "number")
   )
 }
 
 export async function POST(request: Request) {
+  if (Number(request.headers.get("content-length") ?? 0) > MAX_BODY_BYTES)
+    return jsonError("That message is too long to send.", 413)
+
   let body: unknown
   try {
     body = await request.json()
@@ -54,16 +87,19 @@ export async function POST(request: Request) {
 
   const email = body.email.trim()
   const entry = body.entry.trim()
-  const name = (body.name ?? "").trim().slice(0, 120)
-  const subject = (body.subject ?? "")
-    .trim()
-    .replace(/[\r\n\u0000-\u001f]/g, " ")
-    .slice(0, 120)
+  if (body.website?.trim()) return silentOk()
+  if (body.startedAt !== undefined && Date.now() - body.startedAt < MIN_FILL_MS)
+    return silentOk()
+
+  const name = singleLine(body.name ?? "", 120)
+  const subject = singleLine(body.subject ?? "", 120)
+  const organisation = singleLine(body.organisation ?? "", 160)
+  const reason = REASONS.has(body.reason ?? "") ? body.reason! : ""
   const token = body.token.trim()
 
   if (
     email.length > 254 ||
-    !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) ||
+    !/^[^\s@<>,;"()]+@[^\s@<>,;"()]+\.[^\s@<>,;"()]+$/.test(email) ||
     !entry ||
     entry.length > MAX_MESSAGE_LENGTH ||
     !token ||
@@ -139,10 +175,10 @@ export async function POST(request: Request) {
     await transporter.sendMail({
       from: SENDER,
       to: recipient,
-      replyTo: name ? `${name} <${email}>` : email,
-      cc: email,
-      subject: `Contact Us: ${subject || "Website message"}`,
-      html: `<!doctype html><html lang="en"><body><p>Thank you for reaching out to us. We will get back to you as soon as possible.</p><hr /><p>${escapeHtml(entry).replace(/\n/g, "<br />")}</p></body></html>`
+      replyTo: { name, address: email },
+      cc: { name, address: email },
+      subject: `Contact Us: ${reason || subject || "Website message"}`,
+      html: `<!doctype html><html lang="en"><body><p>Thank you for reaching out to us. We will get back to you as soon as possible.</p><hr /><p><strong>From:</strong> ${escapeHtml(name || "(no name)")}${organisation ? `, ${escapeHtml(organisation)}` : ""}<br /><strong>Reason:</strong> ${escapeHtml(reason || subject || "Not given")}</p><p>${escapeHtml(entry).replace(/\n/g, "<br />")}</p></body></html>`
     })
   } catch {
     return jsonError(

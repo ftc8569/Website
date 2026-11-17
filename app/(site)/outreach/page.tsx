@@ -1,126 +1,202 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
-import PageHeader from "@/components/site/page-header"
-import { ArrowIcon } from "@/components/site/shell"
 import {
+  impactStats,
   outreachPrograms,
-  resourceLinks,
-  socialStats,
   sustainability
 } from "@/components/home/content"
+import { LocalNav, PageHero, SectionHead, Stats } from "@/components/site/ui"
 
 export const metadata: Metadata = {
   title: "Outreach",
   description:
-    "Founding FLL teams, mentoring FIRST teams worldwide, and teaching STEM across North Carolina."
+    "Starting an FLL team in Greensboro, running robot demos across Durham, and trading design reviews with teams in Brazil and Romania."
+}
+
+const program = (title: string) => {
+  const found = outreachPrograms.find((item) => item.title === title)
+  if (!found) throw new Error(`Missing outreach program: ${title}`)
+  return found
+}
+
+const PHOTO: Record<string, { alt: string; position: string }> = {
+  "Triad Technos": {
+    alt: "The Triad Technos FLL students beside their HydraTech project board",
+    position: "center 35%"
+  },
+  "Kids Knight Out": {
+    alt: "RoboKnights members and a young child at a sensory-friendly science demo",
+    position: "center 35%"
+  },
+  GlobalKnights: {
+    alt: "Video call between RoboKnights and partner teams in Brazil and Romania",
+    position: "center"
+  },
+  "Open House": {
+    alt: "Visitors gathered around our robot on a mat at the open house",
+    position: "center 12%"
+  },
+  "Durham Main Library": {
+    alt: "RoboKnights members talking with young visitors at the library",
+    position: "center 30%"
+  },
+  Volunteering: {
+    alt: "Five volunteers in gold FIRST volunteer shirts",
+    position: "center 15%"
+  }
 }
 
 export default function OutreachPage() {
+  const featured = program("Triad Technos")
+  const started = [program("Kids Knight Out"), program("GlobalKnights")]
+  const events = [
+    program("Open House"),
+    program("Durham Main Library"),
+    program("Volunteering")
+  ]
+  const [docs, ri5w] = [
+    sustainability.find((item) => item.title === "Knowledge continuity"),
+    sustainability.find((item) => item.title === "Robot in 5 Weeks")
+  ]
+
   return (
     <main>
-      <PageHeader
+      <PageHero
         image="/activity/outreach-header.jpg"
+        imagePosition="center 45%"
         eyebrow="Outreach"
-        title={
-          <>
-            We teach what
-            <br />
-            we were taught.
-          </>
-        }
-        lede="NCSSM is a two-year school — half our team turns over every year. That makes passing knowledge on a survival skill, and we practise it well beyond our own roster."
+        title="We teach what we were taught."
+        sub="NCSSM is a two-year school, so half our team turns over every year. Passing knowledge on is how we survive, and we do it well beyond our own roster."
+      />
+      <LocalNav
+        title="Outreach"
+        links={[
+          { href: "#started", label: "Teams we started" },
+          { href: "#events", label: "Events" },
+          { href: "#volunteering", label: "Volunteering" },
+          { href: "#sustainability", label: "Sustainability" }
+        ]}
       />
 
-      {/* ------------------------------------------------------ Outreach */}
-      <section id="outreach" className="outreach-section">
-        <div className="outreach-grid card-grid">
-          {outreachPrograms.map((program) => (
-            <article className="outreach-card" key={program.title} data-reveal>
-              {program.image && (
-                <div className="outreach-figure">
-                  <Image
-                    src={program.image}
-                    alt={program.title}
-                    fill
-                    sizes="(max-width: 900px) 100vw, 33vw"
-                    className="object-cover"
-                  />
-                </div>
-              )}
-              <div className="outreach-copy">
-                <h3>{program.title}</h3>
-                <p className="outreach-subtitle">{program.subtitle}</p>
-                <p>{program.body}</p>
-              </div>
-            </article>
-          ))}
+      {/* ------------------------------------------- Teams we started */}
+      <section id="started" className="section">
+        <div className="wrap--media">
+          <SectionHead
+            title="Teams and programs we started"
+            sub="Some of this is a team we built from scratch. Some of it runs every month."
+          />
+          <article className="tile tile--split" data-reveal>
+            <div className="media">
+              <Image
+                src={featured.image!}
+                alt={PHOTO[featured.title].alt}
+                fill
+                sizes="(max-width: 834px) 100vw, 640px"
+                style={{ objectPosition: PHOTO[featured.title].position }}
+              />
+            </div>
+            <div className="tile-copy">
+              <p className="eyebrow">{featured.subtitle}</p>
+              <h3>{featured.title}</h3>
+              <p className="body">{featured.body}</p>
+            </div>
+          </article>
+          <div className="grid grid--2" style={{ marginTop: 16 }}>
+            {started.map((item) => (
+              <ProgramTile key={item.title} item={item} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* -------------------------------------------------------- Events */}
+      <section id="events" className="section section--surface">
+        <div className="wrap--media">
+          <SectionHead
+            title="Events"
+            sub="Where we brought the robot, and where we helped run someone else's event."
+          />
+          <div className="grid grid--3">
+            {events.map((item) => (
+              <ProgramTile
+                key={item.title}
+                item={item}
+                id={item.title === "Volunteering" ? "volunteering" : undefined}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ------------------------------------------------------- Numbers */}
+      <section className="section">
+        <div className="wrap">
+          <SectionHead title="By the numbers" />
+          <div data-reveal>
+            <Stats items={impactStats} strip />
+          </div>
         </div>
       </section>
 
       {/* ------------------------------------------------ Sustainability */}
-      <section id="sustainability" className="sustain-section">
-        <header className="systems-header" data-reveal>
-          <p className="section-index">Sustainability</p>
-          <h2>
-            Built to outlast
-            <br />
-            every roster.
-          </h2>
-          <p className="section-lede">
-            Half the team graduates every year. These are the systems that keep
-            what we know from leaving with them.
-          </p>
-        </header>
-        <ol className="sustain-grid card-grid" data-reveal>
-          {sustainability.map((item, index) => (
-            <li className="sustain-item" key={item.title}>
-              <span className="sustain-index">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <h3>{item.title}</h3>
-              <p>{item.body}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* -------------------------------------------------------- Social */}
-      <section id="social" className="social-section">
-        <header className="systems-header" data-reveal>
-          <p className="section-index">Follow along</p>
-          <h2>Find us online.</h2>
-          <p className="section-lede">
-            Season updates, outreach events, our code, and the engineering
-            write-ups behind it all.
-          </p>
-        </header>
-        <div className="impact-grid social-stats" data-reveal>
-          {socialStats.map((stat) => (
-            <div className="impact-cell" key={stat.label}>
-              <p className="impact-value">{stat.value}</p>
-              <p className="impact-label">{stat.label}</p>
-            </div>
-          ))}
-        </div>
-        <div className="resources card-grid card-grid--3" data-reveal>
-          {resourceLinks.map((link) => (
-            <a
-              className="resource"
-              key={link.label}
-              href={link.href}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <span className="resource-label">
-                {link.label}
-                <ArrowIcon />
-              </span>
-              <span className="resource-detail">{link.detail}</span>
-            </a>
-          ))}
+      <section id="sustainability" className="section section--surface">
+        <div className="wrap--media split">
+          <SectionHead
+            align="left"
+            eyebrow="Sustainability"
+            title="Built to outlast"
+            sub="Half the team graduates every year. This is how what we know stays on the team."
+          />
+          <div className="grid" data-reveal>
+            {[docs, ri5w].map(
+              (item) =>
+                item && (
+                  <article className="tile" key={item.title}>
+                    <h3 style={{ fontSize: 24 }}>
+                      {item.title === "Robot in 5 Weeks"
+                        ? "Mentoring: Robot in 5 Weeks"
+                        : "Documentation and training"}
+                    </h3>
+                    <p className="body" style={{ marginTop: 10 }}>
+                      {item.body}
+                    </p>
+                  </article>
+                )
+            )}
+          </div>
         </div>
       </section>
     </main>
+  )
+}
+
+function ProgramTile({
+  item,
+  id
+}: {
+  item: (typeof outreachPrograms)[number]
+  id?: string
+}) {
+  const photo = PHOTO[item.title]
+  return (
+    <article className="tile tile--media" id={id} data-reveal>
+      {item.image && (
+        <div className="media media--16x9">
+          <Image
+            src={item.image}
+            alt={photo?.alt ?? item.title}
+            fill
+            sizes="(max-width: 734px) 100vw, 400px"
+            style={{ objectPosition: photo?.position ?? "center" }}
+          />
+        </div>
+      )}
+      <div className="tile-copy">
+        <h3>{item.title}</h3>
+        <p className="tile-sub">{item.subtitle}</p>
+        <p className="body">{item.body}</p>
+      </div>
+    </article>
   )
 }

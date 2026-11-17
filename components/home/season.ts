@@ -6,11 +6,8 @@
 export type SeasonPhoto = {
   src: string
   alt: string
-  /*
-   * Mosaic tile shape: wide spans two columns, tall two rows, big both.
-   * The order in `photos` is chosen so the tiles pack with no gaps.
-   */
-  span?: "wide" | "tall" | "big"
+  /* CSS object-position for the 4:3 crop, so faces and scores stay in frame. */
+  position?: string
 }
 
 export type SeasonStat = { value: string; label: string }
@@ -22,15 +19,20 @@ export type SeasonEvent = {
   title: string
   body: string
   image?: SeasonPhoto
-  points?: string[]
-  /* A headline number, counted up when the event scrolls into view. */
-  highlight?: { value: number; label: string; detail: string }
+  /* Small comparison table: what each channel was good for. */
+  findings?: { channel: string; result: string }[]
+  /* A headline number. Rendered as its final value; never animated from 0. */
+  highlight?: { value: string; label: string; detail: string }
   stats?: SeasonStat[]
   photos?: SeasonPhoto[]
   credit?: string
 }
 
-export const seasonName = "2026–27 · BIOBUZZ"
+export const seasonName = "BioBuzz"
+export const seasonYears = "2026–27"
+
+/* Shown as the last tile. Set `date` and `title` once the event is scheduled. */
+export const nextEvent: { date?: string; title?: string } = {}
 
 export const seasonEvents: SeasonEvent[] = [
   {
@@ -38,15 +40,15 @@ export const seasonEvents: SeasonEvent[] = [
     date: "Sep 13",
     kind: "NCFTC kickoff talk",
     title: "Digital Alliance",
-    body: "Our robotics networking talk at the 2026 NCFTC kickoff: how FTC teams can reach sponsors and mentors online.",
+    body: "At the 2026 NCFTC kickoff we gave a talk on how FTC teams can reach sponsors and mentors online, and which platform to use for what.",
     image: {
       src: "/season/kickoff-digital-alliance.jpg",
       alt: "Two RoboKnights members presenting the Digital Alliance slide 'Match the platform' at kickoff"
     },
-    points: [
-      "LinkedIn — fastest replies",
-      "Instagram — best for local",
-      "Email — lowest reply rate"
+    findings: [
+      { channel: "LinkedIn", result: "Fastest replies" },
+      { channel: "Instagram", result: "Best for local contacts" },
+      { channel: "Email", result: "Lowest reply rate" }
     ]
   },
   {
@@ -54,12 +56,12 @@ export const seasonEvents: SeasonEvent[] = [
     date: "Sep 13",
     kind: "NCFTC kickoff talk",
     title: "Mechanical Optimization",
-    body: "Our second kickoff talk: iterating a robot sideplate with stress analysis, from early versions to the final design.",
+    body: "Our second kickoff talk walked through a robot sideplate we iterated with stress analysis, from the early versions to the final design.",
     photos: [
       {
         src: "/season/kickoff-mech-sideplate.jpg",
-        alt: "A RoboKnights presenter pointing to sideplate stress, displacement, and safety factor results",
-        span: "big"
+        alt: "A presenter pointing at the sideplate stress, displacement and safety-factor plots",
+        position: "50% 25%"
       },
       {
         src: "/season/kickoff-mech-presenters.jpg",
@@ -67,7 +69,8 @@ export const seasonEvents: SeasonEvent[] = [
       },
       {
         src: "/season/kickoff-mech-final.jpg",
-        alt: "A RoboKnights presenter comparing the final sideplate version with version 2"
+        alt: "A presenter comparing the stress plots for the final sideplate and version 2",
+        position: "50% 30%"
       }
     ]
   },
@@ -76,42 +79,42 @@ export const seasonEvents: SeasonEvent[] = [
     date: "Oct 18",
     kind: "Scrimmage",
     title: "Robot in 5 Weeks scrimmage",
-    body: "The new robot's first matches — and the top score of the day.",
+    body: "Our new robot played its first matches and posted the top score of the day.",
     highlight: {
-      value: 106,
-      label: "Event high score",
-      detail: "Q6 with 5064 · won 106–39"
+      value: "106",
+      label: "Top score of the event",
+      detail: "Qualification 6 with 5064, won 106–39"
     },
     stats: [
       { value: "3rd", label: "of 7 teams" },
-      { value: "76.67", label: "avg points · event best" },
+      { value: "76.67", label: "average points, event best" },
       { value: "80", label: "hive points in one match" }
     ],
     photos: [
       {
         src: "/season/ri5w-high-score.jpg",
-        alt: "Scoreboard showing the red alliance of 8569 and 5064 winning 106 to 39, marked event high score",
-        span: "wide"
+        alt: "Field scoreboard: red alliance 8569 and 5064 win 106 to 39, flagged as the event high score",
+        position: "50% 40%"
       },
       {
         src: "/season/ri5w-robot-red.jpg",
-        alt: "The 8569 robot on the field with a red number plate",
-        span: "tall"
+        alt: "Our robot on the field with its red number plate",
+        position: "50% 60%"
       },
       {
         src: "/season/ri5w-rankings.jpg",
         alt: "Final qualification rankings with 8569 in third",
-        span: "wide"
+        position: "50% 30%"
       },
       {
         src: "/season/ri5w-robot-field.jpg",
-        alt: "The 8569 robot with a blue number plate on the field",
-        span: "tall"
+        alt: "Our robot with a blue number plate on the field",
+        position: "50% 60%"
       },
       {
         src: "/season/ri5w-match.jpg",
-        alt: "Drive teams lined up behind the field during a match",
-        span: "tall"
+        alt: "Drive teams behind the glass during a match, with our robot at lower right",
+        position: "70% 85%"
       },
       {
         src: "/season/ri5w-number-plate.jpg",
@@ -119,7 +122,8 @@ export const seasonEvents: SeasonEvent[] = [
       },
       {
         src: "/season/ri5w-roboknights-shirt.jpg",
-        alt: "A RoboKnights member in an 8569 shirt watching the field"
+        alt: "Back of a RoboKnights member in a black 8569 shirt",
+        position: "50% 60%"
       }
     ],
     credit: "Photos by Neil"

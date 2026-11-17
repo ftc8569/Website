@@ -1,39 +1,39 @@
+/* The equation sits in its own tile; the caption is a sibling below it. */
 .figure {
-  margin: 1.25rem 0 0;
+  margin: 0;
   min-width: 0;
 }
 
-.viewport {
+.tile {
   max-width: 100%;
+  padding: 24px;
   overflow-x: auto;
-  overscroll-behavior-inline: contain;
-  padding: 1rem 1.25rem;
-  border: 1px solid rgb(255 255 255 / 14%);
-  border-radius: 0.5rem;
-  background: var(--ink, #050505);
-  color: #f7f7f4;
-  scrollbar-color: #ff2b87 rgb(255 255 255 / 8%);
+  border-radius: 20px;
+  background: var(--card, #141416);
+  color: var(--text, #f5f5f7);
   scrollbar-width: thin;
 }
 
-.viewport :global(.katex-display) {
+.tile:focus-visible {
+  outline: 2px solid var(--accent, #ff2d7a);
+  outline-offset: 3px;
+}
+
+.tile :global(.katex-display) {
   margin: 0;
   min-width: max-content;
   text-align: left;
 }
 
-.viewport :global(.katex) {
-  font-size: 1.05em;
+.tile :global(.katex) {
+  color: var(--text, #f5f5f7);
+  font-size: 1.1em;
+  line-height: 1.4;
 }
 
 .caption {
-  margin-top: 0.65rem;
-  color: #b9b9b9;
-  font-size: 0.8125rem;
-  line-height: 1.6;
-}
-
-.viewport:focus-visible {
-  outline: 2px solid var(--soft-pink, #ff8dbc);
-  outline-offset: 4px;
+  margin: 16px 0 0;
+  color: var(--text-2, #a1a1a6);
+  font-size: 14px;
+  line-height: 1.5;
 }

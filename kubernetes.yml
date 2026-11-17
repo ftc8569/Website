@@ -20,7 +20,7 @@ spec:
             - containerPort: 3000
           envFrom:
             - secretRef:
-              name: roboknights-secret
+                name: roboknights-secret
       imagePullSecrets:
         - name: docker.bedson.tech
 ---

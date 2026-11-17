@@ -1,9 +1,9 @@
 import type { Metadata } from "next"
 import MarkdownIt from "markdown-it"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import BlogWrapper from "@/components/blogs/Blog"
-import styles from "@/components/blogs/blog.module.css"
 import { prisma } from "@/lib/prisma"
 
 export async function generateMetadata({
@@ -12,7 +12,7 @@ export async function generateMetadata({
   params: Promise<{ id: string }>
 }): Promise<Metadata> {
   const id = parseId((await params).id)
-  if (id === null) return { title: "Article — RoboKnights 8569" }
+  if (id === null) return { title: "Article" }
 
   try {
     const post = await prisma.blogPost.findFirst({
@@ -22,12 +22,24 @@ export async function generateMetadata({
 
     return post
       ? {
-          title: `${post.title} — RoboKnights 8569`,
-          description: post.description
+          title: post.title,
+          description: post.description,
+          alternates: { canonical: `/blog/${id}` },
+          openGraph: {
+            type: "article",
+            title: post.title,
+            description: post.description,
+            url: `/blog/${id}`,
+            images: [{ url: `/api/blog/image/${id}`, alt: post.title }]
+          },
+          twitter: {
+            card: "summary_large_image",
+            images: [`/api/blog/image/${id}`]
+          }
         }
-      : { title: "Article — RoboKnights 8569" }
+      : { title: "Article" }
   } catch {
-    return { title: "RoboKnights Blog — RoboKnights 8569" }
+    return { title: "Blog" }
   }
 }
 
@@ -40,6 +52,7 @@ export default async function BlogPostPage({
   if (id === null) notFound()
 
   let blog
+  let next: { id: number; title: string } | null = null
   try {
     blog = await prisma.blogPost.findFirst({
       where: { id, published: true },
@@ -54,11 +67,32 @@ export default async function BlogPostPage({
         updatedAt: true
       }
     })
-  } catch {
+    if (blog)
+      next = await prisma.blogPost.findFirst({
+        where: { published: true, createdAt: { lt: blog.createdAt } },
+        orderBy: [{ createdAt: "desc" }, { id: "desc" }],
+        select: { id: true, title: true }
+      })
+  } catch (error) {
+    console.error("Blog post: database unavailable.", error)
     return (
-      <main className={styles.unavailable}>
-        <h1>Articles are temporarily unavailable.</h1>
-        <p>Please try again later.</p>
+      <main>
+        <header className="page-head">
+          <div className="wrap">
+            <p className="eyebrow">Blog</p>
+            <h1 style={{ fontSize: "var(--fs-h2)" }}>
+              This post couldn&apos;t load.
+            </h1>
+            <p className="subhead">
+              Refresh in a few minutes, or go back to the list of build notes.
+            </p>
+            <div className="actions">
+              <Link className="btn" href="/blog">
+                All build notes
+              </Link>
+            </div>
+          </div>
+        </header>
       </main>
     )
   }
@@ -78,16 +112,14 @@ export default async function BlogPostPage({
     updatedAt: blog.updatedAt.toISOString()
   }
 
-  const html = new MarkdownIt({ html: false, breaks: true }).render(
-    post.content
-  )
+  // The page title is the only h1; headings inside the post start at h2.
+  const html = new MarkdownIt({ html: false, breaks: true })
+    .render(post.content)
+    .replace(/<(\/?)h1>/g, "<$1h2>")
 
   return (
-    <BlogWrapper blog={post}>
-      <div
-        className={styles.markdown}
-        dangerouslySetInnerHTML={{ __html: html }}
-      />
+    <BlogWrapper blog={post} next={next}>
+      <div className="post-body" dangerouslySetInnerHTML={{ __html: html }} />
     </BlogWrapper>
   )
 }
